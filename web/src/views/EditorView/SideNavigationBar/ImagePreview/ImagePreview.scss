@@ -49,6 +49,8 @@
   }
 
   &.selected {
+    background-color: #3f5461;
+
     .Foreground {
       transform: translate(-2px, 2px);
     }

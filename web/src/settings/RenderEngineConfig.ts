@@ -2,9 +2,9 @@ import {ISize} from "../interfaces/ISize";
 import {Settings} from "./Settings";
 
 export class RenderEngineConfig {
-    public readonly lineThickness: number = 2;
-    public readonly lineActiveColor: string = Settings.PRIMARY_COLOR;
-    public readonly lineInactiveColor: string = "#fff";
+    public readonly lineThickness: number = 1;
+    public readonly lineActiveColor: string = Settings.LINE_ACTIVE_COLOR;
+    public readonly lineInactiveColor: string = Settings.LINE_INACTIVE_COLOR;
     public readonly anchorSize: ISize = {
         width: Settings.RESIZE_HANDLE_DIMENSION_PX,
         height: Settings.RESIZE_HANDLE_DIMENSION_PX

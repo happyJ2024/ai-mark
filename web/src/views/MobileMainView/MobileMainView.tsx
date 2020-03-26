@@ -70,7 +70,7 @@ const MobileMainView: React.FC<IProps> = ({size}) => {
                     alt={"make-sense"}
                     src={"/make-sense-ico-transparent.png"}
                 />
-                Make Sense
+                AI Mark
             </div>
         </div>
         <div className="TriangleHorizontal Bottom">

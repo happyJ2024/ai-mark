@@ -1,17 +1,17 @@
 import React from 'react';
-import {connect} from "react-redux";
-import {LabelType} from "../../../../data/enums/LabelType";
-import {ISize} from "../../../../interfaces/ISize";
-import {AppState} from "../../../../store";
-import {ImageData, LabelPoint, LabelRect} from "../../../../store/labels/types";
-import {VirtualList} from "../../../Common/VirtualList/VirtualList";
+import { connect } from "react-redux";
+import { LabelType } from "../../../../data/enums/LabelType";
+import { ISize } from "../../../../interfaces/ISize";
+import { AppState } from "../../../../store";
+import { ImageData, LabelPoint, LabelRect } from "../../../../store/labels/types";
+import { VirtualList } from "../../../Common/VirtualList/VirtualList";
 import ImagePreview from "../ImagePreview/ImagePreview";
 import './ImagesList.scss';
-import {ContextManager} from "../../../../logic/context/ContextManager";
-import {ContextType} from "../../../../data/enums/ContextType";
-import {ImageActions} from "../../../../logic/actions/ImageActions";
-import {EventType} from "../../../../data/enums/EventType";
-import {LabelStatus} from "../../../../data/enums/LabelStatus";
+import { ContextManager } from "../../../../logic/context/ContextManager";
+import { ContextType } from "../../../../data/enums/ContextType";
+import { ImageActions } from "../../../../logic/actions/ImageActions";
+import { EventType } from "../../../../data/enums/EventType";
+import { LabelStatus } from "../../../../data/enums/LabelStatus";
 
 interface IProps {
     activeImageIndex: number;
@@ -56,7 +56,7 @@ class ImagesList extends React.Component<IProps, IState> {
         })
     };
 
-    private isImageChecked = (index:number): boolean => {
+    private isImageChecked = (index: number): boolean => {
         return (this.props.activeLabelType === LabelType.RECTANGLE &&
             this.props.imagesData[index].labelRects
                 .filter((labelRect: LabelRect) => labelRect.status === LabelStatus.ACCEPTED).length > 0) ||
@@ -70,11 +70,14 @@ class ImagesList extends React.Component<IProps, IState> {
         ImageActions.getImageByIndex(index)
     };
 
+
+
     private renderImagePreview = (index: number, isScrolling: boolean, isVisible: boolean, style: React.CSSProperties) => {
+
         return <ImagePreview
             key={index}
             style={style}
-            size={{width: 150, height: 150}}
+            size={this.getChildRenderSize()}
             isScrolling={isScrolling}
             isChecked={this.isImageChecked(index)}
             imageData={this.props.imagesData[index]}
@@ -82,10 +85,16 @@ class ImagesList extends React.Component<IProps, IState> {
             isSelected={this.props.activeImageIndex === index}
         />
     };
-
+    getChildRenderSize = (): ISize => {
+        const { size } = this.state;
+        if (!!size) {
+            return { width: size.width, height: 150 };
+        }
+        return { width: 150, height: 150 };
+    }
     public render() {
         const { size } = this.state;
-        return(
+        return (
             <div
                 className="ImagesList"
                 ref={ref => this.imagesListRef = ref}
@@ -93,7 +102,7 @@ class ImagesList extends React.Component<IProps, IState> {
             >
                 {!!size && <VirtualList
                     size={size}
-                    childSize={{width: 150, height: 150}}
+                    childSize={this.getChildRenderSize()}
                     childCount={this.props.imagesData.length}
                     childRender={this.renderImagePreview}
                     overScanHeight={200}

@@ -2,7 +2,7 @@ import React from 'react';
 import './TextInput.scss';
 
 interface IProps {
-    key: string;
+    inputKey: string;
     label?: string;
     isPassword: boolean;
     onChange?: (event: React.ChangeEvent<HTMLInputElement>) => any;
@@ -16,7 +16,7 @@ interface IProps {
 const TextInput = (props: IProps) => {
 
     const {
-        key,
+        inputKey,
         label,
         isPassword,
         onChange,
@@ -36,13 +36,13 @@ const TextInput = (props: IProps) => {
             <input
                 value={!!value ? value : undefined}
                 type={getInputType()}
-                id={key}
+                id={inputKey}
                 style={inputStyle}
                 onChange={onChange ? onChange : undefined}
                 onFocus={onFocus ? onFocus : undefined}
             />
             {!!label && <label
-                htmlFor={key}
+                htmlFor={inputKey}
                 style={labelStyle}
             >
                 {label}

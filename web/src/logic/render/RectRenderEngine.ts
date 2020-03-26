@@ -1,9 +1,9 @@
-import {IPoint} from "../../interfaces/IPoint";
-import {IRect} from "../../interfaces/IRect";
-import {RectUtil} from "../../utils/RectUtil";
-import {DrawUtil} from "../../utils/DrawUtil";
-import {store} from "../..";
-import {ImageData, LabelRect} from "../../store/labels/types";
+import { IPoint } from "../../interfaces/IPoint";
+import { IRect } from "../../interfaces/IRect";
+import { RectUtil } from "../../utils/RectUtil";
+import { DrawUtil } from "../../utils/DrawUtil";
+import { store } from "../..";
+import { ImageData, LabelRect } from "../../store/labels/types";
 import uuidv1 from 'uuid/v1';
 import {
     updateActiveLabelId,
@@ -11,19 +11,19 @@ import {
     updateHighlightedLabelId,
     updateImageDataById
 } from "../../store/labels/actionCreators";
-import {PointUtil} from "../../utils/PointUtil";
-import {RectAnchor} from "../../data/RectAnchor";
-import {RenderEngineConfig} from "../../settings/RenderEngineConfig";
-import {updateCustomCursorStyle} from "../../store/general/actionCreators";
-import {CustomCursorStyle} from "../../data/enums/CustomCursorStyle";
-import {LabelsSelector} from "../../store/selectors/LabelsSelector";
-import {EditorData} from "../../data/EditorData";
-import {BaseRenderEngine} from "./BaseRenderEngine";
-import {RenderEngineUtil} from "../../utils/RenderEngineUtil";
-import {LabelType} from "../../data/enums/LabelType";
-import {EditorActions} from "../actions/EditorActions";
-import {GeneralSelector} from "../../store/selectors/GeneralSelector";
-import {LabelStatus} from "../../data/enums/LabelStatus";
+import { PointUtil } from "../../utils/PointUtil";
+import { RectAnchor } from "../../data/RectAnchor";
+import { RenderEngineConfig } from "../../settings/RenderEngineConfig";
+import { updateCustomCursorStyle } from "../../store/general/actionCreators";
+import { CustomCursorStyle } from "../../data/enums/CustomCursorStyle";
+import { LabelsSelector } from "../../store/selectors/LabelsSelector";
+import { EditorData } from "../../data/EditorData";
+import { BaseRenderEngine } from "./BaseRenderEngine";
+import { RenderEngineUtil } from "../../utils/RenderEngineUtil";
+import { LabelType } from "../../data/enums/LabelType";
+import { EditorActions } from "../actions/EditorActions";
+import { GeneralSelector } from "../../store/selectors/GeneralSelector";
+import { LabelStatus } from "../../data/enums/LabelStatus";
 
 export class RectRenderEngine extends BaseRenderEngine {
     private config: RenderEngineConfig = new RenderEngineConfig();
@@ -80,7 +80,7 @@ export class RectRenderEngine extends BaseRenderEngine {
                 const maxX: number = Math.max(this.startCreateRectPoint.x, mousePositionSnapped.x);
                 const maxY: number = Math.max(this.startCreateRectPoint.y, mousePositionSnapped.y);
 
-                const rect = {x: minX, y: minY, width: maxX - minX, height: maxY - minY};
+                const rect = { x: minX, y: minY, width: maxX - minX, height: maxY - minY };
                 this.addRectLabel(RenderEngineUtil.transferRectFromImageToViewPortContent(rect, data));
             }
 
@@ -221,13 +221,13 @@ export class RectRenderEngine extends BaseRenderEngine {
         return !!this.startCreateRectPoint || !!this.startResizeRectAnchor;
     }
 
-    private calculateRectRelativeToActiveImage(rect: IRect, data: EditorData):IRect {
+    private calculateRectRelativeToActiveImage(rect: IRect, data: EditorData): IRect {
         const scale: number = RenderEngineUtil.calculateImageScale(data);
-        return RectUtil.scaleRect(rect, 1/scale);
+        return RectUtil.scaleRect(rect, 1 / scale);
     }
 
     private addRectLabel = (rect: IRect) => {
-        
+
         const activeLabelId = LabelsSelector.getActiveLabelNameId();
         const imageData: ImageData = LabelsSelector.getActiveImageData();
         const labelRect: LabelRect = {
@@ -250,10 +250,13 @@ export class RectRenderEngine extends BaseRenderEngine {
             return activeRectLabel;
         }
 
-        const labelRects: LabelRect[] = LabelsSelector.getActiveImageData().labelRects;
-        for (let i = 0; i < labelRects.length; i++) {
-            if (this.isMouseOverRectEdges(labelRects[i].rect, data)) {
-                return labelRects[i];
+        const activeImageData: ImageData = LabelsSelector.getActiveImageData();
+        if (!!activeImageData) {
+            const labelRects: LabelRect[] = activeImageData.labelRects;
+            for (let i = 0; i < labelRects.length; i++) {
+                if (this.isMouseOverRectEdges(labelRects[i].rect, data)) {
+                    return labelRects[i];
+                }
             }
         }
         return null;

@@ -16,7 +16,7 @@ export const LabelToolkitData: ILabelToolkit[] = [
     },
     {
         labelType: LabelType.RECTANGLE,
-        headerText: "标记列表",
+        headerText: "标注列表",
         imageSrc: "ico/rectangle.png",
         imageAlt: "rectangle",
     },

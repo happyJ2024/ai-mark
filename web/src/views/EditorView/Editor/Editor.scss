@@ -49,15 +49,15 @@
     transform: translate(-50%, -50%);
     border-radius: 50%;
     pointer-events: none;
-    border: 2px solid white;
-    background-color: white;
+    border: 2px solid #F07746;
+    background-color: #F07746;
     z-index: 100000;
 
     > img {
       position: absolute;
       max-width: 20px;
       max-height: 20px;
-      filter: brightness(0) invert(1);
+      filter: brightness(0) invert(0.5);
       bottom: calc(50% + 10px);
       left: calc(50% + 10px);
       display: none;

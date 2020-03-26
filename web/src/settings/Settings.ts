@@ -19,6 +19,9 @@ export class Settings {
     public static readonly PRIMARY_COLOR: string = "#2af598";
     public static readonly SECONDARY_COLOR: string = "#009efd";
 
+    static LINE_ACTIVE_COLOR: string="#F07746";
+    static LINE_INACTIVE_COLOR: string="#ff0000";
+
     public static readonly DARK_THEME_FIRST_COLOR: string = "#171717";
     public static readonly DARK_THEME_SECOND_COLOR: string = "#282828";
     public static readonly DARK_THEME_THIRD_COLOR: string = "#4c4c4c";
@@ -36,4 +39,5 @@ export class Settings {
         PopupWindowType.EXIT_PROJECT,
         PopupWindowType.UPDATE_LABEL_NAMES
     ];
+    
 }

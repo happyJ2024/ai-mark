@@ -39,11 +39,11 @@ const InsertLabelNamesPopup: React.FC<IProps> = ({updateActivePopupType, updateL
     const labelInputs = Object.keys(labelNames).map((key: string) => {
         return <div className="LabelEntry" key={key}>
                 <TextInput
-                    key={key}
+                    inputKey={key}
                     value={labelNames[key]}
                     isPassword={false}
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) => onChange(key, event.target.value)}
-                    label={"Insert label"}
+                    label={"新增标签"}
                 />
                 <ImageButton
                     image={"ico/trash.png"}
@@ -106,11 +106,8 @@ const InsertLabelNamesPopup: React.FC<IProps> = ({updateActivePopupType, updateL
                 <div className="Message">
                     {
                         isUpdate ?
-                        "You can now edit the label names you use to describe the objects in the photos. " :
-                        "Before you start, you can create a list of labels you would like to use in your project. " +
-                            "You can also load labels list from a file or create it along the way."
-                    }
-                    Use the + button to add a new empty text field.
+                        "你可以在这里维护预定义的标签列表，包括标签名称和属性设置， 并随后在项目中使用":""
+                    }                    
                 </div>
                 <div className="LabelsContainer">
                     {Object.keys(labelNames).length !== 0 ? <Scrollbars>
@@ -129,7 +126,7 @@ const InsertLabelNamesPopup: React.FC<IProps> = ({updateActivePopupType, updateL
                             alt={"upload"}
                             src={"img/type-writer.png"}
                         />
-                        <p className="extraBold">Your label list is empty</p>
+                        <p className="extraBold">还没有定义任何标签</p>
                     </div>}
                 </div>
             </div>
@@ -138,11 +135,11 @@ const InsertLabelNamesPopup: React.FC<IProps> = ({updateActivePopupType, updateL
 
     return(
         <GenericYesNoPopup
-            title={isUpdate ? "Edit label names list" : "Create label names list"}
+            title={isUpdate ? "标签设置" : "标签设置"}
             renderContent={renderContent}
-            acceptLabel={isUpdate ? "Accept" : "Start project"}
+            acceptLabel={isUpdate ? "更新" : "Start project"}
             onAccept={isUpdate ? onUpdateAccept : onCreateAccept}
-            rejectLabel={isUpdate ? "Cancel" : "Load labels from file"}
+            rejectLabel={isUpdate ? "取消" : "Load labels from file"}
             onReject={isUpdate ? onUpdateReject : onCreateReject}
         />)
 };

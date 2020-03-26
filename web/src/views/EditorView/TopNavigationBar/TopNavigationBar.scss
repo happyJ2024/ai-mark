@@ -1,5 +1,6 @@
 @import '../../../settings/Settings';
 
+
 .TopNavigationBar {
   align-self: stretch;
   min-height: $topNavigationBarHeight;
@@ -107,5 +108,21 @@
       font-weight: 900;
       user-select: none;
     }
+  }
+
+  .UploadImageButton{
+    margin-left: 30px;
+    background-color: #009efd;
+    color: white;
+    font-weight: normal;
+    font-size: 16px;
+  }
+
+  .ExportLabelButton{
+    margin-right: 30px;
+    background-color: #009efd;
+    color: white;
+    font-weight: normal;
+    font-size: 16px;
   }
 }

@@ -80,7 +80,7 @@ const ExportLabelPopup: React.FC = () => {
                     }}
                     isActive={exportLabelType === LabelType.RECTANGLE}
                 />
-                <ImageButton
+                {/* <ImageButton
                     image={"ico/point.png"}
                     imageAlt={"point"}
                     buttonSize={{width: 40, height:40}}
@@ -101,11 +101,11 @@ const ExportLabelPopup: React.FC = () => {
                         setExportFormatType(null);
                     }}
                     isActive={exportLabelType === LabelType.POLYGON}
-                />
+                /> */}
             </div>
             <div className="RightContainer">
                 <div className="Message">
-                    Select label type and the file format you would like to use for exporting labels.
+                    选择想要导出的标注类型和导出格式.
                 </div>
                 <div className="Options">
                     {exportLabelType === LabelType.RECTANGLE && getOptions(RectExportFormatData)}
@@ -118,11 +118,11 @@ const ExportLabelPopup: React.FC = () => {
 
     return(
         <GenericYesNoPopup
-            title={"Export your labels"}
+            title={"导出标注数据"}
             renderContent={renderContent}
-            acceptLabel={"Export"}
+            acceptLabel={"导出"}
             onAccept={onAccept}
-            rejectLabel={"I'm not ready yet"}
+            rejectLabel={"返回继续工作"}
             onReject={onReject}
         />
     );

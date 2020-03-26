@@ -1,20 +1,20 @@
 import React from 'react';
-import {ISize} from "../../../../interfaces/ISize";
+import { ISize } from "../../../../interfaces/ISize";
 import Scrollbars from 'react-custom-scrollbars';
-import {ImageData, LabelName, LabelPoint} from "../../../../store/labels/types";
+import { ImageData, LabelName, LabelPoint } from "../../../../store/labels/types";
 import './PointLabelsList.scss';
 import {
     updateActiveLabelId,
     updateActiveLabelNameId,
     updateImageDataById
 } from "../../../../store/labels/actionCreators";
-import {AppState} from "../../../../store";
-import {connect} from "react-redux";
+import { AppState } from "../../../../store";
+import { connect } from "react-redux";
 import LabelInputField from "../LabelInputField/LabelInputField";
 import EmptyLabelList from "../EmptyLabelList/EmptyLabelList";
-import {LabelActions} from "../../../../logic/actions/LabelActions";
-import {findLast} from "lodash";
-import {LabelStatus} from "../../../../data/enums/LabelStatus";
+import { LabelActions } from "../../../../logic/actions/LabelActions";
+import { findLast } from "lodash";
+import { LabelStatus } from "../../../../data/enums/LabelStatus";
 
 interface IProps {
     size: ISize;
@@ -27,7 +27,7 @@ interface IProps {
     updateActiveLabelId: (activeLabelId: string) => any;
 }
 
-const PointLabelsList: React.FC<IProps> = ({size, imageData, updateImageDataById, labelNames, updateActiveLabelNameId, activeLabelId, highlightedLabelId, updateActiveLabelId}) => {
+const PointLabelsList: React.FC<IProps> = ({ size, imageData, updateImageDataById, labelNames, updateActiveLabelNameId, activeLabelId, highlightedLabelId, updateActiveLabelId }) => {
     const labelInputFieldHeight = 40;
     const listStyle: React.CSSProperties = {
         width: size.width,
@@ -35,7 +35,7 @@ const PointLabelsList: React.FC<IProps> = ({size, imageData, updateImageDataById
     };
     const listStyleContent: React.CSSProperties = {
         width: size.width,
-        height:imageData==undefined?0: imageData.labelPoints.length * labelInputFieldHeight
+        height: imageData === undefined ? 0 : imageData.labelPoints.length * labelInputFieldHeight
     };
 
     const deletePointLabelById = (labelPointId: string) => {
@@ -67,21 +67,21 @@ const PointLabelsList: React.FC<IProps> = ({size, imageData, updateImageDataById
         return imageData.labelPoints
             .filter((labelPoint: LabelPoint) => labelPoint.status === LabelStatus.ACCEPTED)
             .map((labelPoint: LabelPoint) => {
-            return <LabelInputField
-                size={{
-                    width: size.width,
-                    height: labelInputFieldHeight
-                }}
-                isActive={labelPoint.id === activeLabelId}
-                isHighlighted={labelPoint.id === highlightedLabelId}
-                id={labelPoint.id}
-                key={labelPoint.id}
-                onDelete={deletePointLabelById}
-                value={labelPoint.labelId !== null ? findLast(labelNames, {id: labelPoint.labelId}) : null}
-                options={labelNames}
-                onSelectLabel={updatePointLabel}
-            />
-        });
+                return <LabelInputField
+                    size={{
+                        width: size.width,
+                        height: labelInputFieldHeight
+                    }}
+                    isActive={labelPoint.id === activeLabelId}
+                    isHighlighted={labelPoint.id === highlightedLabelId}
+                    id={labelPoint.id}
+                    key={labelPoint.id}
+                    onDelete={deletePointLabelById}
+                    value={labelPoint.labelId !== null ? findLast(labelNames, { id: labelPoint.labelId }) : null}
+                    options={labelNames}
+                    onSelectLabel={updatePointLabel}
+                />
+            });
     };
 
     return (
@@ -117,7 +117,7 @@ const mapDispatchToProps = {
 const mapStateToProps = (state: AppState) => ({
     activeLabelId: state.labels.activeLabelId,
     highlightedLabelId: state.labels.highlightedLabelId,
-    labelNames : state.labels.labels
+    labelNames: state.labels.labels
 });
 
 export default connect(

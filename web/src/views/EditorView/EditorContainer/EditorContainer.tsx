@@ -1,21 +1,21 @@
-import React, {useState} from 'react';
-import {connect} from "react-redux";
-import {Direction} from "../../../data/enums/Direction";
-import {ISize} from "../../../interfaces/ISize";
-import {Settings} from "../../../settings/Settings";
-import {AppState} from "../../../store";
-import {ImageData} from "../../../store/labels/types";
+import React, { useState } from 'react';
+import { connect } from "react-redux";
+import { Direction } from "../../../data/enums/Direction";
+import { ISize } from "../../../interfaces/ISize";
+import { Settings } from "../../../settings/Settings";
+import { AppState } from "../../../store";
+import { ImageData } from "../../../store/labels/types";
 import ImagesList from "../SideNavigationBar/ImagesList/ImagesList";
 import LabelsToolkit from "../SideNavigationBar/LabelsToolkit/LabelsToolkit";
-import {SideNavigationBar} from "../SideNavigationBar/SideNavigationBar";
-import {VerticalEditorButton} from "../VerticalEditorButton/VerticalEditorButton";
+import { SideNavigationBar } from "../SideNavigationBar/SideNavigationBar";
+import { VerticalEditorButton } from "../VerticalEditorButton/VerticalEditorButton";
 import './EditorContainer.scss';
 import Editor from "../Editor/Editor";
-import {ContextManager} from "../../../logic/context/ContextManager";
-import {ContextType} from "../../../data/enums/ContextType";
+import { ContextManager } from "../../../logic/context/ContextManager";
+import { ContextType } from "../../../data/enums/ContextType";
 import EditorBottomNavigationBar from "../EditorBottomNavigationBar/EditorBottomNavigationBar";
 import EditorTopNavigationBar from "../EditorTopNavigationBar/EditorTopNavigationBar";
-import {LabelType} from "../../../data/enums/LabelType";
+import { LabelType } from "../../../data/enums/LabelType";
 
 interface IProps {
     windowSize: ISize;
@@ -25,7 +25,7 @@ interface IProps {
     activeLabelType: LabelType;
 }
 
-const EditorContainer: React.FC<IProps> = ({windowSize, activeImageIndex, imagesData, activeContext}) => {
+const EditorContainer: React.FC<IProps> = ({ windowSize, activeImageIndex, imagesData, activeContext }) => {
     const [leftTabStatus, setLeftTabStatus] = useState(true);
     const [rightTabStatus, setRightTabStatus] = useState(true);
 
@@ -55,7 +55,7 @@ const EditorContainer: React.FC<IProps> = ({windowSize, activeImageIndex, images
     const leftSideBarCompanionRender = () => {
         return <>
             <VerticalEditorButton
-                label="Images"
+                label="图片"
                 image={"/ico/files.png"}
                 imageAlt={"images"}
                 onClick={leftSideBarButtonOnClick}
@@ -65,7 +65,7 @@ const EditorContainer: React.FC<IProps> = ({windowSize, activeImageIndex, images
     };
 
     const leftSideBarRender = () => {
-        return <ImagesList/>
+        return <ImagesList />
     };
 
     const rightSideBarButtonOnClick = () => {
@@ -80,7 +80,7 @@ const EditorContainer: React.FC<IProps> = ({windowSize, activeImageIndex, images
     const rightSideBarCompanionRender = () => {
         return <>
             <VerticalEditorButton
-                label="Labels"
+                label="标注"
                 image={"/ico/tags.png"}
                 imageAlt={"labels"}
                 onClick={rightSideBarButtonOnClick}
@@ -90,7 +90,13 @@ const EditorContainer: React.FC<IProps> = ({windowSize, activeImageIndex, images
     };
 
     const rightSideBarRender = () => {
-        return <LabelsToolkit/>
+        return <LabelsToolkit />
+    };
+    const enableNavigationBar = () => {
+        if (imagesData !== undefined && imagesData !== null && imagesData.length > 0 && activeImageIndex >= 0) {
+            return true;
+        }
+        return false;
     };
 
     return (
@@ -105,7 +111,7 @@ const EditorContainer: React.FC<IProps> = ({windowSize, activeImageIndex, images
             <div className="EditorWrapper"
                 onMouseDown={() => ContextManager.switchCtx(ContextType.EDITOR)}
             >
-                <EditorTopNavigationBar/>
+                <EditorTopNavigationBar enableNavigationBar={enableNavigationBar()} />
                 <Editor
                     size={calculateEditorSize()}
                     imageData={imagesData[activeImageIndex]}

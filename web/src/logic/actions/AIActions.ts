@@ -15,6 +15,9 @@ export class AIActions {
     }
 
     public static detect(imageId: string, image: HTMLImageElement): void {
+
+        return; //DEBUG
+
         const activeLabelType: LabelType = LabelsSelector.getActiveLabelType();
 
         switch (activeLabelType) {
@@ -28,6 +31,9 @@ export class AIActions {
     }
 
     public static rejectAllSuggestedLabels(imageData: ImageData) {
+
+        return; //DEBUG
+
         const activeLabelType: LabelType = LabelsSelector.getActiveLabelType();
 
         switch (activeLabelType) {
@@ -41,6 +47,9 @@ export class AIActions {
     }
 
     public static acceptAllSuggestedLabels(imageData: ImageData) {
+
+        return; //DEBUG
+
         const activeLabelType: LabelType = LabelsSelector.getActiveLabelType();
         switch (activeLabelType) {
             case LabelType.RECTANGLE:

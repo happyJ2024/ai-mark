@@ -79,11 +79,19 @@ class Editor extends React.Component<IProps, IState> {
     public componentDidUpdate(prevProps: Readonly<IProps>, prevState: Readonly<{}>, snapshot?: any): void {
         const { imageData, activeLabelType } = this.props;
 
-        prevProps.imageData.id !== imageData.id && ImageLoadManager.addAndRun(this.loadImage(imageData));
+        var prevPropsId = "", imageDataId = "";
+        if (prevProps.imageData !== undefined && prevProps.imageData !== null) {
+            prevPropsId = prevProps.imageData.id;
+        } if (imageData !== undefined && imageData !== null) {
+            imageDataId = imageData.id;
+        }
+
+        prevPropsId !== imageDataId && ImageLoadManager.addAndRun(this.loadImage(imageData));
 
         if (prevProps.activeLabelType !== activeLabelType) {
+            console.log('activeLabelType=', activeLabelType);
             EditorActions.swapSupportRenderingEngine(activeLabelType);
-            AIActions.detect(imageData.id, ImageRepository.getById(imageData.id));
+            AIActions.detect(imageDataId, ImageRepository.getById(imageDataId));
         }
 
         this.updateModelAndRender();
@@ -112,7 +120,7 @@ class Editor extends React.Component<IProps, IState> {
     // =================================================================================================================
 
     private loadImage = async (imageData: ImageData): Promise<any> => {
-        if (imageData == undefined || imageData.fileData == null) return;
+        if (imageData === undefined || imageData.fileData === null) return;
         // debugger
         if (imageData.loadStatus) {
             EditorActions.setActiveImage(ImageRepository.getById(imageData.id));
@@ -152,7 +160,7 @@ class Editor extends React.Component<IProps, IState> {
     };
 
     private update = (event: MouseEvent) => {
-        console.profile("update start");
+        // console.profile("update start");
 
         const editorData: EditorData = EditorActions.getEditorData(event);
 
@@ -168,7 +176,7 @@ class Editor extends React.Component<IProps, IState> {
         !this.props.activePopupType && EditorActions.updateMousePositionIndicator(event);
 
         EditorActions.fullRender();
-        console.profileEnd("update end");
+        // console.profileEnd("update end");
     };
 
     private handleZoom = (event: MouseWheelEvent) => {
@@ -186,7 +194,11 @@ class Editor extends React.Component<IProps, IState> {
     private getOptionsPanels = () => {
         const editorData: EditorData = EditorActions.getEditorData();
         if (this.props.activeLabelType === LabelType.RECTANGLE) {
-            if (this.props.imageData == undefined) { return null; }
+
+            if (this.props.imageData === undefined) {
+                return null;
+            }
+
             return this.props.imageData.labelRects
                 .filter((labelRect: LabelRect) => labelRect.isCreatedByAI && labelRect.status !== LabelStatus.ACCEPTED)
                 .map((labelRect: LabelRect) => {

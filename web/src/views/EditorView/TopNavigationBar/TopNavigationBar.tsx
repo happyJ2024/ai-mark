@@ -1,15 +1,16 @@
 import React from 'react';
 import './TopNavigationBar.scss';
 import StateBar from "../StateBar/StateBar";
-import {UnderlineTextButton} from "../../Common/UnderlineTextButton/UnderlineTextButton";
-import {PopupWindowType} from "../../../data/enums/PopupWindowType";
-import {AppState} from "../../../store";
-import {connect} from "react-redux";
-import {updateActivePopupType, updateProjectData} from "../../../store/general/actionCreators";
+import { UnderlineTextButton } from "../../Common/UnderlineTextButton/UnderlineTextButton";
+import { TextButton } from "../../Common/TextButton/TextButton";
+import { PopupWindowType } from "../../../data/enums/PopupWindowType";
+import { AppState } from "../../../store";
+import { connect } from "react-redux";
+import { updateActivePopupType, updateProjectData } from "../../../store/general/actionCreators";
 import TextInput from "../../Common/TextInput/TextInput";
-import {ImageButton} from "../../Common/ImageButton/ImageButton";
-import {Settings} from "../../../settings/Settings";
-import {ProjectData} from "../../../store/general/types";
+// import { ImageButton } from "../../Common/ImageButton/ImageButton";
+// import { Settings } from "../../../settings/Settings";
+import { ProjectData } from "../../../store/general/types";
 
 interface IProps {
     updateActivePopupType: (activePopupType: PopupWindowType) => any;
@@ -17,7 +18,7 @@ interface IProps {
     projectData: ProjectData;
 }
 
-const TopNavigationBar: React.FC<IProps> = ({updateActivePopupType, updateProjectData, projectData}) => {
+const TopNavigationBar: React.FC<IProps> = ({ updateActivePopupType, updateProjectData, projectData }) => {
     const onFocus = (event: React.FocusEvent<HTMLInputElement>) => {
         event.target.setSelectionRange(0, event.target.value.length);
     };
@@ -35,25 +36,31 @@ const TopNavigationBar: React.FC<IProps> = ({updateActivePopupType, updateProjec
 
     return (
         <div className="TopNavigationBar">
-            <StateBar/>
+            <StateBar />
             <div className="TopNavigationBarWrapper">
                 <div>
                     <div
                         className="Header"
-                        onClick={() => updateActivePopupType(PopupWindowType.EXIT_PROJECT)}
                     >
                         <img
                             draggable={false}
                             alt={"make-sense"}
                             src={"/make-sense-ico-transparent.png"}
                         />
-                        Make Sense
+                        AI Mark
+                        <TextButton
+                            label={"上传文件"}
+                            externalClassName={"UploadImageButton"}
+                            onClick={() => updateActivePopupType(PopupWindowType.LOAD_IMAGES)}
+                        />
                     </div>
+
                 </div>
+
                 <div className="NavigationBarGroupWrapper">
-                    <div className="ProjectName">Project Name:</div>
+                    <div className="ProjectName">项目:</div>
                     <TextInput
-                        key={"ProjectName"}
+                        inputKey={"ProjectName"}
                         isPassword={false}
                         value={projectData.name}
                         onChange={onChange}
@@ -61,27 +68,29 @@ const TopNavigationBar: React.FC<IProps> = ({updateActivePopupType, updateProjec
                     />
                 </div>
                 <div className="NavigationBarGroupWrapper">
+                    <TextButton
+                        label={"导出标注"}
+                        externalClassName={"ExportLabelButton"}
+                        onClick={() => updateActivePopupType(PopupWindowType.EXPORT_LABELS)}
+                    />
                     <UnderlineTextButton
-                        label={"UPDATE LABELS NAMES"}
+                        label={"设置"}
                         under={true}
                         onClick={() => updateActivePopupType(PopupWindowType.UPDATE_LABEL_NAMES)}
                     />
+
                     <UnderlineTextButton
-                        label={"MORE IMAGES"}
+                        label={"退出"}
                         under={true}
-                        onClick={() => updateActivePopupType(PopupWindowType.LOAD_IMAGES)}
+                        onClick={() => updateActivePopupType(PopupWindowType.EXIT_PROJECT)}
                     />
-                    <UnderlineTextButton
-                        label={"EXPORT LABELS"}
-                        under={true}
-                        onClick={() => updateActivePopupType(PopupWindowType.EXPORT_LABELS)}
-                    />
-                    <ImageButton
-                        image={"img/github-logo.png"}
-                        imageAlt={"github-logo.png"}
-                        buttonSize={{width: 30, height: 30}}
-                        href={Settings.GITHUB_URL}
-                    />
+                    {/* <ImageButton
+                        image={"img/exit-new.png"}
+                        imageAlt={"exit-new.png"}
+                        buttonSize={{ width: 35, height: 30 }}
+                        // href={Settings.GITHUB_URL}
+                        onClick={() => updateActivePopupType(PopupWindowType.EXIT_PROJECT)}
+                    /> */}
                 </div>
             </div>
         </div>

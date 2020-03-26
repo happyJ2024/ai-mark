@@ -1,62 +1,74 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import './MainView.scss';
-import {TextButton} from "../Common/TextButton/TextButton";
+import { TextButton } from "../Common/TextButton/TextButton";
 import classNames from 'classnames';
-import {ISize} from "../../interfaces/ISize";
-import {ImageButton} from "../Common/ImageButton/ImageButton";
-import {ISocialMedia, SocialMediaData} from "../../data/info/SocialMediaData";
-import {EditorFeatureData, IEditorFeature} from "../../data/info/EditorFeatureData";
-import {Tooltip} from "@material-ui/core";
+import { ISize } from "../../interfaces/ISize";
+import { ImageButton } from "../Common/ImageButton/ImageButton";
+import { ISocialMedia, SocialMediaData } from "../../data/info/SocialMediaData";
+import { EditorFeatureData, IEditorFeature } from "../../data/info/EditorFeatureData";
+import { Tooltip } from "@material-ui/core";
 import Fade from "@material-ui/core/Fade";
 import withStyles from "@material-ui/core/styles/withStyles";
 import ImagesDropZone from "./ImagesDropZone/ImagesDropZone";
-import {PopupWindowType} from "../../data/enums/PopupWindowType";
-import {updateProjectData,updateActivePopupType} from "./../../store/general/actionCreators"; 
-import {ProjectType} from "../../data/enums/ProjectType";
-import {AppState} from "../../store";
-import {connect} from "react-redux";
-import {ProjectData} from "../../store/general/types";
-import {ImageData} from "../../store/labels/types";
-import { addImageData, updateActiveImageIndex} from "../../store/labels/actionCreators";
+// import { PopupWindowType } from "../../data/enums/PopupWindowType";
+import { updateProjectData, updateActivePopupType } from "./../../store/general/actionCreators";
+import { ProjectType } from "../../data/enums/ProjectType";
+import { AppState } from "../../store";
+import { connect } from "react-redux";
+import { ProjectData } from "../../store/general/types";
+import { ImageData } from "../../store/labels/types";
+import { addImageData, updateActiveImageIndex, updateLabelNames } from "../../store/labels/actionCreators";
 import uuidv1 from 'uuid/v1';
+import { LabelName } from "../../store/labels/types";
+import { LabelsSelector } from "../../store/selectors/LabelsSelector";
 interface IProps {
-    updateActiveImageIndex: (activeImageIndex: number) => any;     
+    updateActiveImageIndex: (activeImageIndex: number) => any;
     updateProjectData: (projectData: ProjectData) => any;
-    addImageData:(imageData: ImageData[])=>any;
+    addImageData: (imageData: ImageData[]) => any;
     projectData: ProjectData;
+
+    updateLabelNames: (labels: LabelName[]) => any;
 }
 
-const MainView: React.FC<IProps> = ({updateActiveImageIndex,   updateProjectData,addImageData,projectData}) => {
+const MainView: React.FC<IProps> = ({ updateActiveImageIndex, updateProjectData, addImageData, projectData, updateLabelNames }) => {
     const [projectInProgress, setProjectInProgress] = useState(false);
     const [projectCanceled, setProjectCanceled] = useState(false);
 
     const startProject = () => {
         //setProjectInProgress(true);
         console.log('startProject');
-        
-        let projectType=ProjectType.OBJECT_DETECTION;
-        console.log('projectType=',projectType);
-        console.log('projectData=',projectData);
-        console.log('updateProjectData=',updateProjectData);
+
+        let projectType = ProjectType.OBJECT_DETECTION;
+        console.log('projectType=', projectType);
+        console.log('projectData=', projectData);
+        console.log('updateProjectData=', updateProjectData);
         updateProjectData({
             ...projectData,
             type: projectType
         });
-        
-        updateActiveImageIndex(0); 
-        var  emptyImageData=[];  
-        emptyImageData.push({
-            id: uuidv1(),
-            fileData: null,
-            loadStatus: false,
-            labelRects: [],
-            labelPoints: [],
-            labelPolygons: [],
-            isVisitedByObjectDetector: false,
-            isVisitedByPoseDetector: false
-        });      
-        addImageData(emptyImageData);
-       console.log('addImageData')
+
+        updateActiveImageIndex(-1);
+
+        initDefaultLabels();
+
+    };
+    const initDefaultLabels = () => {
+        const exitLabelNames = LabelsSelector.getLabelNames();
+        if (!!exitLabelNames && exitLabelNames.length > 0) {
+            console.log("exitLabelNames：", exitLabelNames);
+            return;
+        }
+        const newLabelNames: LabelName[] = [];
+        newLabelNames.push({
+            name: "ID",
+            id: uuidv1()
+        });
+        newLabelNames.push({
+            name: "NAME",
+            id: uuidv1()
+        });
+        updateLabelNames(newLabelNames);
+        console.log("initDefaultLabels", newLabelNames);
     };
 
     const endProject = () => {
@@ -67,9 +79,9 @@ const MainView: React.FC<IProps> = ({updateActiveImageIndex,   updateProjectData
     const getClassName = () => {
         return classNames(
             "MainView", {
-                "InProgress": projectInProgress,
-                "Canceled": !projectInProgress && projectCanceled
-            }
+            "InProgress": projectInProgress,
+            "Canceled": !projectInProgress && projectCanceled
+        }
         );
     };
 
@@ -83,8 +95,8 @@ const MainView: React.FC<IProps> = ({updateActiveImageIndex,   updateProjectData
         },
     }))(Tooltip);
 
-    const getSocialMediaButtons = (size:ISize) => {
-        return SocialMediaData.map((data:ISocialMedia, index: number) => {
+    const getSocialMediaButtons = (size: ISize) => {
+        return SocialMediaData.map((data: ISocialMedia, index: number) => {
             return <DarkTooltip
                 key={index}
                 disableFocusListener
@@ -106,7 +118,7 @@ const MainView: React.FC<IProps> = ({updateActiveImageIndex,   updateProjectData
     };
 
     const getEditorFeatureTiles = () => {
-        return EditorFeatureData.map((data:IEditorFeature) => {
+        return EditorFeatureData.map((data: IEditorFeature) => {
             return <div
                 className="EditorFeaturesTiles"
                 key={data.displayText}
@@ -131,13 +143,13 @@ const MainView: React.FC<IProps> = ({updateActiveImageIndex,   updateProjectData
         <div className={getClassName()}>
             <div className="Slider" id="lower">
                 <div className="TriangleVertical">
-                    <div className="TriangleVerticalContent"/>
+                    <div className="TriangleVerticalContent" />
                 </div>
             </div>
 
             <div className="Slider" id="upper">
                 <div className="TriangleVertical">
-                    <div className="TriangleVerticalContent"/>
+                    <div className="TriangleVerticalContent" />
                 </div>
             </div>
 
@@ -153,7 +165,7 @@ const MainView: React.FC<IProps> = ({updateActiveImageIndex,   updateProjectData
                     {getEditorFeatureTiles()}
                 </div>
                 <div className="TriangleVertical">
-                    <div className="TriangleVerticalContent"/>
+                    <div className="TriangleVerticalContent" />
                 </div>
                 {projectInProgress && <TextButton
                     label={"Go Back"}
@@ -161,15 +173,16 @@ const MainView: React.FC<IProps> = ({updateActiveImageIndex,   updateProjectData
                 />}
             </div>
             <div className="RightColumn">
-                <div/>
-                <ImagesDropZone/>
+                <div />
+                <ImagesDropZone />
                 <div className="SocialMediaWrapper">
                     {/* {getSocialMediaButtons({width: 30, height: 30})} */}
                     {!projectInProgress && <TextButton
-                    label={"开始标注"}
-                    onClick={startProject}
-                />}
-                 </div>
+                        externalClassName={"StartMarkButton"}
+                        label={"开始标注"}
+                        onClick={startProject}
+                    />}
+                </div>
                 {/* {!projectInProgress && <TextButton
                     label={"Get Started"}
                     onClick={startProject}
@@ -180,9 +193,10 @@ const MainView: React.FC<IProps> = ({updateActiveImageIndex,   updateProjectData
 };
 
 const mapDispatchToProps = {
-    updateActiveImageIndex, 
-    updateProjectData, 
-    addImageData
+    updateActiveImageIndex,
+    updateProjectData,
+    addImageData,
+    updateLabelNames,
 };
 const mapStateToProps = (state: AppState) => ({
     projectData: state.general.projectData

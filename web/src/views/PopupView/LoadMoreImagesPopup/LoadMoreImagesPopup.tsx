@@ -39,9 +39,9 @@ const LoadMoreImagesPopup: React.FC<IProps> = ({addImageData}) => {
                     alt={"upload"}
                     src={"img/box-opened.png"}
                 />
-                <p className="extraBold">Add new images</p>
-                <p>or</p>
-                <p className="extraBold">Click here to select them</p>
+                <p className="extraBold">点击图标选择文件</p>
+                <p>或者</p>
+                <p className="extraBold">拖到文件到该窗口</p>
             </>;
         else if (acceptedFiles.length === 1)
             return <>
@@ -50,7 +50,7 @@ const LoadMoreImagesPopup: React.FC<IProps> = ({addImageData}) => {
                     alt={"uploaded"}
                     src={"img/box-closed.png"}
                 />
-                <p className="extraBold">1 new image loaded</p>
+                <p className="extraBold">1个文件已添加</p>
             </>;
         else
             return <>
@@ -60,7 +60,7 @@ const LoadMoreImagesPopup: React.FC<IProps> = ({addImageData}) => {
                     alt={"uploaded"}
                     src={"img/box-closed.png"}
                 />
-                <p key={2} className="extraBold">{acceptedFiles.length} new images loaded</p>
+                <p key={2} className="extraBold">{acceptedFiles.length}个文件已添加</p>
             </>;
     };
 
@@ -74,12 +74,12 @@ const LoadMoreImagesPopup: React.FC<IProps> = ({addImageData}) => {
 
     return(
         <GenericYesNoPopup
-            title={"Load more images"}
+            title={"上传文件"}
             renderContent={renderContent}
-            acceptLabel={"Load"}
+            acceptLabel={"上传"}
             disableAcceptButton={acceptedFiles.length < 1}
             onAccept={onAccept}
-            rejectLabel={"Cancel"}
+            rejectLabel={"取消"}
             onReject={onReject}
         />
     );

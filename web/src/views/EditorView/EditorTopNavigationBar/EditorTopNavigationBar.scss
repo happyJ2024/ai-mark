@@ -1,5 +1,8 @@
 @import '../../../settings/Settings';
 
+.hideNavigationBar{
+  display: none !important;
+}
 .EditorTopNavigationBar {
   align-self: stretch;
   height: $editorTopNavigationBarHeight;

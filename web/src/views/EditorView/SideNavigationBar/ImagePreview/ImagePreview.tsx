@@ -96,10 +96,10 @@ class ImagePreview extends React.Component<IProps, IState> {
         const { size } = this.props;
 
         const containerRect: IRect = {
-            x: 0.15 * size.width,
-            y: 0.15 * size.height,
-            width: 0.7 * size.width,
-            height: 0.7 * size.height
+            x: 0.05 * size.width,
+            y: 0.05 * size.height,
+            width: 0.9 * size.width,
+            height: 0.9 * size.height
         };
 
         const imageRect:IRect = {
@@ -165,11 +165,11 @@ class ImagePreview extends React.Component<IProps, IState> {
                                 alt={"checkbox"}
                             />}
                         </div>,
-                        <div
-                            className="Background"
-                            key={"Background"}
-                            style={this.getStyle()}
-                        />
+                        // <div
+                        //     className="Background"
+                        //     key={"Background"}
+                        //     style={this.getStyle()}
+                        // />
                     ] :
                     <ClipLoader
                         sizeUnit={"px"}
