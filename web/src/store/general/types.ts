@@ -4,10 +4,12 @@ import {PopupWindowType} from "../../data/enums/PopupWindowType";
 import {CustomCursorStyle} from "../../data/enums/CustomCursorStyle";
 import {ContextType} from "../../data/enums/ContextType";
 import {ProjectType} from "../../data/enums/ProjectType";
+import {TicketType} from "../../data/enums/TicketType";
 
 export type ProjectData = {
     type: ProjectType;
     name: string,
+    ticketType: TicketType;
 }
 
 export type GeneralState = {

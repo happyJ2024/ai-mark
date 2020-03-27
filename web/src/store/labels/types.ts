@@ -1,14 +1,16 @@
-import {IRect} from "../../interfaces/IRect";
-import {Action} from "../Actions";
-import {LabelType} from "../../data/enums/LabelType";
-import {IPoint} from "../../interfaces/IPoint";
-import {LabelStatus} from "../../data/enums/LabelStatus";
+import { IRect } from "../../interfaces/IRect";
+import { Action } from "../Actions";
+import { LabelType } from "../../data/enums/LabelType";
+import { IPoint } from "../../interfaces/IPoint";
+import { LabelStatus } from "../../data/enums/LabelStatus";
 
 export type LabelRect = {
     // GENERAL
     id: string;
     labelId: string;
     rect: IRect;
+
+    value?: string;
 
     // AI
     isCreatedByAI: boolean;
@@ -51,7 +53,7 @@ export type ImageData = {
     isVisitedByObjectDetector: boolean;
 
     // POSE NET
-    isVisitedByPoseDetector: boolean;
+    isVisitedByPoseDetector?: boolean;
 }
 
 export type LabelsState = {

@@ -23,17 +23,17 @@ describe('AIObjectDetectionActions extractNewSuggestedLabelNames method', () => 
         const labelNames: LabelName[] = mockLabelNames;
         const predictions: DetectedObject[] = [
             {
-                bbox: [],
+                bbox: [0,0,0,0],
                 class: "label_3",
                 score: 0
             },
             {
-                bbox: [],
+                bbox: [0,0,0,0],
                 class: "label_4",
                 score: 0
             },
             {
-                bbox: [],
+                bbox: [0,0,0,0],
                 class: "label_5",
                 score: 0
             }
@@ -51,12 +51,12 @@ describe('AIObjectDetectionActions extractNewSuggestedLabelNames method', () => 
         const labelNames: LabelName[] = mockLabelNames;
         const predictions: DetectedObject[] = [
             {
-                bbox: [],
+                bbox: [0,0,0,0],
                 class: "label_3",
                 score: 0
             },
             {
-                bbox: [],
+                bbox: [0,0,0,0],
                 class: "label_1",
                 score: 0
             }

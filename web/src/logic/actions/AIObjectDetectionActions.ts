@@ -1,18 +1,18 @@
-import {DetectedObject} from "@tensorflow-models/coco-ssd";
-import {ImageData, LabelName, LabelRect} from "../../store/labels/types";
-import {LabelsSelector} from "../../store/selectors/LabelsSelector";
+import { DetectedObject } from "@tensorflow-models/coco-ssd";
+import { ImageData, LabelName, LabelRect } from "../../store/labels/types";
+import { LabelsSelector } from "../../store/selectors/LabelsSelector";
 import uuidv1 from 'uuid/v1';
-import {store} from "../../index";
-import {updateImageDataById} from "../../store/labels/actionCreators";
-import {ObjectDetector} from "../../ai/ObjectDetector";
-import {ImageRepository} from "../imageRepository/ImageRepository";
-import {LabelStatus} from "../../data/enums/LabelStatus";
-import {findLast} from "lodash";
-import {updateSuggestedLabelList} from "../../store/ai/actionCreators";
-import {PopupWindowType} from "../../data/enums/PopupWindowType";
-import {updateActivePopupType} from "../../store/general/actionCreators";
-import {AISelector} from "../../store/selectors/AISelector";
-import {AIActions} from "./AIActions";
+import { store } from "../../index";
+import { updateImageDataById } from "../../store/labels/actionCreators";
+import { ObjectDetector } from "../../ai/ObjectDetector";
+import { ImageRepository } from "../imageRepository/ImageRepository";
+import { LabelStatus } from "../../data/enums/LabelStatus";
+import { findLast } from "lodash";
+import { updateSuggestedLabelList } from "../../store/ai/actionCreators";
+import { PopupWindowType } from "../../data/enums/PopupWindowType";
+import { updateActivePopupType } from "../../store/general/actionCreators";
+import { AISelector } from "../../store/selectors/AISelector";
+import { AIActions } from "./AIActions";
 
 export class AIObjectDetectionActions {
     public static detectRectsForActiveImage(): void {
@@ -62,6 +62,7 @@ export class AIObjectDetectionActions {
                     width: prediction.bbox[2],
                     height: prediction.bbox[3],
                 },
+                value: '',
                 isCreatedByAI: true,
                 status: LabelStatus.UNDECIDED,
                 suggestedLabel: prediction.class
@@ -71,7 +72,7 @@ export class AIObjectDetectionActions {
 
     public static extractNewSuggestedLabelNames(labels: LabelName[], predictions: DetectedObject[]): string[] {
         return predictions.reduce((acc: string[], prediction: DetectedObject) => {
-            if (!acc.includes(prediction.class) && !findLast(labels, {name: prediction.class})) {
+            if (!acc.includes(prediction.class) && !findLast(labels, { name: prediction.class })) {
                 acc.push(prediction.class)
             }
             return acc;
@@ -82,7 +83,7 @@ export class AIObjectDetectionActions {
         const newImageData: ImageData = {
             ...imageData,
             labelRects: imageData.labelRects.map((labelRect: LabelRect) => {
-                const labelName: LabelName = findLast(LabelsSelector.getLabelNames(), {name: labelRect.suggestedLabel});
+                const labelName: LabelName = findLast(LabelsSelector.getLabelNames(), { name: labelRect.suggestedLabel });
                 return {
                     ...labelRect,
                     status: LabelStatus.ACCEPTED,
