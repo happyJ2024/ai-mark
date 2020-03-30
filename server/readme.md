@@ -1,18 +1,13 @@
 # 项目说明
 
-## 配置SkyWalking客户端启动项
+标注工具对应的服务端
 
-### Idea调试
+功能点：
+1. PDF 处理
 
-打开 `Run/Debug Configurations`，选中对应应用，在 `Configuration -> VM options` 中增加
+2. 文件管理
+ 
+3. 标注项目管理
 
-```shell script
--javaagent:/path/to/skywalking-agent.jar
-```
-
-### Jenkins部署
-
-
-
-### Spring Boot启动
+4. 数据导出
 
