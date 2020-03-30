@@ -26,6 +26,7 @@ public class AppServerApplication implements ApplicationRunner, ApplicationListe
 
 
     public static void main(String[] args) {
+
         ApplicationConst.init();
         SpringApplication.run(AppServerApplication.class, args);
     }
