@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.asr.appframework.server.mapper.mapper.auto.TokenMapper">
+    <resultMap id="BaseResultMap" type="cn.asr.appframework.server.mapper.model.auto.Token">
+        <!--@mbg.generated-->
+        <!--@Table token-->
+        <id column="UserId" jdbcType="VARCHAR" property="userId"/>
+        <result column="AccessToken" jdbcType="VARCHAR" property="accessToken"/>
+        <result column="RefreshToken" jdbcType="VARCHAR" property="refreshToken"/>
+        <result column="DeleteFlag" jdbcType="BIT" property="deleteFlag"/>
+        <result column="RowVersion" jdbcType="INTEGER" property="rowVersion"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--@mbg.generated-->
+        UserId, AccessToken, RefreshToken, DeleteFlag, RowVersion
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        <!--@mbg.generated-->
+        select
+        <include refid="Base_Column_List"/>
+        from token
+        where UserId = #{userId,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        <!--@mbg.generated-->
+        delete from token
+        where UserId = #{userId,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="cn.asr.appframework.server.mapper.model.auto.Token">
+        <!--@mbg.generated-->
+        insert into token (UserId, AccessToken, RefreshToken,
+        DeleteFlag, RowVersion)
+        values (#{userId,jdbcType=VARCHAR}, #{accessToken,jdbcType=VARCHAR}, #{refreshToken,jdbcType=VARCHAR},
+        #{deleteFlag,jdbcType=BIT}, #{rowVersion,jdbcType=INTEGER})
+    </insert>
+    <insert id="insertSelective" parameterType="cn.asr.appframework.server.mapper.model.auto.Token">
+        <!--@mbg.generated-->
+        insert into token
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">
+                UserId,
+            </if>
+            <if test="accessToken != null">
+                AccessToken,
+            </if>
+            <if test="refreshToken != null">
+                RefreshToken,
+            </if>
+            <if test="deleteFlag != null">
+                DeleteFlag,
+            </if>
+            <if test="rowVersion != null">
+                RowVersion,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">
+                #{userId,jdbcType=VARCHAR},
+            </if>
+            <if test="accessToken != null">
+                #{accessToken,jdbcType=VARCHAR},
+            </if>
+            <if test="refreshToken != null">
+                #{refreshToken,jdbcType=VARCHAR},
+            </if>
+            <if test="deleteFlag != null">
+                #{deleteFlag,jdbcType=BIT},
+            </if>
+            <if test="rowVersion != null">
+                #{rowVersion,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="cn.asr.appframework.server.mapper.model.auto.Token">
+        <!--@mbg.generated-->
+        update token
+        <set>
+            <if test="accessToken != null">
+                AccessToken = #{accessToken,jdbcType=VARCHAR},
+            </if>
+            <if test="refreshToken != null">
+                RefreshToken = #{refreshToken,jdbcType=VARCHAR},
+            </if>
+            <if test="deleteFlag != null">
+                DeleteFlag = #{deleteFlag,jdbcType=BIT},
+            </if>
+            <if test="rowVersion != null">
+                RowVersion = #{rowVersion,jdbcType=INTEGER},
+            </if>
+        </set>
+        where UserId = #{userId,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="cn.asr.appframework.server.mapper.model.auto.Token">
+        <!--@mbg.generated-->
+        update token
+        set AccessToken = #{accessToken,jdbcType=VARCHAR},
+        RefreshToken = #{refreshToken,jdbcType=VARCHAR},
+        DeleteFlag = #{deleteFlag,jdbcType=BIT},
+        RowVersion = #{rowVersion,jdbcType=INTEGER}
+        where UserId = #{userId,jdbcType=VARCHAR}
+    </update>
+    <select id="selectAll" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from token
+    </select>
+</mapper>
