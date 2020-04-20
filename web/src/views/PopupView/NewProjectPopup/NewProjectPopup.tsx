@@ -15,6 +15,7 @@ import { LabelsSelector } from '../../../store/selectors/LabelsSelector';
 import uuidv1 from 'uuid/v1';
 import { TicketType } from '../../../data/enums/TicketType';
 import DropdownSelect from '../../Common/DropdownSelect/DropdownSelect';
+import { CreateProject } from '../../../api/api';
 
 interface IProps {
     updateActivePopupType: (activePopupType: PopupWindowType) => any;
@@ -34,7 +35,6 @@ const NewProjectPopup: React.FC<IProps> = ({ updateActivePopupType, updateLabelN
             ...projectData,
             name: value
         })
-
     };
     const onChangeTicketType = (value: string) => {
         console.log("onChangeTicketType")
@@ -47,11 +47,16 @@ const NewProjectPopup: React.FC<IProps> = ({ updateActivePopupType, updateLabelN
 
         console.log('projectData=', projectData);
 
-        updateProjectData(projectData);
+        const param = projectData;
+        CreateProject(param).then((res: any) => {
+            console.log(res);
+            
+            updateProjectData(projectData);
 
-        updateActiveImageIndex(-1);
-        initDefaultLabels();
-        updateActivePopupType(null);
+            updateActiveImageIndex(-1);
+            initDefaultLabels();
+            updateActivePopupType(null);
+        })
     };
     const initDefaultLabels = () => {
         const exitLabelNames = LabelsSelector.getLabelNames();
@@ -108,7 +113,7 @@ const NewProjectPopup: React.FC<IProps> = ({ updateActivePopupType, updateLabelN
 
                                 />
                             </div>
-                            <div className="LabelEntry" key="projectTicktetType">
+                            {/* <div className="LabelEntry" key="projectTicktetType">
                                 <DropdownSelect
                                     inputKey={"projectTicktetType"}
                                     options={AllSupportTicketTypes()}
@@ -116,7 +121,7 @@ const NewProjectPopup: React.FC<IProps> = ({ updateActivePopupType, updateLabelN
                                     onChange={onChangeTicketType}
                                     labelStyle={{ width: 300 }} />
 
-                            </div>
+                            </div> */}
                         </div>
                     </Scrollbars>}
                 </div>

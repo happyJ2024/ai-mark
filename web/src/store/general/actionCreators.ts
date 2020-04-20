@@ -67,6 +67,7 @@ export function updateProjectData(projectData: ProjectData): GeneralActionTypes 
         },
     };
 }
+ 
 
 export function updateZoom(zoom: number): GeneralActionTypes {
     return {

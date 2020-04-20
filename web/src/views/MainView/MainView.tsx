@@ -26,7 +26,7 @@ const MainView: React.FC<IProps> = ({ updateActivePopupType, updateProjectData, 
         updateProjectData({
             ...projectData,
             type: ProjectType.OBJECT_DETECTION,
-            name: "project001",
+            name: "project"+(new Date()).getTime(),
             ticketType: null
         });
         updateActivePopupType(PopupWindowType.START_NEW_PROJECT);

@@ -1,5 +1,5 @@
 export enum TicketType {
-    DHL_AIR = "DHL_AIR",
+    DHL_AIR ="DHL_AIR",
     DHL_SEA = "DHL_SEA"
 }
 

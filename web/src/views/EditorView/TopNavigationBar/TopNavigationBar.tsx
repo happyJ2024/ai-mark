@@ -10,15 +10,26 @@ import { updateActivePopupType, updateProjectData } from "../../../store/general
 // import { ImageButton } from "../../Common/ImageButton/ImageButton";
 // import { Settings } from "../../../settings/Settings";
 import { ProjectData } from "../../../store/general/types";
+import { ImageData } from "../../../store/labels/types";
 
 interface IProps {
     updateActivePopupType: (activePopupType: PopupWindowType) => any;
     updateProjectData: (projectData: ProjectData) => any;
     projectData: ProjectData;
+    imagesData:ImageData[];
 }
 
-const TopNavigationBar: React.FC<IProps> = ({ updateActivePopupType, updateProjectData, projectData }) => {
+const TopNavigationBar: React.FC<IProps> = ({ updateActivePopupType, updateProjectData, projectData,imagesData }) => {
 
+    function callOCRSplit() {
+
+    }
+    function callOCRHandle() {
+
+    }
+     function ifHasFiles() {
+        return imagesData && imagesData.length>0;
+    }
 
     return (
         <div className="TopNavigationBar">
@@ -39,6 +50,19 @@ const TopNavigationBar: React.FC<IProps> = ({ updateActivePopupType, updateProje
                             externalClassName={"UploadImageButton"}
                             onClick={() => updateActivePopupType(PopupWindowType.LOAD_IMAGES)}
                         />
+                        {ifHasFiles() &&    <TextButton
+                            label={"OCR分类"}
+                            externalClassName={"OCRButton"}
+                            onClick={() => { callOCRSplit(); }}
+                             
+                        />}
+                         {ifHasFiles() && 
+                        <TextButton
+                            label={"OCR识别"}
+                            externalClassName={"OCRButton"}
+                            onClick={() => { callOCRHandle(); }}                             
+                        />}
+                     
                     </div>
 
                 </div>
@@ -54,7 +78,8 @@ const TopNavigationBar: React.FC<IProps> = ({ updateActivePopupType, updateProje
                     /> */}
                 </div>
                 <div className="NavigationBarGroupWrapper">
-                    <TextButton
+
+                    {/* <TextButton
                         label={"导出标注"}
                         externalClassName={"ExportLabelButton"}
                         onClick={() => updateActivePopupType(PopupWindowType.EXPORT_LABELS)}
@@ -63,7 +88,7 @@ const TopNavigationBar: React.FC<IProps> = ({ updateActivePopupType, updateProje
                         label={"设置"}
                         under={true}
                         onClick={() => updateActivePopupType(PopupWindowType.UPDATE_LABEL_NAMES)}
-                    />
+                    /> */}
 
                     <UnderlineTextButton
                         label={"退出"}
@@ -85,11 +110,12 @@ const TopNavigationBar: React.FC<IProps> = ({ updateActivePopupType, updateProje
 
 const mapDispatchToProps = {
     updateActivePopupType,
-    updateProjectData
+    updateProjectData,
 };
 
 const mapStateToProps = (state: AppState) => ({
-    projectData: state.general.projectData
+    projectData: state.general.projectData,
+    imagesData: state.labels.imagesData
 });
 
 export default connect(
