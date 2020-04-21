@@ -9,4 +9,6 @@ public final class AppConst {
     public static final String PROFILE_TEST = "test";
     public static final String PROFILE_PROD = "prod";
 
+    public static final String EXECUTOR_CONVERT = "convertExecutor";
+
 }

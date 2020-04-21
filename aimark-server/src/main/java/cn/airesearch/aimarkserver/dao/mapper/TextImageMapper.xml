@@ -2,4 +2,18 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.airesearch.aimarkserver.dao.TextImageMapper">
 
+    <insert id="batchInsertList" parameterType="list">
+        insert into text_image (item_id, source_id, image_name, page_index, file_path, url_path) values
+        <foreach collection="list" item="image" separator=",">
+            (
+            #{image.itemId,jdbcType=INTEGER},
+            #{image.sourceId,jdbcType=INTEGER},
+            #{image.imageName,jdbcType=VARCHAR},
+            #{image.pageIndex,jdbcType=INTEGER},
+            #{image.filePath,jdbcType=VARCHAR},
+            #{image.urlPath,jdbcType=VARCHAR}
+            )
+        </foreach>
+    </insert>
+
 </mapper>

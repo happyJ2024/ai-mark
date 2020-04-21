@@ -1,18 +1,29 @@
 package cn.airesearch.aimarkserver.model;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 
 /**
+ *
+ *
  * @author ZhangXi
  */
 @Data
 public class TextImage {
 
-    private String id;
+    @TableId(value = "id", type = IdType.AUTO)
+    private Integer id;
 
     private Integer itemId;
 
-    private String sourceId;
+    private Integer sourceId;
+
+    private String imageName;
+
+    private Integer pageIndex;
+
+    private String filePath;
 
     private String urlPath;
 

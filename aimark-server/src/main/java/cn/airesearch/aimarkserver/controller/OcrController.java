@@ -13,19 +13,19 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class OcrController {
 
-    /**
-     * 调用OCR识别
-     *
-     * @param id
-     * @return
-     */
-    @PostMapping(value = "/api/startConvert")
-    public BaseResponse startConvert(@RequestParam("id") Integer id) {
-        // todo 启动异步任务处理
-        BaseResponse response = new BaseResponse();
-        response.success();
-        return response;
+
+    @PostMapping(value = "/api/ocrSplit")
+    public BaseResponse ocrSplit() {
+        //todo ocr分类单据
+        return null;
     }
+
+    @PostMapping(value = "/api/ocrExtract")
+    public BaseResponse ocrExtract() {
+        //todo ocr提取单据
+        return null;
+    }
+
 
 
 

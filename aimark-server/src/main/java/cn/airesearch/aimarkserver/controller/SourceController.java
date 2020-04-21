@@ -1,33 +1,43 @@
 package cn.airesearch.aimarkserver.controller;
 
-import cn.airesearch.aimarkserver.constant.ResourceConst;
+import cn.airesearch.aimarkserver.pojo.requestvo.IntIdVO;
+import cn.airesearch.aimarkserver.service.SourceService;
+import cn.airesearch.aimarkserver.support.ItemConvert;
+import cn.airesearch.aimarkserver.support.ItemConvertManager;
 import cn.airesearch.aimarkserver.support.base.BaseResponse;
-import cn.airesearch.aimarkserver.tool.IoTool;
-import cn.asr.appframework.utility.lang.StringExtUtils;
 import cn.hutool.core.util.StrUtil;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.constraints.NotNull;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.List;
 
 /**
  * @author ZhangXi
  */
+@Tag(name = "/api", description = "源文件接口")
+@Validated
+@Slf4j
 @RestController
 public class SourceController {
 
-    @GetMapping(value = "/api/test")
-    public BaseResponse get() {
-        return new BaseResponse();
+    private final SourceService sourceService;
+
+    @Autowired
+    public SourceController(SourceService sourceService) {
+        this.sourceService = sourceService;
     }
 
 
+    @Operation(
+            summary = "上传源文件"
+    )
     @PostMapping(value = "/api/uploadFile")
     public BaseResponse uploadSource(@RequestParam("file")MultipartFile file, @RequestParam("id") Integer id) {
         // 检查file参数
@@ -38,17 +48,10 @@ public class SourceController {
         if (file.getSize() == 0) {
             // todo 抛出异常
         }
-        String filePath = ResourceConst.ITEMS_PATH + IoTool.FILE_PATH_SEPARATOR + "test" +
-                IoTool.FILE_PATH_SEPARATOR + StringExtUtils.generatePureUUID() + "." + getFileType(originName);
-
-        Path path = Paths.get(filePath);
         try {
-            Files.write(path, file.getBytes());
-            // 保存数据
-
-
+            sourceService.saveSourceFile(file, id);
             BaseResponse response = new BaseResponse();
-            response.success("图片上传成功");
+            response.success("源文件上传成功");
             return response;
         } catch (IOException e) {
             // todo 抛出异常
@@ -59,12 +62,24 @@ public class SourceController {
         }
     }
 
-
-    private String getFileType(String originName) {
-        assert null != originName;
-        return originName.substring(originName.lastIndexOf("."));
+    @PostMapping(value = "/api/startConvert")
+    public BaseResponse startConvert(@RequestBody @Validated IntIdVO vo) {
+        sourceService.asyncConvertPdf(vo.getId());
+        BaseResponse response = new BaseResponse();
+        response.success("转换启动...");
+        return response;
     }
 
-
+    @GetMapping(value = "/api/getConvertProgress")
+    public BaseResponse<ItemConvert> getConvertProgress(@RequestParam("id") @NotNull Integer itemId) {
+        ItemConvert convert = ItemConvertManager.get(itemId);
+        BaseResponse<ItemConvert> response = new BaseResponse<>();
+        if (null == convert) {
+            response.fail("无进度");
+        } else {
+            response.success("进度查询成功", convert);
+        }
+        return response;
+    }
 
 }

@@ -1,6 +1,8 @@
 package cn.airesearch.aimarkserver.controller;
 
+import cn.airesearch.aimarkserver.pojo.modelvo.ItemDetailVO;
 import cn.airesearch.aimarkserver.pojo.modelvo.ItemVO;
+import cn.airesearch.aimarkserver.pojo.requestvo.IntIdVO;
 import cn.airesearch.aimarkserver.service.ItemService;
 import cn.airesearch.aimarkserver.support.base.BaseResponse;
 import cn.airesearch.aimarkserver.validator.GAdd;
@@ -43,6 +45,15 @@ public class ItemController {
         return response;
     }
 
+    @GetMapping(value = "/api/getProjectDetail")
+    public BaseResponse<ItemDetailVO> getItemDetail(@RequestParam("id") @NotNull Integer itemId) {
+        ItemDetailVO data = itemService.getItemDetail(itemId);
+        BaseResponse<ItemDetailVO> response = new BaseResponse<>();
+        response.success("获取项目详情成功", data);
+        return response;
+    }
+
+
     @Operation(
             summary = "新增项目"
     )
@@ -58,8 +69,8 @@ public class ItemController {
             summary = "删除项目"
     )
     @PostMapping(value = "/api/deleteProject")
-    public BaseResponse deleteItem(@RequestParam("id") @NotNull Integer id) {
-        itemService.deleteItem(id);
+    public BaseResponse deleteItem(@RequestBody @Validated IntIdVO vo) {
+        itemService.deleteItem(vo.getId());
         BaseResponse response = new BaseResponse();
         response.success("删除项目成功");
         return response;
