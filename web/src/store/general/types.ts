@@ -29,6 +29,7 @@ interface UpdateProjectData {
         projectData: ProjectData;
     }
 }
+ 
 
 interface UpdateWindowSize {
     type: typeof Action.UPDATE_WINDOW_SIZE;
@@ -79,7 +80,7 @@ interface UpdateZoom {
     }
 }
 
-export type GeneralActionTypes = UpdateProjectData
+export type GeneralActionTypes = UpdateProjectData  
     | UpdateWindowSize
     | UpdateActivePopupType
     | UpdateCustomCursorStyle

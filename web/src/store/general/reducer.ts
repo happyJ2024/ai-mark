@@ -1,7 +1,7 @@
-import {GeneralActionTypes, GeneralState} from "./types";
-import {Action} from "../Actions";
-import {CustomCursorStyle} from "../../data/enums/CustomCursorStyle";
-import {ViewPointSettings} from "../../settings/ViewPointSettings";
+import { GeneralActionTypes, GeneralState } from "./types";
+import { Action } from "../Actions";
+import { CustomCursorStyle } from "../../data/enums/CustomCursorStyle";
+import { ViewPointSettings } from "../../settings/ViewPointSettings";
 
 const initialState: GeneralState = {
     windowSize: null,

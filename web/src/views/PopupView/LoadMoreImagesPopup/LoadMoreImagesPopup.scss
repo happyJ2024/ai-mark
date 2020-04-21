@@ -1,4 +1,4 @@
-@import '../../../settings/Settings';
+@import "../../../settings/Settings";
 
 .LoadMoreImagesPopupContent {
   display: flex;
@@ -10,7 +10,8 @@
   flex: 1;
   min-height: 300px;
   align-self: stretch;
-
+  background: #fff;
+  height: initial;
   .DropZone {
     user-select: none;
     align-self: stretch;
@@ -52,4 +53,18 @@
       }
     }
   }
+
+  .ant-upload.ant-upload-drag {
+    height: initial;
+  }
+  .ant-upload-list {
+    overflow: auto;
+    max-height: 300px;
+  } 
+  // .ant-upload.ant-upload-drag p.ant-upload-text {
+  //   color: #fff;
+  // }
+  // .ant-upload-list.ant-upload-list-text{
+  //   color: #fff;
+  // }
 }
