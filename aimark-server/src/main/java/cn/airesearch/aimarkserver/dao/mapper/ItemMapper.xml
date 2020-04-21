@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.airesearch.aimarkserver.dao.ItemMapper">
+
+    <sql id="table">item</sql>
+
+    <select id="getEnabledList" resultType="cn.airesearch.aimarkserver.pojo.modelvo.ItemVO">
+        select * from item where is_deleted = 0 and status = 0;
+    </select>
+
+
+</mapper>
