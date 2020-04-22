@@ -1,9 +1,6 @@
 package cn.ar.aimark.server.test.ocr;
 
-import cn.ar.aimark.server.support.ocr.ImageInfo;
-import cn.ar.aimark.server.support.ocr.OCRRequest;
-import cn.ar.aimark.server.support.ocr.OCRResponse;
-import cn.ar.aimark.server.support.ocr.OCRWrapper;
+import cn.ar.aimark.server.support.ocr.*;
 import cn.ar.aimark.server.support.util.JsonUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
@@ -15,6 +12,10 @@ import org.junit.Test;
 import org.springframework.util.FileCopyUtils;
 
 import java.io.*;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 public class OCRTest {
@@ -42,7 +43,12 @@ public class OCRTest {
     @Test
     public void testExport2Excel() throws FileNotFoundException, IOException {
 
+        initWayBillHeaderList();
+
         File file = new File("/home/byj/Downloads/resp.json");
+        String exportFilePath = "/home/byj/Downloads/simpleResponse.xlsx";
+
+
         FileReader reader = new FileReader(file);
         char[] buff = new char[(int) file.length()];
         reader.read(buff);
@@ -51,6 +57,107 @@ public class OCRTest {
 
         OCRResponse response = JsonUtils.jsonToObject(jsonStr, OCRResponse.class);
 
+
+        Workbook workbook = createWorkBook();
+
+        workbook.createSheet("运单");
+        workbook.createSheet("invoice");
+
+        //运单处理
+
+        Sheet sheet = workbook.getSheetAt(0);
+        int rowCount = response.getWayBillList().size() + 1;
+        for (int i = 0; i < rowCount; i++) {
+            sheet.createRow(i);
+        }
+
+        //header
+        Row headerRow = sheet.getRow(0);
+        for (int i = 0; i < wayBillHeaderList.size(); i++) {
+            headerRow.createCell(i);
+        }
+
+        for (int cellIndex = 0; cellIndex < wayBillHeaderList.size(); cellIndex++) {
+            headerRow.getCell(cellIndex++).setCellValue(wayBillHeaderList.get(cellIndex));
+        }
+        //data
+        for (int rowIndex = 1; rowIndex < rowCount; rowIndex++) {
+            Row dataRow = sheet.getRow(rowIndex);
+
+            WayBillModel wayBillModel = response.getWayBillList().get(rowIndex - 1);
+
+            for (int cellIndex = 0; cellIndex < wayBillHeaderList.size(); cellIndex++) {
+                String cellValue = getPropertyValue(wayBillHeaderList.get(cellIndex), wayBillModel);
+                dataRow.getCell(cellIndex++).setCellValue(cellValue);
+            }
+        }
+
+        FileOutputStream outputStream = null;
+        try {
+            File excelFile = new File(exportFilePath); // 创建文件对象
+            if (excelFile.exists()) {
+                excelFile.delete();
+            }
+            outputStream = new FileOutputStream(excelFile); // 文件流
+
+            outputStream = new FileOutputStream(file);
+            workbook.write(outputStream);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (outputStream != null) {
+                try {
+                    outputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private String getPropertyValue(String propertyName, WayBillModel wayBillModel) {
+        switch (propertyName) {
+            case "pageNum":
+                return String.join(",", wayBillModel.getPageNum().stream().sorted().map(String::valueOf).collect(Collectors.toList()));
+
+            default:
+                Field[] fields = wayBillModel.getClass().getDeclaredFields();
+                for (Field f : fields) {
+                    if (f.getName().equals(propertyName)) {
+                        try {
+                            return f.get(wayBillModel).toString();
+                        } catch (IllegalAccessException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+                return "";
+        }
+    }
+
+    private static List<String> wayBillHeaderList;
+
+    private static void initWayBillHeaderList() {
+        wayBillHeaderList = new ArrayList<>();
+        wayBillHeaderList.add("pageNum");
+        wayBillHeaderList.add("Airport_Code");
+        wayBillHeaderList.add("UXM");
+        wayBillHeaderList.add("AIR_WAYBILL");
+        wayBillHeaderList.add("CONSIGNEE");
+        wayBillHeaderList.add("SHIPPER");
+        wayBillHeaderList.add("PACKING");
+        wayBillHeaderList.add("WEIGHT");
+        wayBillHeaderList.add("GROSS");
+        wayBillHeaderList.add("INCOTERM");
+        wayBillHeaderList.add("INVOICE_NUMBER");
+        wayBillHeaderList.add("TOTAL");
+        wayBillHeaderList.add("METHOD");
+        wayBillHeaderList.add("CUR");
+
+    }
+
+    @Test
+    public void testExcel() throws IOException {
         String exportFileTemplatePath = "/home/byj/Project/ai-mark/thirdParty/箱单导入模板v1.1.xlsx";
         String exportFilePath = "/home/byj/Downloads/respExport.xlsx";
         File excelFile = new File(exportFilePath); // 创建文件对象
@@ -94,7 +201,7 @@ public class OCRTest {
                         }
 
                         Object obj = getValue(cell);
-                        System.out.print(obj.toString().replace("\n","") + "\t");
+                        System.out.print(obj.toString().replace("\n", "") + "\t");
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -145,4 +252,14 @@ public class OCRTest {
         return wb;
     }
 
+    /**
+     * 创建Workbook
+     *
+     * @return
+     * @throws IOException
+     */
+    public static Workbook createWorkBook() throws IOException {
+        Workbook wb = new XSSFWorkbook();
+        return wb;
+    }
 }
