@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class InvoiceList {
+public class InvoiceModel {
     private List<Integer> pageNum;
     private String Invoice_No;
     private String Supplier_code;

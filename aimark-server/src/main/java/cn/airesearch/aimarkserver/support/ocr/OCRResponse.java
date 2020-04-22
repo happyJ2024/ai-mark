@@ -6,7 +6,7 @@ import java.util.List;
 
 @Data
 public class OCRResponse {
-    private List<WayBillList> wayBillList;
-    private List<InvoiceList> invoiceList;
+    private List<WayBillModel> wayBillList;
+    private List<InvoiceModel> invoiceList;
 
 }

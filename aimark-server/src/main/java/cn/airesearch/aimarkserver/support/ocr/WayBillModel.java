@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class WayBillList {
+public class WayBillModel {
 
     private List<Integer> pageNum;
     private String Airport_Code;
