@@ -2,6 +2,7 @@ package cn.airesearch.aimarkserver.tool;
 
 import cn.airesearch.aimarkserver.exception.PdfOperationException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.pdfbox.io.MemoryUsageSetting;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.font.FontMapper;
 import org.apache.pdfbox.pdmodel.font.FontMapperImpl;
@@ -51,7 +52,7 @@ public final class PdfTool {
     /**
      * 经过测试,dpi为96,100,105,120,150,200中,105显示效果较为清晰,体积稳定,dpi越高图片体积越大,一般电脑显示分辨率为96
      */
-    private static final int DEFAULT_DPI = 105;
+    private static final int DEFAULT_DPI = 200;
 
     /**
      * 默认转换的图片格式为jpg
@@ -69,8 +70,8 @@ public final class PdfTool {
         }
     }
 
-    public static List<String> savePdfToImages(File file, String imgDir, String imgNamePrefix) throws PdfOperationException {
-        if(null == file || !file.exists()) {
+    public static List<String> savePdfToImages(File file, String imgDir) throws PdfOperationException {
+        if (null == file || !file.exists()) {
             // fixme 抛出异常或许更好
             log.warn("PDF文件：{}不存在", null == file ? "=NULL" : file.getAbsolutePath());
             throw new PdfOperationException("PDF文件不存在");
@@ -80,9 +81,9 @@ public final class PdfTool {
             PDDocument document = PDDocument.load(file);
             PDFRenderer renderer = new PDFRenderer(document);
             List<String> names = new ArrayList<>();
-            for (int i=0, length = document.getNumberOfPages(); i<length; i++) {
+            for (int i = 0, length = document.getNumberOfPages(); i < length; i++) {
                 BufferedImage bufferedImage = renderer.renderImageWithDPI(i, DEFAULT_DPI, ImageType.RGB);
-                String name = imgNamePrefix + "_" + (i+1) + "." + DEFAULT_IMG_FORMAT;
+                String name = (i + 1) + "." + DEFAULT_IMG_FORMAT;
                 String imgPath = imgDir + name;
                 ImageIOUtil.writeImage(bufferedImage, imgPath, DEFAULT_DPI);
                 names.add(name);
@@ -96,4 +97,23 @@ public final class PdfTool {
     }
 
 
+    public static void generatePDF(String destFile, List<SplitPDFPage> splitPDFPageList) throws IOException {
+        PDDocument outputDocument = new PDDocument();
+
+        for (SplitPDFPage p : splitPDFPageList
+        ) {
+            PDDocument loadDocument = PDDocument.load(new File(p.getPdfPath()), MemoryUsageSetting.setupTempFileOnly());
+
+            for (Integer pageNumber : p.getPages()) {
+                int actualPageNumber = pageNumber - 1;
+                outputDocument.addPage(loadDocument.getPage(actualPageNumber));
+            }
+//            loadDocument.close();
+        }
+
+        outputDocument.save(destFile);
+        outputDocument.close();
+
+
+    }
 }

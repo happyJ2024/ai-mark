@@ -43,7 +43,7 @@ public class SourceServiceImpl implements SourceService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void saveSourceFile(MultipartFile file, Integer itemId) throws IOException {
-        String projectDir = ResourceConst.PROJECT+itemId;
+        String projectDir = ResourceConst.PROJECT + itemId;
         String dirRootToProject = IoTool.buildFilePath(ResourceConst.ROOT_PATH, projectDir);
         String originName = file.getOriginalFilename();
         try {
@@ -103,11 +103,11 @@ public class SourceServiceImpl implements SourceService {
             // 注册转换状态
             ItemConvertManager.register(itemId, sourceList.size());
             final String dirRoot = ResourceConst.ROOT_PATH;
-            for (int i=0; i<sourceList.size(); i++) {
+            for (int i = 0; i < sourceList.size(); i++) {
                 Source source = sourceList.get(i);
                 // 依次处理源文件
                 String fullPdfPath = IoTool.buildFilePath(dirRoot, IoTool.transUrlToFilePath(source.getUrlPath()));
-                String dirProjectToName = IoTool.buildFilePath(ResourceConst.PROJECT+itemId, source.getFileName());
+                String dirProjectToName = IoTool.buildFilePath(ResourceConst.PROJECT + itemId, source.getFileName());
                 try {
                     String imageDir = IoTool.buildFilePath(dirRoot, dirProjectToName) + File.separator;
                     Path imgDirPath = Paths.get(imageDir);
@@ -115,18 +115,18 @@ public class SourceServiceImpl implements SourceService {
                         Files.createDirectories(imgDirPath);
                     }
                     // 将pdf转为jpg图片
-                    List<String> names = PdfTool.savePdfToImages(new File(fullPdfPath), imageDir, source.getFileName());
+                    List<String> names = PdfTool.savePdfToImages(new File(fullPdfPath), imageDir);
                     // 删除并重新保存图片数据
                     QueryWrapper<TextImage> deleteQueryWrapper = new QueryWrapper<>();
                     deleteQueryWrapper.eq(TextImage.COL_ITEM_ID, itemId).eq(TextImage.COL_SOURCE_ID, source.getId());
                     textImageMapper.delete(deleteQueryWrapper);
                     List<TextImage> images = new ArrayList<>();
-                    for (int j=0; j<names.size(); j++) {
+                    for (int j = 0; j < names.size(); j++) {
                         TextImage image = new TextImage();
                         image.setItemId(itemId);
                         image.setSourceId(source.getId());
                         image.setImageName(names.get(j));
-                        image.setPageIndex(j+1);
+                        image.setPageIndex(j + 1);
                         String filePath = IoTool.buildFilePath(dirProjectToName, names.get(j));
                         image.setUrlPath(IoTool.transFileToUrlPath(filePath));
                         images.add(image);
@@ -134,7 +134,7 @@ public class SourceServiceImpl implements SourceService {
                     textImageMapper.batchInsertList(images);
                     // 修改转换进度
                     ItemConvert convert = ItemConvertManager.get(itemId);
-                    convert.setCompleteNumber(i+1);
+                    convert.setCompleteNumber(i + 1);
                     convert.resetPercent();
                     ItemConvertManager.update(itemId, convert);
                     // 修改source状态

@@ -8,13 +8,32 @@ import cn.asr.appframework.utility.log.LoggerWrapper;
 import com.alibaba.fastjson.JSON;
 import org.apache.commons.lang3.time.StopWatch;
 
+import java.io.File;
+import java.io.FileReader;
 import java.util.concurrent.TimeUnit;
 
 public class OCRWrapper {
 
+    private static final boolean MOCK = true;
     private static Log logger = LoggerWrapper.getLogger(String.valueOf(OCRWrapper.class));
 
     public static OCRResponse callOCRService(OCRRequest ocrRequest) {
+
+        if (MOCK) {
+            File file = new File("/home/byj/Downloads/resp.json");
+            FileReader reader = null;
+            try {
+                reader = new FileReader(file);
+
+                char[] buff = new char[(int) file.length()];
+                reader.read(buff);
+                String jsonStr = new String(buff);
+                return JsonUtils.jsonToObject(jsonStr, OCRResponse.class);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
         if (ocrRequest == null || ocrRequest.getImages() == null || ocrRequest.getImages().size() == 0) {
             throw new NullPointerException("ocrRequest has no images");
         }
@@ -31,9 +50,12 @@ public class OCRWrapper {
         long costMilliseconds = stopWatch.getTime(TimeUnit.MILLISECONDS);
 
         logger.debug("OCR cost milliseconds:" + costMilliseconds);
+
+
         if (response != null && response.length() > 0) {
             if (JSON.isValid(response) == false) {
                 logger.error("OCR response is invalid. ");
+
                 return null;
             }
             return JsonUtils.jsonToObject(response, OCRResponse.class);
@@ -45,9 +67,5 @@ public class OCRWrapper {
         return OcrConst.OCR_SERVICE_URL;
     }
 
-    public static boolean export2Excel(String destPath, OCRResponse ocrResponse) {
 
-
-        return  true;
-    }
 }

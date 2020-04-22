@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * 自定义系统配置
+ *
  * @author ZhangXi
  */
 @Data
@@ -18,7 +19,7 @@ public class AppSetting {
     @Value("${app.resource.url.prefix}")
     private String urlPrefix;
 
-    @Value("app.ocr.server.url")
+    @Value("${app.ocr.server.url}")
     private String ocrServerUrl;
 
 }

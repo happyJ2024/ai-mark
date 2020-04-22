@@ -19,7 +19,7 @@ class PdfToolTest {
         String imgDir = "E:\\files\\aimark\\test\\";
         String prefix = "pdfsss";
         log.info("PDF PATH : {}", pdfPath);
-        PdfTool.savePdfToImages(new File(pdfPath), imgDir, prefix);
+        PdfTool.savePdfToImages(new File(pdfPath), imgDir);
         log.info("pdf转换成功");
     }
 
