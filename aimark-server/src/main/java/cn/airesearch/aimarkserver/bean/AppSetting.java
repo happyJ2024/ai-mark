@@ -18,6 +18,7 @@ public class AppSetting {
     @Value("${app.resource.url.prefix}")
     private String urlPrefix;
 
-
+    @Value("app.ocr.server.url")
+    private String ocrServerUrl;
 
 }
