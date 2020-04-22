@@ -27,7 +27,7 @@ interface IProps {
 
 const EditorContainer: React.FC<IProps> = ({ windowSize, activeImageIndex, imagesData, activeContext }) => {
     const [leftTabStatus, setLeftTabStatus] = useState(true);
-    const [rightTabStatus, setRightTabStatus] = useState(true);
+    const [rightTabStatus, setRightTabStatus] = useState(false);
 
     const calculateEditorSize = (): ISize => {
         if (windowSize) {

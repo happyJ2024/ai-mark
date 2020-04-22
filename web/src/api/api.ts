@@ -6,9 +6,11 @@ export function GetProjectList(param) {
     return HttpClient.get(`/api/getProjectList`, param)
 }
 export function DeleteProject(param) {
-    return HttpClient.post(`/api/deleteProjectList`, { param })
+    return HttpClient.post(`/api/deleteProject`, param)
 }
-
+export function GetProjectDetail(param) {
+    return HttpClient.get(`/api/getProjectDetail`, param)
+}
 export function UploadFile(param) {
     return HttpClient.uploadFile(`/api/uploadFile`, param)
 }
@@ -18,8 +20,13 @@ export function StartConvert(param) {
 export function GetConvertProgress(param) {
     return HttpClient.get(`/api/getConvertProgress`, param)
 }
-export function CallOCR(param) {
-    return HttpClient.post(`/api/ocr`, param)
+///OCR分类单据
+export function CallOCRSplit(param) {
+    return HttpClient.post(`/api/ocrSplit`, param)
+}
+///OCR提取单据内容
+export function CallOCRExtract(param) {
+    return HttpClient.post(`/api/ocrExtract`, param)
 }
 export default {
     CreateProject,
@@ -28,5 +35,6 @@ export default {
     UploadFile,
     StartConvert,
     GetConvertProgress,
-    CallOCR
+    CallOCRSplit,
+    CallOCRExtract
 } 

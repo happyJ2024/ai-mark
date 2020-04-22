@@ -1,4 +1,4 @@
-@import '../../../settings/Settings';
+@import "../../../settings/Settings";
 
 .NewProjectPopup {
   display: flex;
@@ -59,7 +59,7 @@
       align-self: stretch;
       color: white;
       font-size: 15px;
-      padding: 30px 40px;
+      padding: 10px 20px;
       border-bottom: solid 1px $darkThemeFirstColor;
     }
 
@@ -90,7 +90,8 @@
 
         &:not(.disabled):hover {
           filter: brightness(35%) sepia(100%) hue-rotate(172deg) saturate(2000%); // fallback if new css variables are not supported by browser
-          filter: brightness(35%) sepia(100%) hue-rotate(var(--hue-value)) saturate(2000%);
+          filter: brightness(35%) sepia(100%) hue-rotate(var(--hue-value))
+            saturate(2000%);
         }
       }
 
@@ -158,4 +159,23 @@
       }
     }
   }
+}
+.ant-tabs {
+  color: #fff;
+}
+.ant-tabs-nav .ant-tabs-tab-active {
+  color: #fff;
+}
+
+.ProjectTableContainer {
+  width: 100%;
+  height: 100%;
+}
+
+.ProjectOperationTag {
+  cursor: pointer;
+}
+.ProjectOperationTag:hover {
+  background-color: #000;
+  color: #fff;
 }

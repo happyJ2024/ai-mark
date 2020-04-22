@@ -44,6 +44,7 @@ function apiAxios(method, url, params, config) {
 		loadProgressBar()
 		axios.defaults.headers.common.Authorization = localStorage.getItem('accessToken');
 
+		axios.defaults.baseURL = "http://172.16.114.170:30050/"
 
 		axios({
 			method,
@@ -135,14 +136,14 @@ export default {
 		return apiAxios('POST', url, params, null)
 	},
 	uploadFile: (url, params, ) => {
-		// return apiAxios('POST', url, params,
-		// 	{
-		// 		headers: { 'Content-Type': 'multipart/form-data' }
-		// 	})
-		return apiAxios('POST', 'https://www.mocky.io/v2/5cc8019d300000980a055e7', params,
+		return apiAxios('POST', url, params,
 			{
 				headers: { 'Content-Type': 'multipart/form-data' }
 			})
+		// return apiAxios('POST', 'https://www.mocky.io/v2/5cc8019d300000980a055e7', params,
+		// 	{
+		// 		headers: { 'Content-Type': 'multipart/form-data' }
+		// 	})
 
 	},
 	put: (url, params) => {

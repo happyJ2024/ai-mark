@@ -60,11 +60,24 @@
   .ant-upload-list {
     overflow: auto;
     max-height: 300px;
-  } 
+  }
   // .ant-upload.ant-upload-drag p.ant-upload-text {
   //   color: #fff;
   // }
   // .ant-upload-list.ant-upload-list-text{
   //   color: #fff;
   // }
+
+  .ConvertProgerssContent {
+    width: 60%;
+    text-align: center;
+    margin-top: 30px;
+    .convertPercentDisplay {
+      font-size: 16px;
+      font-weight: bold;
+    }
+  }
+  .HideConvertProgerssContent{
+    display: none;
+  }
 }

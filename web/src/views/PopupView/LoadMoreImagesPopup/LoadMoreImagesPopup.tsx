@@ -3,21 +3,24 @@ import './LoadMoreImagesPopup.scss'
 import { AppState } from "../../../store";
 import { connect } from "react-redux";
 import { addImageData } from "../../../store/labels/actionCreators";
+import { updateProjectData } from "../../../store/general/actionCreators";
 import { GenericYesNoPopup } from "../GenericYesNoPopup/GenericYesNoPopup";
-import { useDropzone } from "react-dropzone";
-import { FileUtil } from "../../../utils/FileUtil";
+
 import { ImageData } from "../../../store/labels/types";
-import { AcceptedFileType } from "../../../data/enums/AcceptedFileType";
 import { PopupActions } from "../../../logic/actions/PopupActions";
 
 import { Upload, message } from 'antd';
 import { InboxOutlined } from '@ant-design/icons';
-import { UploadFile } from '../../../api/api';
+import { UploadFile, StartConvert, GetConvertProgress, GetProjectDetail } from '../../../api/api';
+import { Progress } from 'antd';
+import { ProjectData } from '../../../store/general/types';
 
 const { Dragger } = Upload;
 
 interface IProps {
     addImageData: (imageData: ImageData[]) => any;
+    updateProjectData: (projectData: ProjectData) => any;
+    projectData: ProjectData;
 }
 interface IState {
     fileList: any,
@@ -25,9 +28,14 @@ interface IState {
 }
 class LoadMoreImagesPopup extends React.Component<IProps, IState> {
 
+    getConvertProgressInterval: NodeJS.Timeout;
+
     state = {
         fileList: [],
         uploading: false,
+        converting: false,
+        convertPercent: 66,
+
     };
     onAccept = () => {
         if (this.state.fileList.length > 0) {
@@ -42,6 +50,7 @@ class LoadMoreImagesPopup extends React.Component<IProps, IState> {
 
     render() {
         const props = {
+            accept: 'image/*,.pdf',
             multiple: true,
             onRemove: file => {
                 this.setState(state => {
@@ -72,6 +81,14 @@ class LoadMoreImagesPopup extends React.Component<IProps, IState> {
 
                     </Dragger>
                 </div>
+
+                <div className={this.state.converting ? 'ConvertProgerssContent' : 'HideConvertProgerssContent'}  >
+
+                    正在转换PDF文件
+                    <Progress percent={this.state.convertPercent} status="active" showInfo={false} />
+                    <p className="convertPercentDisplay">{this.state.convertPercent}%</p>
+                </div>
+
             </div>);
         };
 
@@ -80,7 +97,7 @@ class LoadMoreImagesPopup extends React.Component<IProps, IState> {
                 title={"上传文件"}
                 renderContent={renderContent}
                 acceptLabel={"上传"}
-                disableAcceptButton={this.state.fileList.length < 1}
+                disableAcceptButton={this.state.fileList.length < 1 || this.state.converting}
                 onAccept={this.onAccept}
                 rejectLabel={"取消"}
                 onReject={this.onReject}
@@ -97,6 +114,7 @@ class LoadMoreImagesPopup extends React.Component<IProps, IState> {
         this.doUpload(fileIndex);
 
     };
+
     doUpload = (fileIndex) => {
         console.log("fileIndex=", fileIndex);
 
@@ -110,6 +128,55 @@ class LoadMoreImagesPopup extends React.Component<IProps, IState> {
             //     uploading: false,
             // });
             message.success("上传完成");
+
+            let param = {
+                id: this.props.projectData.projectId
+            };
+            StartConvert(param).then((res: any) => {
+                console.log('StartConvert', res);
+                this.setState(state => ({
+                    ...state,
+                    converting: true,
+                    convertPercent: 0
+                }));
+
+                let self = this;
+                self.getConvertProgressInterval = setInterval(function () {
+                    let queryParam = {
+                        id: self.props.projectData.projectId
+                    };
+                    GetConvertProgress(queryParam).then((res: any) => {
+                        console.log('GetConvertProgress', res);
+                        var percent= res.data.data.completePercent *100;      
+                       
+                        self.setState(state => ({
+                            ...state,
+                            converting: true,
+                            convertPercent: percent
+                        }));
+
+                        if (percent=== 100) {
+                            if (self.getConvertProgressInterval) {
+                                clearInterval(self.getConvertProgressInterval);
+                            }
+                            PopupActions.close();
+
+                            //load project detail
+                            GetProjectDetail(queryParam).then((res: any) => {
+                                console.log('GetProjectDetail', res);
+
+                                self.props.updateProjectData({
+                                    ...self.props.projectData,
+                                    detail: res.data.data.detail
+                                });
+                            })
+
+                        }
+                    });
+                }, 5000);
+            });
+
+
             return;
         }
 
@@ -120,8 +187,8 @@ class LoadMoreImagesPopup extends React.Component<IProps, IState> {
         let file = fileList[fileIndex];
 
         const formData = new FormData();
-        formData.append('files', file);
-
+        formData.append('file', file);
+        formData.append('id', this.props.projectData.projectId);
         UploadFile(formData).then((res: any) => {
             console.log(res);
             console.log('upload successfully. fileIndex=', fileIndex);
@@ -139,10 +206,13 @@ class LoadMoreImagesPopup extends React.Component<IProps, IState> {
 };
 
 const mapDispatchToProps = {
-    addImageData
+    addImageData,
+    updateProjectData
 };
 
-const mapStateToProps = (state: AppState) => ({});
+const mapStateToProps = (state: AppState) => ({
+    projectData: state.general.projectData,
+});
 
 export default connect(
     mapStateToProps,

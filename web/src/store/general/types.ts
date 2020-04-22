@@ -1,15 +1,19 @@
-import {ISize} from "../../interfaces/ISize";
-import {Action} from "../Actions";
-import {PopupWindowType} from "../../data/enums/PopupWindowType";
-import {CustomCursorStyle} from "../../data/enums/CustomCursorStyle";
-import {ContextType} from "../../data/enums/ContextType";
-import {ProjectType} from "../../data/enums/ProjectType";
-import {TicketType} from "../../data/enums/TicketType";
+import { ISize } from "../../interfaces/ISize";
+import { Action } from "../Actions";
+import { PopupWindowType } from "../../data/enums/PopupWindowType";
+import { CustomCursorStyle } from "../../data/enums/CustomCursorStyle";
+import { ContextType } from "../../data/enums/ContextType";
+import { ProjectType } from "../../data/enums/ProjectType";
+import { TicketType } from "../../data/enums/TicketType";
 
 export type ProjectData = {
-    type: ProjectType;
-    name: string,
-    ticketType: TicketType;
+    projectId: string, //项目编号
+    name: string,  //项目名称
+    status: string, //项目状态 undone, done
+    detail: {},  //项目的详细信息
+
+    type: ProjectType; //项目类型
+    ticketType: TicketType;//单据类型
 }
 
 export type GeneralState = {
@@ -29,7 +33,7 @@ interface UpdateProjectData {
         projectData: ProjectData;
     }
 }
- 
+
 
 interface UpdateWindowSize {
     type: typeof Action.UPDATE_WINDOW_SIZE;
@@ -80,7 +84,7 @@ interface UpdateZoom {
     }
 }
 
-export type GeneralActionTypes = UpdateProjectData  
+export type GeneralActionTypes = UpdateProjectData
     | UpdateWindowSize
     | UpdateActivePopupType
     | UpdateCustomCursorStyle

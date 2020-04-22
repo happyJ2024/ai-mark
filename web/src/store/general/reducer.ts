@@ -11,8 +11,10 @@ const initialState: GeneralState = {
     preventCustomCursor: false,
     imageDragMode: false,
     projectData: {
+        projectId: '',
         type: null,
-        name: "my-project-name",
+        name: "sample-project-name", status: '',
+        detail: {},
         ticketType: null
     },
     zoom: ViewPointSettings.MIN_ZOOM

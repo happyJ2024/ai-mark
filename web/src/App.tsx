@@ -23,7 +23,8 @@ interface IProps {
 const App: React.FC<IProps> = ({projectType, windowSize, ObjectDetectorLoaded, PoseDetectionLoaded}) => {
     const selectRoute = () => {
         if (!!PlatformModel.mobileDeviceData.manufacturer && !!PlatformModel.mobileDeviceData.os)
-            return <MobileMainView/>;
+            // return <MobileMainView/>;
+            return <MainView/>;
         if (!projectType)
             return <MainView/>;
         else {

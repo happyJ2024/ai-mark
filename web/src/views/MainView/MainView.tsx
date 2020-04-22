@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/alt-text */
 import React, { useState } from 'react';
 import './MainView.scss';
 import { TextButton } from "../Common/TextButton/TextButton";
@@ -26,7 +27,7 @@ const MainView: React.FC<IProps> = ({ updateActivePopupType, updateProjectData, 
         updateProjectData({
             ...projectData,
             type: ProjectType.OBJECT_DETECTION,
-            name: "project"+(new Date()).getTime(),
+            name: "project" + (new Date()).getTime(),
             ticketType: null
         });
         updateActivePopupType(PopupWindowType.START_NEW_PROJECT);
@@ -51,25 +52,30 @@ const MainView: React.FC<IProps> = ({ updateActivePopupType, updateProjectData, 
 
 
     const getEditorFeatureTiles = () => {
-        return EditorFeatureData.map((data: IEditorFeature) => {
-            return <div
-                className="EditorFeaturesTiles"
-                key={data.displayText}
-            >
-                <div
-                    className="EditorFeaturesTilesWrapper"
-                >
-                    <img
-                        draggable={false}
-                        alt={data.imageAlt}
-                        src={data.imageSrc}
-                    />
-                    <div className="EditorFeatureLabel">
-                        {data.displayText}
-                    </div>
-                </div>
-            </div>
-        });
+
+        return <div className="WorkProgressContent" >
+            <img src={"img/workprogress.png"}></img>
+        </div>;
+
+        // return EditorFeatureData.map((data: IEditorFeature) => {
+        //     return <div
+        //         className="EditorFeaturesTiles"
+        //         key={data.displayText}
+        //     >
+        //         <div
+        //             className="EditorFeaturesTilesWrapper"
+        //         >
+        //             <img
+        //                 draggable={false}
+        //                 alt={data.imageAlt}
+        //                 src={data.imageSrc}
+        //             />
+        //             <div className="EditorFeatureLabel">
+        //                 {data.displayText}
+        //             </div>
+        //         </div>
+        //     </div>
+        // });
     };
 
     return (
@@ -88,13 +94,14 @@ const MainView: React.FC<IProps> = ({ updateActivePopupType, updateProjectData, 
 
             <div className="LeftColumn">
                 <div className={"LogoWrapper"}>
-                    <img
-                        draggable={false}
-                        alt={"main-logo"}
-                        src={"img/main-image-color.png"}
-                    />
+                    <div>
+                        <img
+                            draggable={false}
+                            src={"make-sense-ico-transparent.png"}
+                        />
+                        <span>AI Mark</span></div>
                 </div>
-                <div className="EditorFeaturesWrapper">
+                <div className="EditorFeaturesWrapper"> 
                     {getEditorFeatureTiles()}
                 </div>
                 <div className="TriangleVertical">
@@ -107,7 +114,7 @@ const MainView: React.FC<IProps> = ({ updateActivePopupType, updateProjectData, 
             </div>
             <div className="RightColumn">
                 <div />
-                <ImagesDropZone />
+                {/* <ImagesDropZone /> */}
                 <div className="SocialMediaWrapper">
                     {/* {getSocialMediaButtons({width: 30, height: 30})} */}
                     {!projectInProgress && <TextButton

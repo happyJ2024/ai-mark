@@ -1,6 +1,6 @@
 import React from 'react'
 import './ExitProjectPopup.scss'
-import {GenericYesNoPopup} from "../GenericYesNoPopup/GenericYesNoPopup";
+import { GenericYesNoPopup } from "../GenericYesNoPopup/GenericYesNoPopup";
 import {
     updateActiveImageIndex,
     updateActiveLabelNameId,
@@ -8,12 +8,12 @@ import {
     updateImageData,
     updateLabelNames
 } from "../../../store/labels/actionCreators";
-import {AppState} from "../../../store";
-import {connect} from "react-redux";
-import {ImageData, LabelName} from "../../../store/labels/types";
-import {PopupActions} from "../../../logic/actions/PopupActions";
-import {ProjectData} from "../../../store/general/types";
-import {updateProjectData} from "../../../store/general/actionCreators";
+import { AppState } from "../../../store";
+import { connect } from "react-redux";
+import { ImageData, LabelName } from "../../../store/labels/types";
+import { PopupActions } from "../../../logic/actions/PopupActions";
+import { ProjectData } from "../../../store/general/types";
+import { updateProjectData } from "../../../store/general/actionCreators";
 
 interface IProps {
     updateActiveImageIndex: (activeImageIndex: number) => any;
@@ -35,10 +35,10 @@ const ExitProjectPopup: React.FC<IProps> = (props) => {
     } = props;
 
     const renderContent = () => {
-        return(
+        return (
             <div className="ExitProjectPopupContent">
                 <div className="Message">
-                    确定要退出当前项目吗？ <br/>退出前请先确认所有工作已经保存！！！
+                    确定要退出当前项目吗？ <br />退出前请先确认所有工作已经保存！！！
                 </div>
             </div>
         )
@@ -47,7 +47,7 @@ const ExitProjectPopup: React.FC<IProps> = (props) => {
     const onAccept = () => {
         updateActiveLabelNameId(null);
         updateLabelNames([]);
-        updateProjectData({type: null, name: "my-project-name",ticketType:null});
+        updateProjectData({ projectId: '', type: null, status: '', detail: {}, name: "my-project-name", ticketType: null });
         updateActiveImageIndex(null);
         updateImageData([]);
         updateFirstLabelCreatedFlag(false);
@@ -58,7 +58,7 @@ const ExitProjectPopup: React.FC<IProps> = (props) => {
         PopupActions.close();
     };
 
-    return(
+    return (
         <GenericYesNoPopup
             title={"退出项目"}
             renderContent={renderContent}

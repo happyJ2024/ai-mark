@@ -24,7 +24,7 @@ const TopNavigationBar: React.FC<IProps> = ({ updateActivePopupType, updateProje
     function callOCRSplit() {
 
     }
-    function callOCRHandle() {
+    function callOCRExtract() {
 
     }
      function ifHasFiles() {
@@ -60,7 +60,7 @@ const TopNavigationBar: React.FC<IProps> = ({ updateActivePopupType, updateProje
                         <TextButton
                             label={"OCR识别"}
                             externalClassName={"OCRButton"}
-                            onClick={() => { callOCRHandle(); }}                             
+                            onClick={() => { callOCRExtract(); }}                             
                         />}
                      
                     </div>
