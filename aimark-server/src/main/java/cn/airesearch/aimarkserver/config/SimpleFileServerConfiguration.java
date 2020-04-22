@@ -31,7 +31,7 @@ public class SimpleFileServerConfiguration implements WebMvcConfigurer {
      */
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        String resourcesPath = appSetting.getResourceRoot() + IoTool.FILE_PATH_SEPARATOR + ResourceConst.RESOURCES;
+        String resourcesPath = appSetting.getResourceRoot() + IoTool.FILE_PATH_SEPARATOR;
         registry.addResourceHandler("/resources/**").addResourceLocations("file:"+resourcesPath);
     }
 }

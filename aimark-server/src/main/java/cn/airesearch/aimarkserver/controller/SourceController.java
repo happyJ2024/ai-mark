@@ -1,5 +1,6 @@
 package cn.airesearch.aimarkserver.controller;
 
+import cn.airesearch.aimarkserver.constant.SysErrorCode;
 import cn.airesearch.aimarkserver.pojo.requestvo.IntIdVO;
 import cn.airesearch.aimarkserver.service.SourceService;
 import cn.airesearch.aimarkserver.support.ItemConvert;
@@ -64,9 +65,14 @@ public class SourceController {
 
     @PostMapping(value = "/api/startConvert")
     public BaseResponse startConvert(@RequestBody @Validated IntIdVO vo) {
-        sourceService.asyncConvertPdf(vo.getId());
+        boolean canStart = sourceService.canStartConvert(vo.getId());
         BaseResponse response = new BaseResponse();
-        response.success("转换启动...");
+        if (canStart) {
+            sourceService.asyncConvertPdf(vo.getId());
+            response.success("转换启动...");
+        } else {
+            response.fail(SysErrorCode.NO_SOURCES.getTheDesc(), SysErrorCode.NO_SOURCES);
+        }
         return response;
     }
 

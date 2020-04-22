@@ -10,11 +10,8 @@ import cn.airesearch.aimarkserver.model.TextImage;
 import cn.airesearch.aimarkserver.service.SourceService;
 import cn.airesearch.aimarkserver.support.ItemConvert;
 import cn.airesearch.aimarkserver.support.ItemConvertManager;
-import cn.airesearch.aimarkserver.support.base.BaseResponse;
 import cn.airesearch.aimarkserver.tool.IoTool;
 import cn.airesearch.aimarkserver.tool.PdfTool;
-import cn.asr.appframework.utility.lang.StringExtUtils;
-import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
@@ -46,75 +43,83 @@ public class SourceServiceImpl implements SourceService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void saveSourceFile(MultipartFile file, Integer itemId) throws IOException {
-        
-
-
-        String dirItems$itemXid = ResourceConst.ITEMS +
-                IoTool.FILE_PATH_SEPARATOR + "item_" + itemId;
-        String dirRootToItemXid = ResourceConst.ROOT_PATH +
-                IoTool.FILE_PATH_SEPARATOR + dirItems$itemXid;
+        String projectDir = ResourceConst.PROJECT+itemId;
+        String dirRootToProject = IoTool.buildFilePath(ResourceConst.ROOT_PATH, projectDir);
         String originName = file.getOriginalFilename();
-        String fileType = IoTool.getFileType(originName);
-        String fileName = StringExtUtils.generatePureUUID() + IoTool.FILE_DOT + fileType;
         try {
             // 检查是否存在文件夹
-            Path dirPath = Paths.get(dirRootToItemXid);
+            Path dirPath = Paths.get(dirRootToProject);
             if (!Files.exists(dirPath)) {
                 Files.createDirectories(dirPath);
             }
-            String fullName = dirRootToItemXid + IoTool.FILE_PATH_SEPARATOR + fileName;
-            Path filePath = Paths.get(fullName);
-            Files.write(filePath, file.getBytes());
-            // 保存source数据
-            Source source = new Source();
-            source.setItemId(itemId);
-            source.setOriginName(originName);
-            source.setUuidName(fileName);
-            source.setFileType(fileType);
-            source.setFilePath(dirItems$itemXid+IoTool.FILE_PATH_SEPARATOR+fileName);
-            sourceMapper.insert(source);
+            Path fullFilePath = Paths.get(IoTool.buildFilePath(dirRootToProject, originName));
+            Files.write(fullFilePath, file.getBytes());
+            // 检测是否已有该文件数据
+            QueryWrapper<Source> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq(Source.COL_ITEM_ID, itemId).eq(Source.COL_ORIGIN_NAME, originName);
+            Source existOne = sourceMapper.selectOne(queryWrapper);
+            if (null == existOne) {
+                // 保存source数据
+                Source source = new Source();
+                source.setItemId(itemId);
+                source.setOriginName(originName);
+                source.setFileName(IoTool.getFileName(originName));
+                source.setFileType(IoTool.getFileType(originName));
+                String relativePath = IoTool.buildFilePath(projectDir, originName);
+                source.setUrlPath(IoTool.transFileToUrlPath(relativePath));
+                sourceMapper.insert(source);
+            } else {
+                log.warn("已有source数据：{}", existOne.getUrlPath());
+            }
         } catch (IOException e) {
             log.error("保存源文件：{} 出错", file.getOriginalFilename(), e);
             throw e;
         }
     }
 
+    @Override
+    public boolean canStartConvert(Integer itemId) {
+        QueryWrapper<Source> wrapper = new QueryWrapper<>();
+        wrapper.eq(Source.COL_ITEM_ID, itemId);
+        List<Source> sourceList = sourceMapper.selectList(wrapper);
+        if (null == sourceList || sourceList.size() == 0) {
+            return false;
+        }
+        return true;
+    }
+
     @Transactional(rollbackFor = Exception.class)
     @Async(value = AppConst.EXECUTOR_CONVERT)
     @Override
     public void asyncConvertPdf(Integer itemId) {
-        //todo 异步转换pdf为图片
         QueryWrapper<Source> wrapper = new QueryWrapper<>();
-        wrapper.eq("item_id", itemId);
+        wrapper.eq(Source.COL_ITEM_ID, itemId);
         List<Source> sourceList = sourceMapper.selectList(wrapper);
+        // 查询对应源文件
         if (null == sourceList || sourceList.size() == 0) {
-            //todo 设置进度为100% 并设置为已完成
-
+            // 删除转换状态
+            ItemConvertManager.cancel(itemId);
         } else {
             // 注册转换状态
             ItemConvertManager.register(itemId, sourceList.size());
-
             final String dirRoot = ResourceConst.ROOT_PATH;
             for (int i=0; i<sourceList.size(); i++) {
                 Source source = sourceList.get(i);
-                String uuidName = source.getUuidName();
-                String uuid = uuidName.substring(0, uuidName.lastIndexOf(IoTool.FILE_DOT));
                 // 依次处理源文件
-                String fullPdfPath = dirRoot + IoTool.FILE_PATH_SEPARATOR + source.getFilePath();
-                String dirImagesToUuid = ResourceConst.IMAGES +
-                        IoTool.FILE_PATH_SEPARATOR + "item_" + itemId +
-                        IoTool.FILE_PATH_SEPARATOR + uuid;
-                String dirRootToUuid$ = ResourceConst.ROOT_PATH +
-                        IoTool.FILE_PATH_SEPARATOR + ResourceConst.RESOURCES +
-                        IoTool.FILE_PATH_SEPARATOR + dirImagesToUuid + IoTool.FILE_PATH_SEPARATOR;
+                String fullPdfPath = IoTool.buildFilePath(dirRoot, IoTool.transUrlToFilePath(source.getUrlPath()));
+                String dirProjectToName = IoTool.buildFilePath(ResourceConst.PROJECT+itemId, source.getFileName());
                 try {
-                    // 将pdf转为jpg图片
-                    Path imgDirPath = Paths.get(dirRootToUuid$);
+                    String imageDir = IoTool.buildFilePath(dirRoot, dirProjectToName) + File.separator;
+                    Path imgDirPath = Paths.get(imageDir);
                     if (!Files.exists(imgDirPath)) {
                         Files.createDirectories(imgDirPath);
                     }
-                    List<String> names = PdfTool.savePdfToImages(new File(fullPdfPath), dirRootToUuid$, uuid);
-                    // 批量生成图片数据
+                    // 将pdf转为jpg图片
+                    List<String> names = PdfTool.savePdfToImages(new File(fullPdfPath), imageDir, source.getFileName());
+                    // 删除并重新保存图片数据
+                    QueryWrapper<TextImage> deleteQueryWrapper = new QueryWrapper<>();
+                    deleteQueryWrapper.eq(TextImage.COL_ITEM_ID, itemId).eq(TextImage.COL_SOURCE_ID, source.getId());
+                    textImageMapper.delete(deleteQueryWrapper);
                     List<TextImage> images = new ArrayList<>();
                     for (int j=0; j<names.size(); j++) {
                         TextImage image = new TextImage();
@@ -122,13 +127,12 @@ public class SourceServiceImpl implements SourceService {
                         image.setSourceId(source.getId());
                         image.setImageName(names.get(j));
                         image.setPageIndex(j+1);
-                        String filePath = dirImagesToUuid + IoTool.FILE_PATH_SEPARATOR + names.get(j);
-                        image.setFilePath(filePath);
-                        image.setUrlPath(filePath.replace(IoTool.FILE_PATH_SEPARATOR, IoTool.URL_PATH_SEPARATOR));
+                        String filePath = IoTool.buildFilePath(dirProjectToName, names.get(j));
+                        image.setUrlPath(IoTool.transFileToUrlPath(filePath));
                         images.add(image);
                     }
                     textImageMapper.batchInsertList(images);
-                    // 修改转换状态
+                    // 修改转换进度
                     ItemConvert convert = ItemConvertManager.get(itemId);
                     convert.setCompleteNumber(i+1);
                     convert.resetPercent();
@@ -136,16 +140,12 @@ public class SourceServiceImpl implements SourceService {
                     // 修改source状态
                     source.setIsConverted(true);
                     sourceMapper.updateById(source);
-                } catch (PdfOperationException e) {
+                } catch (PdfOperationException | IOException e) {
                     e.printStackTrace();
-                } catch (IOException ex) {
-                    ex.printStackTrace();
                 }
             }
-            // 设置状态为100%
-            ItemConvert convert = ItemConvertManager.get(itemId);
-            convert.setCompletePercent(100d);
-            ItemConvertManager.update(itemId, convert);
+            // 结束转换状态
+            ItemConvertManager.finish(itemId);
         }
 
     }

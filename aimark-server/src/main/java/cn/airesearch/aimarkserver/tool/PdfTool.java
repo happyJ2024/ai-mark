@@ -42,6 +42,7 @@ public final class PdfTool {
                 ImageIOUtil.writeImage(bufferedImage, imgPath, DEFAULT_DPI);
                 names.add(name);
             }
+            document.close();
             return names;
         } catch (IOException e) {
             log.error("PDF文件：{}加载失败", file.getAbsolutePath(), e);

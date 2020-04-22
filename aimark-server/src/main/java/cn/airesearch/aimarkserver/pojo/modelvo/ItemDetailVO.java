@@ -4,7 +4,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author ZhangXi
@@ -13,6 +12,6 @@ import java.util.Map;
 @Data
 public class ItemDetailVO extends ItemVO {
 
-    private Map<String, List> detail;
+    private List<SourceImgVO> detail;
 
 }

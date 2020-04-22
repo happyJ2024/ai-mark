@@ -30,19 +30,32 @@ public final class IoTool {
         return null == originName ? null : originName.substring(originName.lastIndexOf(FILE_DOT)+1);
     }
 
+    public static String getFileName(String originName) {
+        return null == originName ? null : originName.substring(0, originName.lastIndexOf(FILE_DOT));
+    }
 
     public static String buildFilePath(String... paths) {
         StringBuffer sb = new StringBuffer();
         for (String path : paths) {
-            if (path.contains(SEPARATOR_LEFT)) {
-                path = path.replace(SEPARATOR_LEFT, STRING_EMPTY);
-            }
-            if (path.contains(SEPARATOR_RIGHT)) {
-                path = path.replace(SEPARATOR_RIGHT, STRING_EMPTY);
-            }
             sb.append(File.separator).append(path);
         }
         return sb.toString().substring(1);
+    }
+
+
+    public static String transFileToUrlPath(String filePath) {
+        String urlPath = null;
+        if (filePath.contains(SEPARATOR_LEFT)) {
+            urlPath = filePath.replace(SEPARATOR_LEFT, URL_PATH_SEPARATOR);
+        } else if (filePath.contains(SEPARATOR_RIGHT)) {
+            urlPath = filePath.replace(SEPARATOR_RIGHT, URL_PATH_SEPARATOR);
+        }
+        return urlPath;
+    }
+
+
+    public static String transUrlToFilePath(String urlPath) {
+        return null == urlPath ? null : urlPath.replace(URL_PATH_SEPARATOR, File.separator);
     }
 
 

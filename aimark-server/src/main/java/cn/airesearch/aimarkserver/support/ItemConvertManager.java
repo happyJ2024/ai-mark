@@ -23,6 +23,13 @@ public class ItemConvertManager {
         PROGRESS_MAP.put(itemId, convert);
     }
 
+    public static void finish(Integer itemId) {
+        ItemConvert convert = PROGRESS_MAP.get(itemId);
+        convert.setCompleteNumber(convert.getTotalNumber());
+        convert.resetPercent();
+        PROGRESS_MAP.put(itemId, convert);
+    }
+
     public static ItemConvert get(Integer itemId) {
         return PROGRESS_MAP.get(itemId);
     }
