@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="cn.asr.appframework.server.mapper.mapper.auto.UserMapper">
-    <resultMap id="BaseResultMap" type="cn.asr.appframework.server.mapper.model.auto.User">
+<mapper namespace="cn.ar.aimark.server.mapper.mapper.auto.UserMapper">
+    <resultMap id="BaseResultMap" type="cn.ar.aimark.server.mapper.model.auto.User">
         <!--@mbg.generated-->
         <!--@Table user-->
         <id column="Id" jdbcType="INTEGER" property="id"/>
@@ -31,7 +31,7 @@
         where Id = #{id,jdbcType=INTEGER}
     </delete>
     <insert id="insert" keyColumn="Id" keyProperty="id"
-            parameterType="cn.asr.appframework.server.mapper.model.auto.User" useGeneratedKeys="true">
+            parameterType="cn.ar.aimark.server.mapper.model.auto.User" useGeneratedKeys="true">
         <!--@mbg.generated-->
         insert into user (`Name`, LoginName, PasswordHash,
         Mobile, Email, `Status`,
@@ -41,7 +41,7 @@
         #{deleteFlag,jdbcType=BIT}, #{rowVersion,jdbcType=INTEGER})
     </insert>
     <insert id="insertSelective" keyColumn="Id" keyProperty="id"
-            parameterType="cn.asr.appframework.server.mapper.model.auto.User" useGeneratedKeys="true">
+            parameterType="cn.ar.aimark.server.mapper.model.auto.User" useGeneratedKeys="true">
         <!--@mbg.generated-->
         insert into user
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -97,7 +97,7 @@
             </if>
         </trim>
     </insert>
-    <update id="updateByPrimaryKeySelective" parameterType="cn.asr.appframework.server.mapper.model.auto.User">
+    <update id="updateByPrimaryKeySelective" parameterType="cn.ar.aimark.server.mapper.model.auto.User">
         <!--@mbg.generated-->
         update user
         <set>
@@ -128,7 +128,7 @@
         </set>
         where Id = #{id,jdbcType=INTEGER}
     </update>
-    <update id="updateByPrimaryKey" parameterType="cn.asr.appframework.server.mapper.model.auto.User">
+    <update id="updateByPrimaryKey" parameterType="cn.ar.aimark.server.mapper.model.auto.User">
         <!--@mbg.generated-->
         update user
         set `Name` = #{name,jdbcType=VARCHAR},

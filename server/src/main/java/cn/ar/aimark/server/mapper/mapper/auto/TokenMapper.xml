@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="cn.asr.appframework.server.mapper.mapper.auto.TokenMapper">
-    <resultMap id="BaseResultMap" type="cn.asr.appframework.server.mapper.model.auto.Token">
+<mapper namespace="cn.ar.aimark.server.mapper.mapper.auto.TokenMapper">
+    <resultMap id="BaseResultMap" type="cn.ar.aimark.server.mapper.model.auto.Token">
         <!--@mbg.generated-->
         <!--@Table token-->
         <id column="UserId" jdbcType="VARCHAR" property="userId"/>
@@ -26,14 +26,14 @@
         delete from token
         where UserId = #{userId,jdbcType=VARCHAR}
     </delete>
-    <insert id="insert" parameterType="cn.asr.appframework.server.mapper.model.auto.Token">
+    <insert id="insert" parameterType="cn.ar.aimark.server.mapper.model.auto.Token">
         <!--@mbg.generated-->
         insert into token (UserId, AccessToken, RefreshToken,
         DeleteFlag, RowVersion)
         values (#{userId,jdbcType=VARCHAR}, #{accessToken,jdbcType=VARCHAR}, #{refreshToken,jdbcType=VARCHAR},
         #{deleteFlag,jdbcType=BIT}, #{rowVersion,jdbcType=INTEGER})
     </insert>
-    <insert id="insertSelective" parameterType="cn.asr.appframework.server.mapper.model.auto.Token">
+    <insert id="insertSelective" parameterType="cn.ar.aimark.server.mapper.model.auto.Token">
         <!--@mbg.generated-->
         insert into token
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -71,7 +71,7 @@
             </if>
         </trim>
     </insert>
-    <update id="updateByPrimaryKeySelective" parameterType="cn.asr.appframework.server.mapper.model.auto.Token">
+    <update id="updateByPrimaryKeySelective" parameterType="cn.ar.aimark.server.mapper.model.auto.Token">
         <!--@mbg.generated-->
         update token
         <set>
@@ -90,7 +90,7 @@
         </set>
         where UserId = #{userId,jdbcType=VARCHAR}
     </update>
-    <update id="updateByPrimaryKey" parameterType="cn.asr.appframework.server.mapper.model.auto.Token">
+    <update id="updateByPrimaryKey" parameterType="cn.ar.aimark.server.mapper.model.auto.Token">
         <!--@mbg.generated-->
         update token
         set AccessToken = #{accessToken,jdbcType=VARCHAR},

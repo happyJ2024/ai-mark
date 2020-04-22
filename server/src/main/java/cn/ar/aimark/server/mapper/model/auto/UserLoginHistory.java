@@ -5,7 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import java.util.Date;
 import lombok.Data;
 
-@ApiModel(value = "cn.asr.appframework.server.mapper.model.auto.UserLoginHistory")
+@ApiModel(value = "cn.ar.aimark.server.mapper.model.auto.UserLoginHistory")
 @Data
 public class UserLoginHistory extends BaseModel {
     /**

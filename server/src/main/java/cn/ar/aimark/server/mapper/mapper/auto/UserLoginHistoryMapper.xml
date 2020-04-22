@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="cn.asr.appframework.server.mapper.mapper.auto.UserLoginHistoryMapper">
-  <resultMap id="BaseResultMap" type="cn.asr.appframework.server.mapper.model.auto.UserLoginHistory">
+<mapper namespace="cn.ar.aimark.server.mapper.mapper.auto.UserLoginHistoryMapper">
+  <resultMap id="BaseResultMap" type="cn.ar.aimark.server.mapper.model.auto.UserLoginHistory">
     <!--@mbg.generated-->
     <!--@Table userLoginHistory-->
     <id column="UserId" jdbcType="INTEGER" property="userId" />
@@ -28,14 +28,14 @@
     where UserId = #{userId,jdbcType=INTEGER}
       and IP = #{IP,jdbcType=VARCHAR}
   </delete>
-  <insert id="insert" parameterType="cn.asr.appframework.server.mapper.model.auto.UserLoginHistory">
+  <insert id="insert" parameterType="cn.ar.aimark.server.mapper.model.auto.UserLoginHistory">
     <!--@mbg.generated-->
     insert into userLoginHistory (UserId, IP, LastLoginDateTime, 
       LoginSuccess, LoginFailedCount)
     values (#{userId,jdbcType=INTEGER}, #{IP,jdbcType=VARCHAR}, #{lastLoginDateTime,jdbcType=TIMESTAMP}, 
       #{loginSuccess,jdbcType=BOOLEAN}, #{loginFailedCount,jdbcType=INTEGER})
   </insert>
-  <update id="updateByPrimaryKey" parameterType="cn.asr.appframework.server.mapper.model.auto.UserLoginHistory">
+  <update id="updateByPrimaryKey" parameterType="cn.ar.aimark.server.mapper.model.auto.UserLoginHistory">
     <!--@mbg.generated-->
     update userLoginHistory
     set LastLoginDateTime = #{lastLoginDateTime,jdbcType=TIMESTAMP},

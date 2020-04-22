@@ -45,4 +45,7 @@ mybatis:
     - classpath:mapper/auto/*.xml
     - classpath:mapper/extend/*.xml
 
+appconfig:
+  ocr_service_url: http://172.16.120.101:10115/yuanbao
+
 

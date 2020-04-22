@@ -18,8 +18,9 @@ public class PDFTest {
             fml.addSubstitute("YouYuan,Bold","YouYuan");
         }
 
-        String pdfPath = "/home/byj/Project/园区报关中心OCR2020327/2020327/RBAC_I_20012170-C.pdf";
-        String imgDir = "/home/byj/Project/园区报关中心OCR2020327/2020327/image/RBAC_I_20012170-C";
+
+        String pdfPath = "/home/byj/Pictures/DGF_(S)ROBERT BOSCH GMBH(C)BOSCH AUTOMOTIVE PRODUCTS_1QK0062.pdf";
+        String imgDir = "/home/byj/Pictures/DGF_(S)ROBERT BOSCH GMBH(C)BOSCH AUTOMOTIVE PRODUCTS_1QK0062";
         String imgNamePrefix = "";
         PdfToImage.pdfToMultipleImage(pdfPath, imgDir, imgNamePrefix);
 

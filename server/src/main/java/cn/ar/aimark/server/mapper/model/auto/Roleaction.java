@@ -5,7 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-@ApiModel(value = "cn.asr.appframework.server.mapper.model.auto.Roleaction")
+@ApiModel(value = "cn.ar.aimark.server.mapper.model.auto.Roleaction")
 @Data
 public class Roleaction extends BaseModel {
     @ApiModelProperty(value = "null")

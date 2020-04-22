@@ -4,7 +4,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-@ApiModel(value = "cn.asr.appframework.server.mapper.model.auto.Userrole")
+@ApiModel(value = "cn.ar.aimark.server.mapper.model.auto.Userrole")
 @Data
 public class Userrole extends BaseModel {
     /**

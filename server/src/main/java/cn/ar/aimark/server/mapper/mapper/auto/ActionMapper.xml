@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="cn.asr.appframework.server.mapper.mapper.auto.ActionMapper">
-  <resultMap id="BaseResultMap" type="cn.asr.appframework.server.mapper.model.auto.Action">
+<mapper namespace="cn.ar.aimark.server.mapper.mapper.auto.ActionMapper">
+  <resultMap id="BaseResultMap" type="cn.ar.aimark.server.mapper.model.auto.Action">
     <!--@mbg.generated-->
     <!--@Table action-->
     <id column="ActionId" jdbcType="INTEGER" property="actionId" />
@@ -28,7 +28,7 @@
     delete from action
     where ActionId = #{actionId,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="cn.asr.appframework.server.mapper.model.auto.Action">
+  <insert id="insert" parameterType="cn.ar.aimark.server.mapper.model.auto.Action">
     <!--@mbg.generated-->
     insert into action (ActionId, ActionName, ActionType, 
       `Level`, ParentActionId, DeleteFlag, 
@@ -37,7 +37,7 @@
       #{level,jdbcType=INTEGER}, #{parentActionId,jdbcType=INTEGER}, #{deleteFlag,jdbcType=BIT}, 
       #{rowVersion,jdbcType=INTEGER})
   </insert>
-  <update id="updateByPrimaryKey" parameterType="cn.asr.appframework.server.mapper.model.auto.Action">
+  <update id="updateByPrimaryKey" parameterType="cn.ar.aimark.server.mapper.model.auto.Action">
     <!--@mbg.generated-->
     update action
     set ActionName = #{actionName,jdbcType=VARCHAR},

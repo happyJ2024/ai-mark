@@ -1,0 +1,35 @@
+{
+	"wayBillList": [{
+		"pageNum": [1],
+		"Airport_Code": "PVG",
+		"UXM": "1QKOO62",
+		"AIR_WAYBILL": "DHL",
+		"CONSIGNEE": "BOSCH AUTOMOTIVE PRODUCTS (SUZHOU) CO LTD NO. 126 SU HONG x1 LU",
+		"SHIPPER": "ROBERT BOSCH GMBH  CHASSIS SYSTEMS CONTROL  ROBERT BOSCH STR. 1  87509 IMMENSTADT  GERMANY ",
+		"PACKING": "3 PKG",
+		"WEIGHT": "",
+		"GROSS": "",
+		"INCOTERM": "FCA",
+		"INVOICE_NUMBER": " 7073655965",
+		"TOTAL": "884 . l7",
+		"METHOD": "COLLECT",
+		"CUR": "EUR"
+	}],
+	"invoiceList": [{
+		"pageNum": [3, 4, 5],
+		"Invoice_No": "Invoice NOV 2 7073655965",
+		"Supplier_code": " 0000888050",
+		"Dispatch_address": "Dispatch addless . awn Automotive Fluumls. (Suzhou) (0.. LLd.. 1 Runbo Road. CPI\u2014210034 Nanjing , .",
+		"Customer_Partnumber": "0204858480",
+		"Quantity": "120",
+		"Price": "46.12231",
+		"Amount": "55,347.49",
+		"Currency": "CNY",
+		"Ctry_Origin": "DE\n\n199\n\n200",
+		"Your_order_number": "0055459934",
+		"Invoice_amount": "55.347.49",
+		"cardboard_pallet": "1 cardboard pallet",
+		"Net_weight": "199,200KG",
+		"Gross_weight": "248.500KG"
+	}]
+}

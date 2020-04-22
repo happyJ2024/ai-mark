@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="cn.asr.appframework.server.mapper.mapper.auto.RoleMapper">
-  <resultMap id="BaseResultMap" type="cn.asr.appframework.server.mapper.model.auto.Role">
+<mapper namespace="cn.ar.aimark.server.mapper.mapper.auto.RoleMapper">
+  <resultMap id="BaseResultMap" type="cn.ar.aimark.server.mapper.model.auto.Role">
     <!--@mbg.generated-->
     <!--@Table role-->
     <id column="RoleId" jdbcType="INTEGER" property="roleId" />
@@ -25,14 +25,14 @@
     delete from role
     where RoleId = #{roleId,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="cn.asr.appframework.server.mapper.model.auto.Role">
+  <insert id="insert" parameterType="cn.ar.aimark.server.mapper.model.auto.Role">
     <!--@mbg.generated-->
     insert into role (RoleId, RoleName, DeleteFlag, 
       RowVersion)
     values (#{roleId,jdbcType=INTEGER}, #{roleName,jdbcType=VARCHAR}, #{deleteFlag,jdbcType=BIT}, 
       #{rowVersion,jdbcType=INTEGER})
   </insert>
-  <update id="updateByPrimaryKey" parameterType="cn.asr.appframework.server.mapper.model.auto.Role">
+  <update id="updateByPrimaryKey" parameterType="cn.ar.aimark.server.mapper.model.auto.Role">
     <!--@mbg.generated-->
     update role
     set RoleName = #{roleName,jdbcType=VARCHAR},

@@ -5,7 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-@ApiModel(value="cn.asr.appframework.server.mapper.model.auto.Action")
+@ApiModel(value="cn.ar.aimark.server.mapper.model.auto.Action")
 @Data
 public class Action extends BaseModel {
     /**
