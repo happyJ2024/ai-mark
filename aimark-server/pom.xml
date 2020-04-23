@@ -10,7 +10,7 @@
     </parent>
     <groupId>cn.airesearch</groupId>
     <artifactId>aimark-server</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0</version>
     <name>aimark-server</name>
     <description>Demo project for Spring Boot</description>
 
@@ -58,7 +58,7 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>druid</artifactId>
-            <version>1.1.19</version>
+            <version>1.1.20</version>
         </dependency>
         <!-- Mybatis Plus -->
         <dependency>
