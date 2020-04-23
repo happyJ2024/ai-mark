@@ -12,6 +12,8 @@ import { ProjectType } from '../../data/enums/ProjectType';
 import { ProjectData } from '../../store/general/types';
 import { AppState } from '../../store';
 
+import bgImage from "./../../yuanbao-bg.png"
+
 interface IProps {
     updateActivePopupType: (activePopupType: PopupWindowType) => any; updateProjectData: (projectData: ProjectData) => any;
     projectData: ProjectData;
@@ -54,7 +56,7 @@ const MainView: React.FC<IProps> = ({ updateActivePopupType, updateProjectData, 
     const getEditorFeatureTiles = () => {
 
         return <div className="WorkProgressContent" >
-            <img src={"img/workprogress.png"}></img>
+            {/* <img src={"img/workprogress.png"}></img> */}
         </div>;
 
         // return EditorFeatureData.map((data: IEditorFeature) => {
@@ -79,7 +81,7 @@ const MainView: React.FC<IProps> = ({ updateActivePopupType, updateProjectData, 
     };
 
     return (
-        <div className={getClassName()}>
+        <div className={getClassName()}  style={{backgroundImage:'url('+bgImage+')', backgroundRepeat:'no-repeat', backgroundSize:'cover'}}>
             <div className="Slider" id="lower">
                 <div className="TriangleVertical">
                     <div className="TriangleVerticalContent" />
@@ -99,7 +101,7 @@ const MainView: React.FC<IProps> = ({ updateActivePopupType, updateProjectData, 
                             draggable={false}
                             src={"make-sense-ico-transparent.png"}
                         />
-                        <span>AI Mark</span></div>
+                        <span>&nbsp;AI OCR</span></div>
                 </div>
                 <div className="EditorFeaturesWrapper"> 
                     {getEditorFeatureTiles()}
@@ -119,7 +121,7 @@ const MainView: React.FC<IProps> = ({ updateActivePopupType, updateProjectData, 
                     {/* {getSocialMediaButtons({width: 30, height: 30})} */}
                     {!projectInProgress && <TextButton
                         externalClassName={"StartMarkButton"}
-                        label={"开始标注"}
+                        label={"开始OCR"}
                         onClick={startNewProject}
                     />}
                 </div>

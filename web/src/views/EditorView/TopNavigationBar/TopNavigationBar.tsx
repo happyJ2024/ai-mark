@@ -82,7 +82,7 @@ const TopNavigationBar: React.FC<IProps> = ({ updateActivePopupType, updateProje
                             alt={"make-sense"}
                             src={"/make-sense-ico-transparent.png"}
                         />
-                        AI Mark
+                        AI OCR
                         <TextButton
                             label={"上传文件"}
                             externalClassName={"UploadImageButton"}

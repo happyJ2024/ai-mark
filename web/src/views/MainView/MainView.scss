@@ -3,6 +3,10 @@
 .StartMarkButton {
   padding: 30px 50px !important;
   font-size: 20px;
+  background-color: #fff;
+  position: absolute;
+  right: 100px;
+  bottom: 200px;
 }
 .MainView {
   position: absolute;
@@ -11,11 +15,11 @@
   margin: 0;
   padding: 0;
 
-  background-image: linear-gradient(
-    to top right,
-    $primaryColor,
-    $secondaryColor
-  );
+  // background-image: linear-gradient(
+  //   to top right,
+  //   $primaryColor,
+  //   $secondaryColor
+  // );
 
   display: flex;
   flex-direction: row;
@@ -93,13 +97,13 @@
   position: absolute;
   top: 0;
   left: 0;
-  background-color: rgba(0, 0, 0, 0.3);
+  // background-color: rgba(0, 0, 0, 0.3);
   z-index: 0;
   width: 75%;
   height: 100%;
 
   .TriangleVerticalContent {
-    background-color: rgba(0, 0, 0, 0.3);
+    // background-color: rgba(0, 0, 0, 0.3);
   }
 }
 
@@ -113,7 +117,7 @@
 
 .LeftColumn {
   position: relative;
-  background-color: $darkThemeFirstColor;
+  // background-color: $darkThemeFirstColor;
   padding: 20px;
   z-index: 100;
 
@@ -134,13 +138,13 @@
     flex-direction: column;
     justify-content: space-between;
 
-      img {
-      width: 80px;
+    img {
+      width: 150px;
       user-select: none;
     }
 
-    span{
-      color:#fff;
+    span {
+      color: #fff;
       font-size: 24px;
       font-weight: bold;
     }
@@ -208,7 +212,7 @@
   left: 0;
   top: 0;
   transform: skew(-6deg) translateX(-50%);
-  background-color: $darkThemeFirstColor;
+  // background-color: $darkThemeFirstColor;
 }
 
 .EditorFeaturesTiles {

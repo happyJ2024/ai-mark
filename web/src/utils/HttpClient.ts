@@ -44,7 +44,7 @@ function apiAxios(method, url, params, config) {
 		loadProgressBar()
 		axios.defaults.headers.common.Authorization = localStorage.getItem('accessToken');
 
-		axios.defaults.baseURL = "http://172.16.114.170:30050/"
+		axios.defaults.baseURL = "http://172.16.120.101:30050/"
 
 		axios({
 			method,
