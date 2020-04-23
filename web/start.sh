@@ -1,3 +1,3 @@
 echo 'start web'
 
-cnpm install & cnpm run start
+npm install & npm run start
