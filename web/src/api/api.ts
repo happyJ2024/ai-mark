@@ -20,13 +20,13 @@ export function StartConvert(param) {
 export function GetConvertProgress(param) {
     return HttpClient.get(`/api/getConvertProgress`, param)
 }
-///OCR分类单据
-export function CallOCRSplit(param) {
-    return HttpClient.post(`/api/ocrSplit`, param)
-}
 ///OCR提取单据内容
-export function CallOCRExtract(param) {
-    return HttpClient.post(`/api/ocrExtract`, param)
+export function CallOCR(param) {
+    return HttpClient.post(`/api/ocr`, param)
+}
+///发布项目的结果到目标服务
+export function Publish(param) {
+    return HttpClient.post(`/api/publish`, param)
 }
 export default {
     CreateProject,
@@ -35,6 +35,6 @@ export default {
     UploadFile,
     StartConvert,
     GetConvertProgress,
-    CallOCRSplit,
-    CallOCRExtract
+    CallOCR,
+    Publish
 } 

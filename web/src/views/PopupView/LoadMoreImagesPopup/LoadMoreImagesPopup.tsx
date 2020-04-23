@@ -2,8 +2,8 @@ import React from 'react'
 import './LoadMoreImagesPopup.scss'
 import { AppState } from "../../../store";
 import { connect } from "react-redux";
-import { addImageData } from "../../../store/labels/actionCreators";
-import { updateProjectData } from "../../../store/general/actionCreators";
+import { addImageData, updateActiveImageIndex } from "../../../store/labels/actionCreators";
+import { updateProjectData, updateActivePopupType } from "../../../store/general/actionCreators";
 import { GenericYesNoPopup } from "../GenericYesNoPopup/GenericYesNoPopup";
 
 import { ImageData } from "../../../store/labels/types";
@@ -14,12 +14,17 @@ import { InboxOutlined } from '@ant-design/icons';
 import { UploadFile, StartConvert, GetConvertProgress, GetProjectDetail } from '../../../api/api';
 import { Progress } from 'antd';
 import { ProjectData } from '../../../store/general/types';
+import { FileUtil } from '../../../utils/FileUtil';
+import { PopupWindowType } from '../../../data/enums/PopupWindowType';
 
 const { Dragger } = Upload;
 
 interface IProps {
-    addImageData: (imageData: ImageData[]) => any;
+   
+    updateActivePopupType: (activePopupType: PopupWindowType) => any; 
+    updateActiveImageIndex: (activeImageIndex: number) => any;
     updateProjectData: (projectData: ProjectData) => any;
+    addImageData: (imageData: ImageData[]) => any;
     projectData: ProjectData;
 }
 interface IState {
@@ -147,28 +152,33 @@ class LoadMoreImagesPopup extends React.Component<IProps, IState> {
                     };
                     GetConvertProgress(queryParam).then((res: any) => {
                         console.log('GetConvertProgress', res);
-                        var percent= res.data.data.completePercent *100;      
-                       
+                        var percent = res.data.data.completePercent * 100;
+
                         self.setState(state => ({
                             ...state,
                             converting: true,
                             convertPercent: percent
                         }));
 
-                        if (percent=== 100) {
+                        if (percent === 100) {
                             if (self.getConvertProgressInterval) {
                                 clearInterval(self.getConvertProgressInterval);
                             }
-                            PopupActions.close();
 
                             //load project detail
                             GetProjectDetail(queryParam).then((res: any) => {
-                                console.log('GetProjectDetail', res);
-
+                                console.log('GetProjectDetail', res.data);
+                                let detailArray: [] = res.data.data.detail;
                                 self.props.updateProjectData({
                                     ...self.props.projectData,
-                                    detail: res.data.data.detail
+                                    detail: detailArray
                                 });
+
+                                let imgageData = self.getImageData(detailArray);
+                                self.props.addImageData(imgageData);
+                                self.props.updateActiveImageIndex(-1);
+                                self.props.updateActivePopupType(null);
+                                PopupActions.close();
                             })
 
                         }
@@ -203,11 +213,28 @@ class LoadMoreImagesPopup extends React.Component<IProps, IState> {
         });
     };
 
+    getImageData = (detailArray) => {
+
+        let imgData = [];
+        for (let index = 0; index < detailArray.length; index++) {
+            const d = detailArray[index];
+            let images = d.imageUrls;
+            if (images && images.length > 0) {
+                for (let imageIndex = 0; imageIndex < images.length; imageIndex++) {
+                    const image = images[imageIndex];
+                    imgData.push(FileUtil.mapUrlToImageData(image));
+                }
+            }
+        }
+        return imgData;
+    }
 };
 
 const mapDispatchToProps = {
     addImageData,
-    updateProjectData
+    updateProjectData,
+    updateActivePopupType, 
+    updateActiveImageIndex, 
 };
 
 const mapStateToProps = (state: AppState) => ({

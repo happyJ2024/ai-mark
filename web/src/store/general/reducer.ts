@@ -14,7 +14,7 @@ const initialState: GeneralState = {
         projectId: '',
         type: null,
         name: "sample-project-name", status: '',
-        detail: {},
+        detail: [],
         ticketType: null
     },
     zoom: ViewPointSettings.MIN_ZOOM

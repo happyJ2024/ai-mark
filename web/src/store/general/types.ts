@@ -10,7 +10,7 @@ export type ProjectData = {
     projectId: string, //项目编号
     name: string,  //项目名称
     status: string, //项目状态 undone, done
-    detail: {},  //项目的详细信息
+    detail: [],  //项目的详细信息
 
     type: ProjectType; //项目类型
     ticketType: TicketType;//单据类型

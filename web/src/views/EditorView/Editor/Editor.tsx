@@ -131,7 +131,7 @@ class Editor extends React.Component<IProps, IState> {
             if (!EditorModel.isLoading) {
                 EditorActions.setLoadingStatus(true);
                 const saveLoadedImagePartial = (image: HTMLImageElement) => this.saveLoadedImage(image, imageData);
-                FileUtil.loadImage(imageData.fileData, saveLoadedImagePartial, this.handleLoadImageError);
+                FileUtil.loadImage(imageData, saveLoadedImagePartial, this.handleLoadImageError);
             }
         }
     };

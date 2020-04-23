@@ -47,7 +47,7 @@ const ExitProjectPopup: React.FC<IProps> = (props) => {
     const onAccept = () => {
         updateActiveLabelNameId(null);
         updateLabelNames([]);
-        updateProjectData({ projectId: '', type: null, status: '', detail: {}, name: "my-project-name", ticketType: null });
+        updateProjectData({ projectId: '', type: null, status: '', detail: [], name: "my-project-name", ticketType: null });
         updateActiveImageIndex(null);
         updateImageData([]);
         updateFirstLabelCreatedFlag(false);

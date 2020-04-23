@@ -49,6 +49,8 @@ export type ImageData = {
     labelPoints: LabelPoint[];
     labelPolygons: LabelPolygon[];
 
+    imgUrl:string;
+
     // SSD
     isVisitedByObjectDetector: boolean;
 

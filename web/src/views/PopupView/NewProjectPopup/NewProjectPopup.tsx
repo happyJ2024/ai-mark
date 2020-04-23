@@ -2,7 +2,8 @@ import React from 'react'
 import './NewProjectPopup.scss'
 import { GenericYesNoPopup } from "../GenericYesNoPopup/GenericYesNoPopup";
 import { PopupWindowType } from "../../../data/enums/PopupWindowType";
-import { updateLabelNames } from "../../../store/labels/actionCreators";
+import { ImageData } from "../../../store/labels/types";
+import { updateLabelNames, addImageData } from "../../../store/labels/actionCreators";
 import { updateActivePopupType, updateProjectData } from "../../../store/general/actionCreators";
 import { AppState } from "../../../store";
 import { connect } from "react-redux";
@@ -17,8 +18,8 @@ import { TicketType } from '../../../data/enums/TicketType';
 import DropdownSelect from '../../Common/DropdownSelect/DropdownSelect';
 import { CreateProject, GetProjectList, DeleteProject, GetProjectDetail } from '../../../api/api';
 import { Tabs, Table, Tag, message } from 'antd';
+import { FileUtil } from '../../../utils/FileUtil';
 
-const { Column, ColumnGroup } = Table;
 const { TabPane } = Tabs;
 
 interface IProps {
@@ -26,6 +27,7 @@ interface IProps {
     updateLabelNames: (labels: LabelName[]) => any;
     updateActiveImageIndex: (activeImageIndex: number) => any;
     updateProjectData: (projectData: ProjectData) => any;
+    addImageData: (imageData: ImageData[]) => any;
     projectData: ProjectData;
 
 }
@@ -226,13 +228,18 @@ class NewProjectPopup extends React.Component<IProps, IState>  {
                 id: record.projectId
             };
             GetProjectDetail(queryParam).then((res: any) => {
-                console.log('GetProjectDetail', res);
+                console.log('GetProjectDetail', res.data);
+                let detailArray: [] = res.data.data.detail;
 
                 if (res.data && res.data.data) {
                     this.props.updateProjectData({
                         ...this.props.projectData,
-                        detail: res.data.data.detail
+                        detail: detailArray
                     });
+
+                    let imgageData = this.getImageData(detailArray);
+                    this.props.addImageData(imgageData);
+
                     this.props.updateActiveImageIndex(-1);
                     this.props.updateActivePopupType(null);
                 }
@@ -242,6 +249,21 @@ class NewProjectPopup extends React.Component<IProps, IState>  {
         }
     }
 
+    getImageData = (detailArray) => {
+
+        let imgData = [];
+        for (let index = 0; index < detailArray.length; index++) {
+            const d = detailArray[index];
+            let images = d.imageUrls;
+            if (images && images.length > 0) {
+                for (let imageIndex = 0; imageIndex < images.length; imageIndex++) {
+                    const image = images[imageIndex];
+                    imgData.push(FileUtil.mapUrlToImageData(image));
+                }
+            }
+        }
+        return imgData;
+    }
     renderContent = () => {
         return (
             <Tabs defaultActiveKey="1" onChange={this.callback}>
@@ -323,7 +345,8 @@ const mapDispatchToProps = {
     updateActivePopupType,
     updateLabelNames,
     updateActiveImageIndex,
-    updateProjectData
+    updateProjectData,
+    addImageData
 };
 
 const mapStateToProps = (state: AppState) => ({

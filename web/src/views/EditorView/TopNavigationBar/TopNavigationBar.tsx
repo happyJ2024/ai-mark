@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './TopNavigationBar.scss';
 import StateBar from "../StateBar/StateBar";
 import { UnderlineTextButton } from "../../Common/UnderlineTextButton/UnderlineTextButton";
@@ -11,24 +11,62 @@ import { updateActivePopupType, updateProjectData } from "../../../store/general
 // import { Settings } from "../../../settings/Settings";
 import { ProjectData } from "../../../store/general/types";
 import { ImageData } from "../../../store/labels/types";
+import { CallOCR, Publish } from '../../../api/api';
+import { message, Modal, Spin } from 'antd';
 
 interface IProps {
     updateActivePopupType: (activePopupType: PopupWindowType) => any;
     updateProjectData: (projectData: ProjectData) => any;
     projectData: ProjectData;
-    imagesData:ImageData[];
+    imagesData: ImageData[];
 }
 
-const TopNavigationBar: React.FC<IProps> = ({ updateActivePopupType, updateProjectData, projectData,imagesData }) => {
+const TopNavigationBar: React.FC<IProps> = ({ updateActivePopupType, updateProjectData, projectData, imagesData }) => {
 
-    function callOCRSplit() {
+    const [ocrSuccess, setocrSuccess] = useState(false);
+
+    const [ocrWorking, setOcrWorking] = useState(false);
+    const [publishing, setPublishing] = useState(false)
+
+    function callPublish() {
+        setPublishing(true);
+        let param = {
+            id: projectData.projectId
+        };
+
+        Publish(param).then((res: any) => {
+            if (res.data && res.data.errorCode === 0) {
+                message.success("推送结果成功");
+            } else {
+                message.error("推送结果失败");
+            }
+        }).finally(() => {
+            setPublishing(false);
+        })
 
     }
     function callOCRExtract() {
 
+        setOcrWorking(true);
+
+        let param = {
+            id: projectData.projectId
+        };
+
+        CallOCR(param).then((res: any) => {
+            if (res.data && res.data.errorCode === 0) {
+                message.success("OCR提取成功");
+                setocrSuccess(true);
+            } else {
+                message.error("OCR提取失败");
+            }
+        }).finally(() => {
+            setOcrWorking(false);
+        })
+
     }
-     function ifHasFiles() {
-        return imagesData && imagesData.length>0;
+    function ifHasFiles() {
+        return imagesData && imagesData.length > 0;
     }
 
     return (
@@ -50,19 +88,21 @@ const TopNavigationBar: React.FC<IProps> = ({ updateActivePopupType, updateProje
                             externalClassName={"UploadImageButton"}
                             onClick={() => updateActivePopupType(PopupWindowType.LOAD_IMAGES)}
                         />
-                        {ifHasFiles() &&    <TextButton
-                            label={"OCR分类"}
+
+                        {ifHasFiles() &&
+                            <TextButton
+                                label={"OCR识别"}
+                                externalClassName={"OCRButton"}
+                                onClick={() => { callOCRExtract(); }}
+                            />}
+
+                        {ifHasFiles() && ocrSuccess && <TextButton
+                            label={"推送结果"}
                             externalClassName={"OCRButton"}
-                            onClick={() => { callOCRSplit(); }}
-                             
+                            onClick={() => { callPublish(); }}
+
                         />}
-                         {ifHasFiles() && 
-                        <TextButton
-                            label={"OCR识别"}
-                            externalClassName={"OCRButton"}
-                            onClick={() => { callOCRExtract(); }}                             
-                        />}
-                     
+
                     </div>
 
                 </div>
@@ -104,6 +144,31 @@ const TopNavigationBar: React.FC<IProps> = ({ updateActivePopupType, updateProje
                     /> */}
                 </div>
             </div>
+
+            <Modal
+                title="OCR提取"
+                visible={ocrWorking}
+                onOk={null}
+                onCancel={null}
+                footer={null}
+            >
+                <div className="OCRModelContent">
+                    <Spin size="large" tip="正在提取中..." />
+                </div>
+
+            </Modal>
+            <Modal
+                title="推送结果"
+                visible={publishing}
+                onOk={null}
+                onCancel={null}
+                footer={null}
+            >
+                <div className="OCRModelContent">
+                    <Spin size="large" tip="正在推送结果中..." />
+                </div>
+
+            </Modal>
         </div>
     );
 };

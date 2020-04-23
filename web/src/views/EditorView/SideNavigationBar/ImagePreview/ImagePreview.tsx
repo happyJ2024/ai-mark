@@ -78,7 +78,7 @@ class ImagePreview extends React.Component<IProps, IState> {
         else if (!isScrolling || !this.isLoading) {
             this.isLoading = true;
             const saveLoadedImagePartial = (image: HTMLImageElement) => this.saveLoadedImage(image, imageData);
-            await FileUtil.loadImage(imageData.fileData, saveLoadedImagePartial, this.handleLoadImageError);
+            await FileUtil.loadImage(imageData, saveLoadedImagePartial, this.handleLoadImageError);
         }
     };
 
@@ -145,7 +145,7 @@ class ImagePreview extends React.Component<IProps, IState> {
                 onClick={onClick ? onClick : undefined}
             >
                 {(!!this.state.image) ?
-                    [
+                    [ 
                         <div
                             className="Foreground"
                             key={"Foreground"}
