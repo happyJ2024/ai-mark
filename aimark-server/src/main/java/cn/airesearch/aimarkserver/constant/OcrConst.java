@@ -10,5 +10,6 @@ public class OcrConst {
 
     public static final String OCR_SERVICE_URL = ApplicationContextProvider.getBean(AppSetting.class).getOcrServerUrl();
 
+    public static final String EXPORT_DIR_NAME = "EXPORTED";
 
 }

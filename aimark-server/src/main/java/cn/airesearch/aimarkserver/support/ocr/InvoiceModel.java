@@ -1,10 +1,7 @@
 package cn.airesearch.aimarkserver.support.ocr;
 
-import lombok.Data;
-
 import java.util.List;
 
-@Data
 public class InvoiceModel {
     public List<Integer> pageNum;
     public String Invoice_No;

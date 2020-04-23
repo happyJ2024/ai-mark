@@ -1,5 +1,6 @@
 package cn.airesearch.aimarkserver.service.impl;
 
+import cn.airesearch.aimarkserver.constant.OcrConst;
 import cn.airesearch.aimarkserver.constant.ResourceConst;
 import cn.airesearch.aimarkserver.service.OCRService;
 import cn.airesearch.aimarkserver.support.base.BaseResponse;
@@ -7,6 +8,7 @@ import cn.airesearch.aimarkserver.support.ocr.*;
 import cn.airesearch.aimarkserver.tool.IoTool;
 import cn.airesearch.aimarkserver.tool.PdfTool;
 import cn.airesearch.aimarkserver.tool.SplitPDFPage;
+import cn.airesearch.aimarkserver.tool.ZipTool;
 import cn.asr.appframework.utility.file.FileUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -15,6 +17,7 @@ import org.springframework.util.FileCopyUtils;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
@@ -25,7 +28,6 @@ import java.util.List;
 @Service
 public class OCRServiceImpl implements OCRService {
 
-    private static final String EXPORT_DIR_NAME = "EXPORTED";
 
     @Override
     public BaseResponse<String> ocr(Integer projectId) {
@@ -42,7 +44,7 @@ public class OCRServiceImpl implements OCRService {
         for (File f : files
         ) {
             if (f.isDirectory() == false) continue;
-            if (f.getName().equals(EXPORT_DIR_NAME)) continue;
+            if (f.getName().equals(OcrConst.EXPORT_DIR_NAME)) continue;
 
             filesList.add(f.getAbsolutePath());
         }
@@ -84,6 +86,16 @@ public class OCRServiceImpl implements OCRService {
             newImageInfo.setPath(idFileMap.get(String.valueOf(i)));
             images.add(newImageInfo);
         }
+        images.sort(new Comparator<ImageInfo>() {
+            @Override
+            public int compare(ImageInfo t1, ImageInfo t2) {
+                int id1 = Integer.parseInt(t1.getId());
+                int id2 = Integer.parseInt(t1.getId());
+                if (id1 > id2) return 1;
+                if (id1 == id2) return 0;
+                return -1;
+            }
+        });
 
         OCRResponse ocrResponse = OCRWrapper.callOCRService(ocrRequest);
         if (ocrResponse == null) {
@@ -92,7 +104,7 @@ public class OCRServiceImpl implements OCRService {
         }
 
         //准备Export的数据
-        String exportDir = IoTool.buildFilePath(ResourceConst.ROOT_PATH, ResourceConst.PROJECT + projectId, EXPORT_DIR_NAME);
+        String exportDir = IoTool.buildFilePath(ResourceConst.ROOT_PATH, ResourceConst.PROJECT + projectId, OcrConst.EXPORT_DIR_NAME);
         String exportExcelFilePath = IoTool.buildFilePath(exportDir, "data.xlsx");
         String exportJsonFilePath = IoTool.buildFilePath(exportDir, "data.json");
 
@@ -120,7 +132,7 @@ public class OCRServiceImpl implements OCRService {
         int shipPdfIndex = 1;
         for (WayBillModel wayBillModel :
                 ocrResponse.getWayBillList()) {
-            List<Integer> pageNum = wayBillModel.getPageNum();
+            List<Integer> pageNum = wayBillModel.pageNum;
             List<SplitPDFPage> splitPDFPageList = new ArrayList<>();
             for (Integer page : pageNum) {
 
@@ -145,7 +157,7 @@ public class OCRServiceImpl implements OCRService {
         int invoicePdfIndex = 1;
         for (InvoiceModel invoiceModel :
                 ocrResponse.getInvoiceList()) {
-            List<Integer> pageNum = invoiceModel.getPageNum();
+            List<Integer> pageNum = invoiceModel.pageNum;
             List<SplitPDFPage> splitPDFPageList = new ArrayList<>();
             for (Integer page : pageNum) {
 
@@ -164,6 +176,10 @@ public class OCRServiceImpl implements OCRService {
             }
             invoicePdfIndex++;
         }
+
+        //zip压缩包
+        String targetZipFile = IoTool.buildFilePath(ResourceConst.ROOT_PATH, ResourceConst.PROJECT + projectId, projectId + ".zip");
+        new ZipTool(new File(targetZipFile)).zipFiles(new File(exportDir));
 
         response.success("导出ocr结果成功");
         response.setData("");

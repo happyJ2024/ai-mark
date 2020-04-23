@@ -1,5 +1,7 @@
 package cn.airesearch.aimarkserver.service.impl;
 
+import cn.airesearch.aimarkserver.constant.AppConst;
+import cn.airesearch.aimarkserver.constant.OcrConst;
 import cn.airesearch.aimarkserver.constant.ResourceConst;
 import cn.airesearch.aimarkserver.dao.ItemMapper;
 import cn.airesearch.aimarkserver.dao.SourceMapper;
@@ -12,6 +14,7 @@ import cn.airesearch.aimarkserver.pojo.modelvo.ItemDetailVO;
 import cn.airesearch.aimarkserver.pojo.modelvo.ItemVO;
 import cn.airesearch.aimarkserver.pojo.modelvo.SourceImgVO;
 import cn.airesearch.aimarkserver.service.ItemService;
+import cn.airesearch.aimarkserver.tool.FtpTool;
 import cn.airesearch.aimarkserver.tool.IoTool;
 import cn.airesearch.aimarkserver.tool.PojoTool;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -20,13 +23,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
- *
  * @author ZhangXi
  */
 @Slf4j
@@ -75,6 +77,11 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    public void updateItem(ItemVO vo) {
+        itemMapper.updateById(vo);
+    }
+
+    @Override
     public ItemDetailVO getItemDetail(Integer id) {
         //
         Item item = itemMapper.selectById(id);
@@ -99,7 +106,7 @@ public class ItemServiceImpl implements ItemService {
                 List<TextImage> images = textImageMapper.selectList(imageWrapper);
                 if (null != images && images.size() > 0) {
                     List<String> urls = new ArrayList<>();
-                    for (TextImage image: images) {
+                    for (TextImage image : images) {
                         urls.add(ResourceConst.RESOURCES_URL_PREFIX + IoTool.URL_PATH_SEPARATOR + image.getUrlPath());
                     }
                     vo.setImageUrls(urls);
@@ -109,6 +116,60 @@ public class ItemServiceImpl implements ItemService {
             data.setDetail(details);
         }
         return data;
+    }
+
+    @Override
+    public boolean publish(Integer projectId) {
+
+        String projectDir = ResourceConst.PROJECT + projectId;
+        String dirRootToProject = IoTool.buildFilePath(ResourceConst.ROOT_PATH, projectDir);
+
+        File zipFile = new File(dirRootToProject + File.separator + projectId + ".zip");
+        File exportedFileDir = new File(dirRootToProject + File.separator + OcrConst.EXPORT_DIR_NAME);
+
+
+        try {
+
+
+            FtpTool.Client ftpClient = FtpTool.createConnect(AppConst.FTP_HOST_NAME);
+
+            ftpClient.login(AppConst.FTP_USER_NAME, AppConst.FTP_USER_PASSWORD);
+            if (ftpClient.operationIsOK() == false) return false;
+
+            String newDirName = projectId + "";
+            ftpClient.cd(AppConst.FTP_BASE_DIR);
+            ftpClient.mkdir(newDirName).cd(newDirName);
+            log.info("当前FTP路径：{}", ftpClient.getCurrentDirPath());
+            ftpClient.upload(zipFile.getName(), zipFile.toPath());
+
+            for (File subFile : exportedFileDir.listFiles()) {
+                if (subFile.isFile()) {
+                    ftpClient.upload(subFile.getName(), subFile.toPath());
+                }
+            }
+            for (File subFile : exportedFileDir.listFiles()) {
+                if (subFile.isDirectory()) {
+                    ftpClient.mkdir(subFile.getName()).cd(subFile.getName());
+                    for (File sub2File : subFile.listFiles()) {
+                        if (sub2File.isFile()) {
+                            ftpClient.upload(sub2File.getName(), sub2File.toPath());
+                        }
+                    }
+                }
+                ftpClient.cd(AppConst.FTP_BASE_DIR).cd(newDirName);
+            }
+
+            FtpTool.disConnect(ftpClient);
+
+            ItemDetailVO data = getItemDetail(projectId);
+            data.setStatus(ItemStatus.DONE);
+            updateItem(data);
+            return true;
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
 }

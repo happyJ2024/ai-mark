@@ -1,5 +1,6 @@
 package cn.airesearch.aimarkserver.controller;
 
+import cn.airesearch.aimarkserver.modelenum.ItemStatus;
 import cn.airesearch.aimarkserver.pojo.modelvo.ItemDetailVO;
 import cn.airesearch.aimarkserver.pojo.modelvo.ItemVO;
 import cn.airesearch.aimarkserver.pojo.requestvo.IntIdVO;
@@ -19,6 +20,7 @@ import java.util.List;
 
 /**
  * 标记项目控制器
+ *
  * @author ZhangXi
  */
 @Tag(name = "/api", description = "项目接口")
@@ -76,4 +78,19 @@ public class ItemController {
         return response;
     }
 
+    @Operation(
+            summary = "发布项目的结果到目标服务"
+    )
+    @PostMapping(value = "/api/publish")
+    public BaseResponse publishProject(@RequestBody @Validated IntIdVO vo) {
+        BaseResponse response = new BaseResponse();
+
+        if(itemService.publish(vo.getId())){
+            response.success("发布项目成功");
+        }
+        else{
+            response.success("发布项目失败");
+        }
+        return response;
+    }
 }

@@ -1,6 +1,5 @@
 package cn.airesearch.aimarkserver.tool;
 
-import com.sun.xml.internal.fastinfoset.Encoder;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
@@ -15,6 +14,7 @@ import java.nio.file.StandardOpenOption;
 
 /**
  * FTP工具类
+ *
  * @author ZhangXi
  */
 @Slf4j
@@ -44,6 +44,7 @@ public final class FtpTool {
 
         /**
          * 用户登录
+         *
          * @param username 用户名
          * @param password 密码
          */
@@ -58,6 +59,7 @@ public final class FtpTool {
 
         /**
          * 进入目录
+         *
          * @param pathName 目录名称，可以是绝对路径或者子目录名称
          */
         public Client cd(String pathName) throws IOException {
@@ -80,6 +82,7 @@ public final class FtpTool {
 
         /**
          * 创建文件夹
+         *
          * @param dirName 文件夹名称
          */
         public Client mkdir(String dirName) throws IOException {
@@ -91,6 +94,7 @@ public final class FtpTool {
 
         /**
          * 删除文件夹
+         *
          * @param dirPathName 文件夹路径，包括绝对路径或者当前目录下的子文件夹名称
          */
         public Client delDir(String dirPathName) throws IOException {
@@ -100,7 +104,8 @@ public final class FtpTool {
 
         /**
          * 上传文件
-         * @param saveName 服务端待保存的文件名称
+         *
+         * @param saveName    服务端待保存的文件名称
          * @param inputStream {@link InputStream}
          */
         public Client upload(String saveName, InputStream inputStream) throws IOException {
@@ -110,7 +115,8 @@ public final class FtpTool {
 
         /**
          * 上传文件
-         * @param saveName 服务端待保存的文件名称
+         *
+         * @param saveName      服务端待保存的文件名称
          * @param localFilePath {@link Path} 文件对象
          */
         public Client upload(String saveName, Path localFilePath) throws IOException {
@@ -120,6 +126,7 @@ public final class FtpTool {
 
         /**
          * 删除文件
+         *
          * @param filePathName 文件名称，可为绝对路径名称或者当下文件名称
          */
         public Client delFile(String filePathName) throws IOException {
@@ -129,8 +136,9 @@ public final class FtpTool {
 
         /**
          * 下载文件
+         *
          * @param remotePathName 远程文件路径
-         * @param outputStream {@link OutputStream}
+         * @param outputStream   {@link OutputStream}
          */
         public Client download(String remotePathName, OutputStream outputStream) throws IOException {
             // 检查文件是否存在
@@ -149,6 +157,7 @@ public final class FtpTool {
 
         /**
          * 获取当前目录
+         *
          * @return 当前目录绝对路径
          */
         public String getCurrentDirPath() {
@@ -166,6 +175,7 @@ public final class FtpTool {
 
     /**
      * 创建并连接客户端
+     *
      * @param hostName 域名或者IP地址
      * @return {@link Client}
      */
@@ -176,8 +186,9 @@ public final class FtpTool {
 
     /**
      * 创建并连接客户端
+     *
      * @param hostName 域名或者IP地址
-     * @param port 端口
+     * @param port     端口
      * @return {@link Client}
      */
     public static Client createConnect(String hostName, int port) throws IOException {
@@ -189,7 +200,7 @@ public final class FtpTool {
         client.setFileType(FTPClient.BINARY_FILE_TYPE);
         client.setKeepAlive(true);
         client.setBufferSize(1024);
-        client.setControlEncoding(Encoder.UTF_8);
+        client.setControlEncoding("utf-8");
         Client toolClient = new Client();
         toolClient.setFtpClient(client);
         return toolClient;
@@ -197,6 +208,7 @@ public final class FtpTool {
 
     /**
      * 退出FTP连接
+     *
      * @param toolClient {@link Client}
      */
     public static void disConnect(Client toolClient) throws IOException {

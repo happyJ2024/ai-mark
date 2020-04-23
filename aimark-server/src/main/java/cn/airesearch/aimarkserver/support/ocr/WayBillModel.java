@@ -1,10 +1,7 @@
 package cn.airesearch.aimarkserver.support.ocr;
 
-import lombok.Data;
-
 import java.util.List;
 
-@Data
 public class WayBillModel {
 
     public List<Integer> pageNum;
