@@ -28,7 +28,9 @@
     "react-spinners": "^0.5.12",
     "redux": "^4.0.5",
     "typescript": "^3.8.3",
-    "uuid": "^3.4.0"
+    "uuid": "^3.4.0",    
+    "axios": "^0.19.*",
+    "axios-progress-bar": "^1.2.0"
   },
   "scripts": {
     "start": "export PORT=30001 || set PORT=30001 && react-scripts start",
