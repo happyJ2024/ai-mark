@@ -33,7 +33,7 @@
     "axios-progress-bar": "^1.2.0"
   },
   "scripts": {
-    "start": "export PORT=30001 || set PORT=30001 && react-scripts start",
+    "start": "export PORT=10021 || set PORT=10021 && react-scripts start",
     "build": "react-scripts build",
     "test": "CI=true react-scripts test --env=./src/__test__/custom-test-env.js",
     "test:coverage": "npm test -- --coverage",

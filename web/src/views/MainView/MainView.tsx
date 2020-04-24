@@ -12,7 +12,7 @@ import { ProjectType } from '../../data/enums/ProjectType';
 import { ProjectData } from '../../store/general/types';
 import { AppState } from '../../store';
 
-import bgImage from "./../../yuanbao-bg.png"
+import bgImage from "./../../yuanbao-bg2.png"
 
 interface IProps {
     updateActivePopupType: (activePopupType: PopupWindowType) => any; updateProjectData: (projectData: ProjectData) => any;

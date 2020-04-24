@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { loadProgressBar } from 'axios-progress-bar'
 import 'axios-progress-bar/dist/nprogress.css'
-import { message } from 'antd'
+import { message } from 'antd' 
 
 let MOCK_HTTP_REQUEST: boolean = true
 // 自定义判断元素类型JS
@@ -44,7 +44,7 @@ function apiAxios(method, url, params, config) {
 		loadProgressBar()
 		axios.defaults.headers.common.Authorization = localStorage.getItem('accessToken');
 
-		axios.defaults.baseURL = "http://172.16.120.101:30050/"
+		axios.defaults.baseURL =window["GLOBAL_BASE_API_URL"];
 
 		axios({
 			method,
