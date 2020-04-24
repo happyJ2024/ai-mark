@@ -56,7 +56,7 @@ const EditorContainer: React.FC<IProps> = ({ windowSize, activeImageIndex, image
         return <>
             <VerticalEditorButton
                 label="图片"
-                image={"/ico/files.png"}
+                image={"ico/files.png"}
                 imageAlt={"images"}
                 onClick={leftSideBarButtonOnClick}
                 isActive={leftTabStatus}
@@ -81,7 +81,7 @@ const EditorContainer: React.FC<IProps> = ({ windowSize, activeImageIndex, image
         return <>
             <VerticalEditorButton
                 label="标注"
-                image={"/ico/tags.png"}
+                image={"ico/tags.png"}
                 imageAlt={"labels"}
                 onClick={rightSideBarButtonOnClick}
                 isActive={rightTabStatus}

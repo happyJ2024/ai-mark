@@ -80,7 +80,7 @@ const TopNavigationBar: React.FC<IProps> = ({ updateActivePopupType, updateProje
                         <img
                             draggable={false}
                             alt={"make-sense"}
-                            src={"/make-sense-ico-transparent.png"}
+                            src={"make-sense-ico-transparent.png"}
                         />
                         AI OCR
                         <TextButton
