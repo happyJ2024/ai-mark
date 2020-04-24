@@ -226,6 +226,8 @@ public class OCRExporter {
                         return String.join(",", pageNumList.stream().sorted().map(String::valueOf).collect(Collectors.toList()));
                     }
 
+                    if (f.get(obj) == null) return "";
+
                     String valueStr = f.get(obj).toString();
                     valueStr = valueStr.replace("\n", " ");
                     valueStr = valueStr.replace("\u2014", "-");
