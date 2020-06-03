@@ -6,6 +6,14 @@
   overflow: hidden;
   cursor: pointer;
 
+  .RectDisplayText{
+    clear: both;
+    top: 35px;
+    left: 20px;
+    position: absolute;
+    color: white;
+  }
+
   .LabelInputFieldWrapper {
     position: absolute;
     left: calc(-100% - 5px);
@@ -47,15 +55,19 @@
         align-content: center;
       }
 
+      .LabelValueEditor{
+        width: 160px;
+      }
+     
       .DropdownLabel {
         position: relative;
         font-size: 14px;
         cursor: pointer;
         user-select: none;
-        min-width: 160px;
+        min-width: 200px;
         height: 30px;
         padding: 0 5px;
-        color: white;
+        color: #40a9ff;
 
         display: flex;
         flex-direction: row;

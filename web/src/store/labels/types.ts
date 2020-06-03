@@ -8,7 +8,7 @@ export type LabelRect = {
     // GENERAL
     id: string;
     labelId: string;
-    rect: IRect;
+    rect: IRect;// 坐标点
 
     value?: string;
 
@@ -16,6 +16,9 @@ export type LabelRect = {
     isCreatedByAI: boolean;
     status: LabelStatus;
     suggestedLabel: string;
+
+    //extend
+    labelValue: string;  //文字内容 
 }
 
 export type LabelPoint = {
@@ -28,6 +31,8 @@ export type LabelPoint = {
     isCreatedByAI: boolean;
     status: LabelStatus;
     suggestedLabel: string;
+
+
 }
 
 export type LabelPolygon = {
@@ -37,8 +42,9 @@ export type LabelPolygon = {
 }
 
 export type LabelName = {
-    name: string;
-    id: string;
+    name: string;  // 标签名称
+    id: string;    //标签ID
+
 }
 
 export type ImageData = {
@@ -49,7 +55,7 @@ export type ImageData = {
     labelPoints: LabelPoint[];
     labelPolygons: LabelPolygon[];
 
-    imgUrl:string;
+    imgUrl: string;
 
     // SSD
     isVisitedByObjectDetector: boolean;

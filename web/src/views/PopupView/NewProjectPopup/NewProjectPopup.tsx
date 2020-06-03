@@ -96,10 +96,12 @@ class NewProjectPopup extends React.Component<IProps, IState>  {
 
             this.props.updateProjectData(updateData);
             this.props.updateActiveImageIndex(-1);
-            // this.initDefaultLabels();
+            this.initDefaultLabels();
             this.props.updateActivePopupType(null);
         })
     };
+
+    //初始化预定义的标签组
     initDefaultLabels = () => {
         const exitLabelNames = LabelsSelector.getLabelNames();
         if (!!exitLabelNames && exitLabelNames.length > 0) {
@@ -107,14 +109,61 @@ class NewProjectPopup extends React.Component<IProps, IState>  {
             return;
         }
         const newLabelNames: LabelName[] = [];
-        newLabelNames.push({
-            name: "ID",
-            id: uuidv1()
+
+        const waybillKeyWords = [
+            "CUBIC_CONTENT",
+            "Chargeable_Weight",
+            "Destination_District",
+            "District_Code",
+            "Freight",
+            "Freight_Currency",
+            "Gross_Weight",
+            "H",
+            "HBL_HABW",
+            "Incoterms",
+            "L",
+            "Location_To",
+            "MBL_MAWB",
+            "Origin_Country",
+            "Packaging_Type",
+            "Pieces",
+            "Port_of_Destination",
+            "Transportation_Method",
+            "Unit",
+            "Volume",
+            "W",
+        ];
+        waybillKeyWords.forEach(element => {
+            newLabelNames.push({
+                name: "运单_"+element,
+                id: uuidv1(),
+            });
         });
-        newLabelNames.push({
-            name: "NAME",
-            id: uuidv1()
+       
+        const invoiceKeyWords = [
+            "Gross_weight",
+            "Invoice_No",
+            "Net_weight",
+            "supplier_code",
+           
+            "Items_Ctry_origin",
+            "Items_Currency",
+            "Items_Customer_Partnumber",
+            "Items_Gross_weight",
+            "Items_Net_weight",
+            "Items_Quantity",
+            "Items_price",
+            "Items_your_order_number",
+             
+        ];
+        invoiceKeyWords.forEach(element => {
+            newLabelNames.push({
+                name: "发票_"+element,
+                id: uuidv1()
+            });
         });
+       
+
         this.props.updateLabelNames(newLabelNames);
         console.log("initDefaultLabels", newLabelNames);
     };
@@ -239,7 +288,7 @@ class NewProjectPopup extends React.Component<IProps, IState>  {
 
                     let imgageData = this.getImageData(detailArray);
                     this.props.addImageData(imgageData);
-
+                    this.initDefaultLabels();
                     this.props.updateActiveImageIndex(-1);
                     this.props.updateActivePopupType(null);
                 }

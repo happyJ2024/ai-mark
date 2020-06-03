@@ -1,12 +1,13 @@
-import {LabelName} from "../store/labels/types";
+import { LabelName } from "../store/labels/types";
 import uuidv1 from 'uuid/v1';
-import {find} from "lodash";
+import { find } from "lodash";
 
 export class LabelUtil {
     public static mapNamesToLabelNames(name: string): LabelName {
         return {
             id: uuidv1(),
-            name: name
+            name: name,
+            
         }
     }
 
@@ -23,7 +24,8 @@ export class LabelUtil {
             if (!!object[key]) {
                 labelNamesList.push({
                     id: key,
-                    name: object[key]
+                    name: object[key], 
+                   
                 })
             }
         });

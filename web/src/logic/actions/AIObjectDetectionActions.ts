@@ -65,7 +65,9 @@ export class AIObjectDetectionActions {
                 value: '',
                 isCreatedByAI: true,
                 status: LabelStatus.UNDECIDED,
-                suggestedLabel: prediction.class
+                suggestedLabel: prediction.class,
+                labelValue: '',
+                labelRectPoint: []
             }
         })
     }

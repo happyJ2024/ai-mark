@@ -58,6 +58,22 @@ const PointLabelsList: React.FC<IProps> = ({ size, imageData, updateImageDataByI
         updateImageDataById(imageData.id, newImageData);
         updateActiveLabelNameId(labelNameId);
     };
+    const updatePointLabelValue = (labelPointId: string, labelValue: string) => {
+        const newImageData = {
+            ...imageData,
+            labelPoints: imageData.labelPoints.map((labelPoint: LabelPoint) => {
+                if (labelPoint.id === labelPointId) {
+                    return {
+                        ...labelPoint,
+                        labelValue: labelValue
+                    }
+                }
+                return labelPoint
+            })
+        };
+        updateImageDataById(imageData.id, newImageData);
+
+    };
 
     const onClickHandler = () => {
         updateActiveLabelId(null);
@@ -76,10 +92,13 @@ const PointLabelsList: React.FC<IProps> = ({ size, imageData, updateImageDataByI
                     isHighlighted={labelPoint.id === highlightedLabelId}
                     id={labelPoint.id}
                     key={labelPoint.id}
+                    labelValue={''}
+                    labelRectPoint={null}
                     onDelete={deletePointLabelById}
                     value={labelPoint.labelId !== null ? findLast(labelNames, { id: labelPoint.labelId }) : null}
                     options={labelNames}
                     onSelectLabel={updatePointLabel}
+                    onUpdateLabelValue={updatePointLabelValue}
                 />
             });
     };

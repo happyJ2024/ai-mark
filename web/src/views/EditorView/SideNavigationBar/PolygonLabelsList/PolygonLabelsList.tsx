@@ -58,6 +58,23 @@ const PolygonLabelsList: React.FC<IProps> = ({ size, imageData, updateImageDataB
         updateActiveLabelNameId(labelNameId);
     };
 
+    const updatePolygonLabelValue = (labelPolygonId: string, labelValue: string) => {
+        const newImageData = {
+            ...imageData,
+            labelPolygons: imageData.labelPolygons.map((currentLabel: LabelPolygon) => {
+                if (currentLabel.id === labelPolygonId) {
+                    return {
+                        ...currentLabel,
+                        labelValue: labelValue
+                    }
+                }
+                return currentLabel
+            })
+        };
+        updateImageDataById(imageData.id, newImageData);
+
+    };
+
     const onClickHandler = () => {
         updateActiveLabelId(null);
     };
@@ -73,10 +90,13 @@ const PolygonLabelsList: React.FC<IProps> = ({ size, imageData, updateImageDataB
                 isHighlighted={labelPolygon.id === highlightedLabelId}
                 id={labelPolygon.id}
                 key={labelPolygon.id}
+                labelValue={''}
+                labelRectPoint={null}
                 onDelete={deletePolygonLabelById}
                 value={labelPolygon.labelId !== null ? findLast(labelNames, { id: labelPolygon.labelId }) : null}
                 options={labelNames}
                 onSelectLabel={updatePolygonLabel}
+                onUpdateLabelValue={updatePolygonLabelValue}
             />
         });
     };

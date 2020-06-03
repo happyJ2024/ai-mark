@@ -236,7 +236,9 @@ export class RectRenderEngine extends BaseRenderEngine {
             rect,
             isCreatedByAI: false,
             status: LabelStatus.ACCEPTED,
-            suggestedLabel: null
+            suggestedLabel: null,
+            labelValue: '' 
+
         };
         imageData.labelRects.push(labelRect);
         store.dispatch(updateImageDataById(imageData.id, imageData));

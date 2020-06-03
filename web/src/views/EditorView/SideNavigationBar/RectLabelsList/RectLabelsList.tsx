@@ -28,7 +28,8 @@ interface IProps {
 }
 
 const RectLabelsList: React.FC<IProps> = ({ size, imageData, updateImageDataById, labelNames, updateActiveLabelNameId, activeLabelId, highlightedLabelId, updateActiveLabelId }) => {
-    const labelInputFieldHeight = 40;
+    const labelInputFieldHeight = 60;
+    const labelInputFieldHeight_Text = 40;
     const listStyle: React.CSSProperties = {
         width: size.width,
         height: size.height
@@ -61,11 +62,30 @@ const RectLabelsList: React.FC<IProps> = ({ size, imageData, updateImageDataById
         updateImageDataById(imageData.id, newImageData);
         updateActiveLabelNameId(labelNameId);
     };
+    const updateRectLabelValue = (labelRectId: string, labelValue: string) => {
+        const newImageData = {
+            ...imageData,
+            labelRects: imageData.labelRects
+                .map((labelRect: LabelRect) => {
+                    if (labelRect.id === labelRectId) {
+                        return {
+                            ...labelRect,
+                            labelValue: labelValue,
+                            status: LabelStatus.ACCEPTED
+                        }
+                    } else {
+                        return labelRect
+                    }
+                })
+        };
+        updateImageDataById(imageData.id, newImageData);
+
+    };
 
     const onClickHandler = () => {
         updateActiveLabelId(null);
     };
-
+    //Label显示列表
     const getChildren = () => {
         return imageData.labelRects
             .filter((labelRect: LabelRect) => labelRect.status === LabelStatus.ACCEPTED)
@@ -79,10 +99,13 @@ const RectLabelsList: React.FC<IProps> = ({ size, imageData, updateImageDataById
                     isHighlighted={labelRect.id === highlightedLabelId}
                     id={labelRect.id}
                     key={labelRect.id}
+                    labelValue={labelRect.labelValue}
+                    labelRectPoint={labelRect.rect}
                     onDelete={deleteRectLabelById}
                     value={labelRect.labelId !== null ? findLast(labelNames, { id: labelRect.labelId }) : null}
                     options={labelNames}
                     onSelectLabel={updateRectLabel}
+                    onUpdateLabelValue={updateRectLabelValue}
                 />
             });
     };

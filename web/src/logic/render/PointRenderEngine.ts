@@ -193,7 +193,7 @@ export class PointRenderEngine extends BaseRenderEngine {
             point,
             isCreatedByAI: false,
             status: LabelStatus.ACCEPTED,
-            suggestedLabel: null
+            suggestedLabel: null, 
         };
         imageData.labelPoints.push(labelPoint);
         store.dispatch(updateImageDataById(imageData.id, imageData));

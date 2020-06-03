@@ -28,19 +28,23 @@
     align-content: flex-start;
   }
 
-  .NavigationBarContentWrapper {
-    align-self: stretch;
-    min-width: $sideNavigationBarContentWidth;
-    width: $sideNavigationBarContentWidth;
-    flex-direction: column;
-    display: flex;
-    flex-wrap: nowrap;
-    justify-content: flex-end;
-    align-items: center;
-    align-content: flex-end;
-  }
+  
 
   &.left {
+    .NavigationBarContentWrapper {
+      align-self: stretch;
+      
+      min-width: $sideNavigationBarContentWidthLeft;
+      width: $sideNavigationBarContentWidthLeft;
+      
+      flex-direction: column;
+      display: flex;
+      flex-wrap: nowrap;
+      justify-content: flex-end;
+      align-items: center;
+      align-content: flex-end;
+    }
+
     flex-direction: row;
     border-right: solid 1px $darkThemeFirstColor;
 
@@ -54,6 +58,20 @@
   }
 
   &.right {
+    .NavigationBarContentWrapper {
+      align-self: stretch;
+      
+      min-width: $sideNavigationBarContentWidthRight;
+      width: $sideNavigationBarContentWidthRight;
+      
+      flex-direction: column;
+      display: flex;
+      flex-wrap: nowrap;
+      justify-content: flex-end;
+      align-items: center;
+      align-content: flex-end;
+    }
+
     flex-direction: row-reverse;
     border-left: solid 1px $darkThemeFirstColor;
 

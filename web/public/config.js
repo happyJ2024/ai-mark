@@ -1,1 +1,1 @@
- window["GLOBAL_BASE_API_URL"]="http://172.16.120.101:20021/";
+ window["GLOBAL_BASE_API_URL"]="http://172.16.114.170:30050/";
