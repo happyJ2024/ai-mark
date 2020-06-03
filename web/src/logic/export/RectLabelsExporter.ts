@@ -108,7 +108,7 @@ export class RectLabelsExporter {
         ctx.drawImage(img, 0, 0, img.width, img.height);
         type = type || "image/png";
         var dataURL = canvas.toDataURL(type);  // 默认PNG. 可选其他值 image/jpeg
-        console.log(dataURL, 'dataUrl');
+        // console.log(dataURL, 'dataUrl');
 
         if (removePrefix === true) {
             const prefix = ';base64,';
