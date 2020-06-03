@@ -1,5 +1,9 @@
 package cn.airesearch.aimarkserver.support.ocr;
 
+import cn.airesearch.aimarkserver.support.ocr.ai.BaseRectWords;
+import cn.airesearch.aimarkserver.support.ocr.ai.invoice.InvoiceModel;
+import cn.airesearch.aimarkserver.support.ocr.ai.invoice.Item;
+import cn.airesearch.aimarkserver.support.ocr.ai.waybill.WayBillModel;
 import cn.airesearch.aimarkserver.tool.JsonUtils;
 import cn.asr.appframework.utility.file.FileUtils;
 import org.apache.poi.ss.usermodel.*;
@@ -57,10 +61,10 @@ public class OCRExporter {
         workbook.createSheet("invoice");
 
         //运单处理
-        HandleWayBillList(ocrResponse.getWayBillList(), workbook, wayBillHeaderList);
+        HandleWayBillList(ocrResponse.waybill, workbook, wayBillHeaderList);
 
 //invoice
-        HandleInvoiceList(ocrResponse.getInvoiceList(), workbook, invoiceHeaderList);
+        HandleInvoiceList(ocrResponse.invoice, workbook, invoiceHeaderList);
 
 
         //输出excel
@@ -119,16 +123,13 @@ public class OCRExporter {
     }
 
     private static void HandleInvoiceList(List<InvoiceModel> invoiceList, Workbook workbook, List<String> invoiceHeaderList) {
+        int cellSize = invoiceHeaderList.size();
         Sheet sheet = workbook.getSheetAt(1);
-        int rowCount = invoiceList.size() + 1;
-        for (int rowIndex = 0; rowIndex < rowCount; rowIndex++) {
-            Row newRow = sheet.createRow(rowIndex);
-            for (int cellIndex = 0; cellIndex < invoiceHeaderList.size(); cellIndex++) {
-                newRow.createCell(cellIndex);
-            }
-        }
+
         //header
-        Row headerRow = sheet.getRow(0);
+        int currentRowIndex = 0;
+        createRowAndCell(sheet, currentRowIndex, cellSize,null);
+        Row headerRow = sheet.getRow(currentRowIndex);
         CellStyle headerCellStyle = createHeadCellStyle(workbook);
         for (int cellIndex = 0; cellIndex < invoiceHeaderList.size(); cellIndex++) {
             headerRow.getCell(cellIndex).setCellStyle(headerCellStyle);
@@ -136,14 +137,42 @@ public class OCRExporter {
         }
 
         //data
-        for (int rowIndex = 1; rowIndex < rowCount; rowIndex++) {
-            Row dataRow = sheet.getRow(rowIndex);
+        currentRowIndex++;
+        int invoiceIndex = 0;
+        for (InvoiceModel d :
+                invoiceList) {
+            CellStyle dataRowCellStyle = createDateRowCellStyle(workbook, invoiceIndex++);
+            for (Item item :
+                    d.Items) {
 
-            InvoiceModel invoiceModel = invoiceList.get(rowIndex - 1);
+                createRowAndCell(sheet, currentRowIndex, cellSize, dataRowCellStyle);
+                Row dataRow = sheet.getRow(currentRowIndex);
 
-            for (int cellIndex = 0; cellIndex < invoiceHeaderList.size(); cellIndex++) {
-                String cellValue = getPropertyValue(invoiceHeaderList.get(cellIndex), invoiceModel);
-                dataRow.getCell(cellIndex).setCellValue(cellValue);
+                for (int cellIndex = 0; cellIndex < cellSize; cellIndex++) {
+                    String propertyName = invoiceHeaderList.get(cellIndex);
+                    Object valueObj = d;
+                    if (propertyName.startsWith("Items_")) {
+                        propertyName = propertyName.replace("Items_", "");
+                        valueObj = item;
+                    }
+
+                    String cellValue = getPropertyValue(propertyName, valueObj);
+                    dataRow.getCell(cellIndex).setCellValue(cellValue);
+
+                }
+                currentRowIndex++;
+            }
+        }
+
+    }
+
+    private static void createRowAndCell(Sheet sheet, int currentRowIndex, int cellSize, CellStyle cellStyle) {
+        Row newRow = sheet.createRow(currentRowIndex);
+
+        for (int cellIndex = 0; cellIndex < cellSize; cellIndex++) {
+            Cell cell = newRow.createCell(cellIndex);
+            if (cellStyle != null) {
+                cell.setCellStyle(cellStyle);
             }
         }
     }
@@ -158,48 +187,75 @@ public class OCRExporter {
         CellStyle cellStyle = wb.createCellStyle();
         cellStyle.setAlignment(HorizontalAlignment.CENTER);
         cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
-        cellStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+        cellStyle.setFillForegroundColor(IndexedColors.YELLOW.getIndex());
         cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
         return cellStyle;
     }
 
+    /**
+     * 创建数据行样式
+     *
+     * @param wb
+     * @return
+     */
+    private static CellStyle createDateRowCellStyle(Workbook wb, int rowIndex) {
+        CellStyle cellStyle = wb.createCellStyle();
+        cellStyle.setAlignment(HorizontalAlignment.CENTER);
+        cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+        if (rowIndex % 2 == 0) {
+            cellStyle.setFillForegroundColor(IndexedColors.WHITE.getIndex());
+        } else {
+            cellStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+        }
+        cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        return cellStyle;
+    }
 
     private static void initWayBillHeaderList() {
         wayBillHeaderList = new ArrayList<>();
         wayBillHeaderList.add("pageNum");
-        wayBillHeaderList.add("Airport_Code");
-        wayBillHeaderList.add("UXM");
-        wayBillHeaderList.add("AIR_WAYBILL");
-        wayBillHeaderList.add("CONSIGNEE");
-        wayBillHeaderList.add("SHIPPER");
-        wayBillHeaderList.add("PACKING");
-        wayBillHeaderList.add("WEIGHT");
-        wayBillHeaderList.add("GROSS");
-        wayBillHeaderList.add("INCOTERM");
-        wayBillHeaderList.add("INVOICE_NUMBER");
-        wayBillHeaderList.add("TOTAL");
-        wayBillHeaderList.add("METHOD");
-        wayBillHeaderList.add("CUR");
-
+        wayBillHeaderList.add("HBL_HABW");
+        wayBillHeaderList.add("MBL_MAWB");
+        wayBillHeaderList.add("Incoterms");
+        wayBillHeaderList.add("Origin_Country");
+        wayBillHeaderList.add("Transportation_Method");
+        wayBillHeaderList.add("Gross_Weight");
+        wayBillHeaderList.add("Volume");
+        wayBillHeaderList.add("Chargeable_Weight");
+        wayBillHeaderList.add("Pieces");
+        wayBillHeaderList.add("Packaging_Type");
+        wayBillHeaderList.add("Freight");
+        wayBillHeaderList.add("Freight_Currency");
+        wayBillHeaderList.add("Location_To");
+        wayBillHeaderList.add("District_Code");
+        wayBillHeaderList.add("Destination_District");
+        wayBillHeaderList.add("Port_of_Destination");
+        wayBillHeaderList.add("H");
+        wayBillHeaderList.add("W");
+        wayBillHeaderList.add("L");
+        wayBillHeaderList.add("CUBIC_CONTENT");
+        wayBillHeaderList.add("Unit");
     }
 
     private static void initInvoiceHeaderList() {
         invoiceHeaderList = new ArrayList<>();
         invoiceHeaderList.add("pageNum");
         invoiceHeaderList.add("Invoice_No");
-        invoiceHeaderList.add("Supplier_code");
-        invoiceHeaderList.add("Dispatch_address");
-        invoiceHeaderList.add("Customer_Partnumber");
-        invoiceHeaderList.add("Quantity");
-        invoiceHeaderList.add("Price");
-        invoiceHeaderList.add("Amount");
-        invoiceHeaderList.add("Currency");
-        invoiceHeaderList.add("Ctry_Origin");
-        invoiceHeaderList.add("Your_order_number");
-        invoiceHeaderList.add("Invoice_amount");
-        invoiceHeaderList.add("cardboard_pallet");
+        invoiceHeaderList.add("supplier_code");
+
+        invoiceHeaderList.add("Items_Customer_Partnumber");
+        invoiceHeaderList.add("Items_Quantity");
+        invoiceHeaderList.add("Items_price");
+        invoiceHeaderList.add("Items_Amount");
+        invoiceHeaderList.add("Items_Currency");
+        invoiceHeaderList.add("Items_Net_weight");
+        invoiceHeaderList.add("Items_Ctry_origin");
+        invoiceHeaderList.add("Items_Gross_weight");
+        invoiceHeaderList.add("Items_your_order_number");
+
         invoiceHeaderList.add("Net_weight");
         invoiceHeaderList.add("Gross_weight");
+
     }
 
 
@@ -214,8 +270,7 @@ public class OCRExporter {
         return wb;
     }
 
-    private static String getPropertyValue(String propertyName, Object obj) {
-
+    private static <T> String getPropertyValue(String propertyName, T obj) {
 
         Field[] fields = obj.getClass().getDeclaredFields();
         for (Field f : fields) {
@@ -226,9 +281,14 @@ public class OCRExporter {
                         return String.join(",", pageNumList.stream().sorted().map(String::valueOf).collect(Collectors.toList()));
                     }
 
-                    if (f.get(obj) == null) return "";
+                    Object pObj = f.get(obj);
+                    if (pObj == null) return "";
+                    if ((pObj instanceof BaseRectWords) == false) return "";
 
-                    String valueStr = f.get(obj).toString();
+                    BaseRectWords pValue = (BaseRectWords) pObj;
+                    String valueStr = pValue.words;
+                    if (valueStr == null) return "";
+
                     valueStr = valueStr.replace("\n", " ");
                     valueStr = valueStr.replace("\u2014", "-");
                     return valueStr;

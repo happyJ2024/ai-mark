@@ -5,6 +5,8 @@ import cn.airesearch.aimarkserver.constant.ResourceConst;
 import cn.airesearch.aimarkserver.service.OCRService;
 import cn.airesearch.aimarkserver.support.base.BaseResponse;
 import cn.airesearch.aimarkserver.support.ocr.*;
+import cn.airesearch.aimarkserver.support.ocr.ai.invoice.InvoiceModel;
+import cn.airesearch.aimarkserver.support.ocr.ai.waybill.WayBillModel;
 import cn.airesearch.aimarkserver.tool.IoTool;
 import cn.airesearch.aimarkserver.tool.PdfTool;
 import cn.airesearch.aimarkserver.tool.SplitPDFPage;
@@ -30,8 +32,8 @@ public class OCRServiceImpl implements OCRService {
 
 
     @Override
-    public BaseResponse<String> ocr(Integer projectId) {
-        BaseResponse<String> response = new BaseResponse<>();
+    public BaseResponse<OCRResponse> ocr(Integer projectId) {
+        BaseResponse<OCRResponse> response = new BaseResponse<>();
         String projectDirPath = IoTool.buildFilePath(ResourceConst.ROOT_PATH, ResourceConst.PROJECT + projectId);
 
 
@@ -60,6 +62,10 @@ public class OCRServiceImpl implements OCRService {
             for (File subImage : subImageFiles
             ) {
                 if (subImage.isDirectory()) continue;
+                if (subImage.getAbsolutePath().contains(OcrConst.BACKUP_EXTENDS)) {
+                    continue;
+                }
+
                 subImageFilesList.add(subImage.getAbsolutePath());
             }
             subImageFilesList.sort((s1, s2) -> {
@@ -131,7 +137,7 @@ public class OCRServiceImpl implements OCRService {
         //重新生成运单和invoice的pdf文件
         int shipPdfIndex = 1;
         for (WayBillModel wayBillModel :
-                ocrResponse.getWayBillList()) {
+                ocrResponse.waybill) {
             List<Integer> pageNum = wayBillModel.pageNum;
             List<SplitPDFPage> splitPDFPageList = new ArrayList<>();
             for (Integer page : pageNum) {
@@ -144,7 +150,7 @@ public class OCRServiceImpl implements OCRService {
                 addSplitPDFPageList(pdfFilePath, splitPageNumber, splitPDFPageList);
             }
 
-            String destFile = IoTool.buildFilePath(exportDir, "ship" + shipPdfIndex + ".pdf");
+            String destFile = IoTool.buildFilePath(exportDir, OcrConst.FILE_NAME_WAYBILL + shipPdfIndex + ".pdf");
             try {
                 PdfTool.generatePDF(destFile, splitPDFPageList);
             } catch (IOException e) {
@@ -156,7 +162,7 @@ public class OCRServiceImpl implements OCRService {
 
         int invoicePdfIndex = 1;
         for (InvoiceModel invoiceModel :
-                ocrResponse.getInvoiceList()) {
+                ocrResponse.invoice) {
             List<Integer> pageNum = invoiceModel.pageNum;
             List<SplitPDFPage> splitPDFPageList = new ArrayList<>();
             for (Integer page : pageNum) {
@@ -168,7 +174,7 @@ public class OCRServiceImpl implements OCRService {
 
                 addSplitPDFPageList(pdfFilePath, splitPageNumber, splitPDFPageList);
             }
-            String destFile = IoTool.buildFilePath(exportDir, "invoice" + invoicePdfIndex + ".pdf");
+            String destFile = IoTool.buildFilePath(exportDir, OcrConst.FILE_NAME_INVOICE + invoicePdfIndex + ".pdf");
             try {
                 PdfTool.generatePDF(destFile, splitPDFPageList);
             } catch (IOException e) {
@@ -182,7 +188,7 @@ public class OCRServiceImpl implements OCRService {
         new ZipTool(new File(targetZipFile)).zipFiles(new File(exportDir));
 
         response.success("导出ocr结果成功");
-        response.setData("");
+        response.setData(ocrResponse);
         return response;
     }
 

@@ -24,10 +24,32 @@ class PdfToolTest {
     }
 
 
+    @Test
+    void testSavePdfToImages_Batch() throws PdfOperationException {
+
+        File dir = new File("/home/byj/Downloads/进相");
+
+        File[] files = dir.listFiles();
+        for (File f :
+                files) {
+            if (f.isDirectory()) continue;
+            ;
+
+            if (f.getAbsolutePath().endsWith(".pdf") == false) continue;
+
+            String pdfPath = f.getAbsolutePath();
+            log.info("PDF PATH : {}", pdfPath);
+            String imgDir = f.getAbsolutePath().substring(0, f.getAbsolutePath().lastIndexOf('.'))+ File.separator;
+            File imgDirFile = new File(imgDir);
+            if (imgDirFile.exists()) imgDirFile.delete();
+            imgDirFile.mkdirs();
+
+            PdfTool.savePdfToImages(new File(pdfPath), imgDir);
+
+        }
 
 
-
-
+    }
 
 
 }

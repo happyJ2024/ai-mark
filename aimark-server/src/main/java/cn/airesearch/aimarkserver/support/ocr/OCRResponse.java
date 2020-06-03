@@ -1,12 +1,7 @@
 package cn.airesearch.aimarkserver.support.ocr;
 
-import lombok.Data;
+import cn.airesearch.aimarkserver.support.ocr.ai.OcrOriginResult;
 
-import java.util.List;
-
-@Data
-public class OCRResponse {
-    private List<WayBillModel> wayBillList;
-    private List<InvoiceModel> invoiceList;
+public class OCRResponse extends OcrOriginResult {
 
 }

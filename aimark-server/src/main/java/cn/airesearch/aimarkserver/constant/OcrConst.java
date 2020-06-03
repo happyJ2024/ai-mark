@@ -12,4 +12,8 @@ public class OcrConst {
 
     public static final String EXPORT_DIR_NAME = "EXPORTED";
 
+    public  static  final  String BACKUP_EXTENDS="_backup";
+
+    public  static  final  String FILE_NAME_WAYBILL="waybill";
+    public  static  final  String FILE_NAME_INVOICE="invoice";
 }
