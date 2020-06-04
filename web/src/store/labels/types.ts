@@ -10,7 +10,7 @@ export type LabelRect = {
     labelId: string;
     rect: IRect;// 坐标点
 
-    value?: string;
+    //value?: string;
 
     // AI
     isCreatedByAI: boolean;
@@ -19,6 +19,7 @@ export type LabelRect = {
 
     //extend
     labelValue: string;  //文字内容 
+    labelGroupId: number; //标记分组编号
 }
 
 export type LabelPoint = {

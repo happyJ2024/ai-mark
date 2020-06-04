@@ -225,10 +225,10 @@ export class RectRenderEngine extends BaseRenderEngine {
         const scale: number = RenderEngineUtil.calculateImageScale(data);
         return RectUtil.scaleRect(rect, 1 / scale);
     }
-
+    //新加标签Label
     private addRectLabel = (rect: IRect) => {
-
-        const activeLabelId = LabelsSelector.getActiveLabelNameId();
+        const activeLabelId = "";
+        //const activeLabelId = LabelsSelector.getActiveLabelNameId();
         const imageData: ImageData = LabelsSelector.getActiveImageData();
         const labelRect: LabelRect = {
             id: uuidv1(),
@@ -237,7 +237,8 @@ export class RectRenderEngine extends BaseRenderEngine {
             isCreatedByAI: false,
             status: LabelStatus.ACCEPTED,
             suggestedLabel: null,
-            labelValue: '' 
+            labelValue: '',
+            labelGroupId: 0
 
         };
         imageData.labelRects.push(labelRect);

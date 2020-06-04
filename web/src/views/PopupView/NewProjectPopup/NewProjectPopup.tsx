@@ -19,6 +19,7 @@ import DropdownSelect from '../../Common/DropdownSelect/DropdownSelect';
 import { CreateProject, GetProjectList, DeleteProject, GetProjectDetail } from '../../../api/api';
 import { Tabs, Table, Tag, message } from 'antd';
 import { FileUtil } from '../../../utils/FileUtil';
+import { LabelPreDefine } from '../../../settings/LabelPreDefine';
 
 const { TabPane } = Tabs;
 
@@ -109,56 +110,24 @@ class NewProjectPopup extends React.Component<IProps, IState>  {
             return;
         }
         const newLabelNames: LabelName[] = [];
-
-        const waybillKeyWords = [
-            "CUBIC_CONTENT",
-            "Chargeable_Weight",
-            "Destination_District",
-            "District_Code",
-            "Freight",
-            "Freight_Currency",
-            "Gross_Weight",
-            "H",
-            "HBL_HABW",
-            "Incoterms",
-            "L",
-            "Location_To",
-            "MBL_MAWB",
-            "Origin_Country",
-            "Packaging_Type",
-            "Pieces",
-            "Port_of_Destination",
-            "Transportation_Method",
-            "Unit",
-            "Volume",
-            "W",
-        ];
-        waybillKeyWords.forEach(element => {
+        
+     LabelPreDefine.WAYBILL_KEYWORDS.forEach(element => {
             newLabelNames.push({
-                name: "运单_"+element,
+                name: LabelPreDefine.WAYBILL_KEYWORDS_PREFIX+element,
                 id: uuidv1(),
             });
         });
        
-        const invoiceKeyWords = [
-            "Gross_weight",
-            "Invoice_No",
-            "Net_weight",
-            "supplier_code",
-           
-            "Items_Ctry_origin",
-            "Items_Currency",
-            "Items_Customer_Partnumber",
-            "Items_Gross_weight",
-            "Items_Net_weight",
-            "Items_Quantity",
-            "Items_price",
-            "Items_your_order_number",
-             
-        ];
-        invoiceKeyWords.forEach(element => {
+        
+        LabelPreDefine.INVOICE_KEYWORDS.forEach(element => {
             newLabelNames.push({
-                name: "发票_"+element,
+                name: LabelPreDefine.INVOICE_KEYWORDS_PREFIX+element,
+                id: uuidv1()
+            });
+        });
+        LabelPreDefine.INVOICE_ITEMS_KEYWORDS.forEach(element => {
+            newLabelNames.push({
+                name: LabelPreDefine.INVOICE_ITEMS_KEYWORDS_PREFIX+element,
                 id: uuidv1()
             });
         });

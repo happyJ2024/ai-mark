@@ -139,7 +139,7 @@ export class RectLabelsExporter {
                     y: Math.round(labelRect.rect.y),
                     width: Math.round(labelRect.rect.width),
                     height: Math.round(labelRect.rect.height),
-                    value: !!labelRect.value ? labelRect.value : ""
+                    labelValue: !!labelRect.labelValue ? labelRect.labelValue : ""
                 }
                 jsonObject.labelRects.push(jObj);
             }

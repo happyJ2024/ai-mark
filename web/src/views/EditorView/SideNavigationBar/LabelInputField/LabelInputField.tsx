@@ -189,7 +189,7 @@ class LabelInputField extends React.Component<IProps, IState> {
                                 ref={ref => this.dropdownLabel = ref}
                                 onClick={this.openDropdown}
                             >
-                                {value ? value.name : "Select label"}
+                                {value ? value.name : "-选择标签-"}
                             </div>
                             {this.state.isOpen && <div
                                 className="Dropdown"

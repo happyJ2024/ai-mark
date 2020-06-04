@@ -10,18 +10,24 @@ import { updateActivePopupType, updateProjectData } from "../../../store/general
 // import { ImageButton } from "../../Common/ImageButton/ImageButton";
 // import { Settings } from "../../../settings/Settings";
 import { ProjectData } from "../../../store/general/types";
-import { ImageData } from "../../../store/labels/types";
+import { ImageData, LabelName } from "../../../store/labels/types";
 import { CallOCR, Publish } from '../../../api/api';
 import { message, Modal, Spin } from 'antd';
+import { LabelPreDefine } from '../../../settings/LabelPreDefine';
+import uuid from 'uuid';
+import { LabelStatus } from '../../../data/enums/LabelStatus';
+import { findLast } from 'lodash';
+import { updateImageDataById } from '../../../store/labels/actionCreators';
 
 interface IProps {
     updateActivePopupType: (activePopupType: PopupWindowType) => any;
     updateProjectData: (projectData: ProjectData) => any;
     projectData: ProjectData;
     imagesData: ImageData[];
+    labelNames: LabelName[];
 }
 
-const TopNavigationBar: React.FC<IProps> = ({ updateActivePopupType, updateProjectData, projectData, imagesData }) => {
+const TopNavigationBar: React.FC<IProps> = ({ updateActivePopupType, updateProjectData, projectData, imagesData, labelNames }) => {
 
     const [ocrSuccess, setocrSuccess] = useState(false);
 
@@ -45,6 +51,8 @@ const TopNavigationBar: React.FC<IProps> = ({ updateActivePopupType, updateProje
         })
 
     }
+
+    //OCR 调用
     function callOCRExtract() {
 
         setOcrWorking(true);
@@ -57,6 +65,8 @@ const TopNavigationBar: React.FC<IProps> = ({ updateActivePopupType, updateProje
             if (res.data && res.data.errorCode === 0) {
                 message.success("OCR提取成功");
                 setocrSuccess(true);
+
+                updateLabelRectByOcrResult(res.data.data);
             } else {
                 message.error("OCR提取失败");
             }
@@ -69,6 +79,89 @@ const TopNavigationBar: React.FC<IProps> = ({ updateActivePopupType, updateProje
         return imagesData && imagesData.length > 0;
     }
 
+    //根据OCR结果更新标签列表
+    function updateLabelRectByOcrResult(ocrResult) {
+
+        for (let index = 0; index < imagesData.length; index++) {
+            const element = imagesData[index];
+            const newImageData = {
+                ...element,
+                labelRects: []
+            };
+            updateImageDataById(element.id, newImageData);
+        }
+
+        //waybill
+        if (ocrResult.waybill && ocrResult.waybill.length > 0) {
+            let waybill = ocrResult.waybill[0];
+            LabelPreDefine.WAYBILL_KEYWORDS.forEach(key => {
+                let pObject = waybill[key];
+                if (pObject) {
+                    let imageDataIndex = pObject.pageNum - 1;
+
+                    let id = uuid();
+                    let labelName = LabelPreDefine.WAYBILL_KEYWORDS_PREFIX + key;
+                    let labelId = findMatchLabelId(labelNames, labelName);
+                    let rect = getLabelRect(pObject.rect)
+
+                    let status = LabelStatus.ACCEPTED
+                    let isCreatedByAI = false;
+                    let suggestedLabel = '';
+
+                    let labelValue = pObject.words;
+                    let labelGroupId = 0;
+
+                    let currentImageData = imagesData[imageDataIndex];
+                    if (currentImageData) {
+                        var list = currentImageData.labelRects;
+                        list.push({
+                            id: id,
+                            labelId: labelId,
+                            rect: rect,
+                            status: status, isCreatedByAI: isCreatedByAI,
+                            suggestedLabel: suggestedLabel,
+                            labelValue: labelValue, labelGroupId: labelGroupId
+                        });
+
+                        const newImageData = {
+                            ...currentImageData,
+                            labelRects: list
+                        };
+                        updateImageDataById(currentImageData.id, newImageData);
+
+                    }
+                }
+            });
+
+        }
+
+
+
+    }
+    function findMatchLabelId(list: LabelName[], name: string): string {
+         
+        var id = '';
+        if (list) {
+            list.forEach((element) => {
+
+                if (element.name === name) {
+                    id = element.id;
+                    return;
+                }
+            });
+        }
+        return id;
+    }
+    function getLabelRect(rect: number[]) {
+        var result = { x: 0, y: 0, width: 0, height: 0 }
+        if (rect && rect.length == 4) {
+            result.x = rect[0];
+            result.y = rect[1];
+            result.width = rect[2] - rect[0];
+            result.height = rect[3] - rect[1];
+        }
+        return result;
+    }
     return (
         <div className="TopNavigationBar">
             <StateBar />
@@ -176,11 +269,13 @@ const TopNavigationBar: React.FC<IProps> = ({ updateActivePopupType, updateProje
 const mapDispatchToProps = {
     updateActivePopupType,
     updateProjectData,
+    updateImageDataById,
 };
 
 const mapStateToProps = (state: AppState) => ({
     projectData: state.general.projectData,
-    imagesData: state.labels.imagesData
+    imagesData: state.labels.imagesData,
+    labelNames: state.labels.labels
 });
 
 export default connect(
