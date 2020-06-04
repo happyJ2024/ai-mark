@@ -1,7 +1,5 @@
 package cn.airesearch.aimarkserver.support.ocr.ai.invoice;
 
-import lombok.Data;
-
 import java.util.List;
 
 
@@ -15,4 +13,10 @@ public class InvoiceModel {
 
 
     public List<Integer> pageNum;
+
+
+    /**
+     * 发票顺序号
+     */
+    public int InvoiceSeq;
 }

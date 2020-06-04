@@ -16,4 +16,8 @@ public class Item {
 
     public your_order_number your_order_number;
 
+    /**
+     * 发票条目顺序号
+     */
+    public int ItemSeq;
 }
