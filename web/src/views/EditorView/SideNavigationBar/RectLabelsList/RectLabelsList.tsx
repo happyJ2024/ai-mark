@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ISize } from "../../../../interfaces/ISize";
 import Scrollbars from 'react-custom-scrollbars';
 import { ImageData, LabelName, LabelRect } from "../../../../store/labels/types";
@@ -16,6 +16,8 @@ import { LabelActions } from "../../../../logic/actions/LabelActions";
 import { LabelStatus } from "../../../../data/enums/LabelStatus";
 import { findLast } from "lodash";
 import { LabelPreDefine } from '../../../../settings/LabelPreDefine';
+import Modal from 'antd/lib/modal/Modal';
+import { Input } from 'antd';
 
 interface IProps {
     size: ISize;
@@ -26,11 +28,23 @@ interface IProps {
     updateActiveLabelNameId: (activeLabelId: string) => any;
     labelNames: LabelName[];
     updateActiveLabelId: (activeLabelId: string) => any;
+
+
 }
 
-const RectLabelsList: React.FC<IProps> = ({ size, imageData, updateImageDataById, labelNames, updateActiveLabelNameId, activeLabelId, highlightedLabelId, updateActiveLabelId }) => {
-    const labelInputFieldHeight = 60;
-    const labelInputFieldHeight_Text = 40;
+const RectLabelsList: React.FC<IProps> = ({ size, imageData, updateImageDataById,
+    labelNames, updateActiveLabelNameId, activeLabelId, highlightedLabelId, updateActiveLabelId,
+}) => {
+    const [labelGroupIdDialogVisibleFlag, setlabelGroupIdDialogVisibleFlag] = useState(false);
+    const [currentNewLabelData, setcurrentNewLabelData] = useState({
+        labelRectId: '',
+        labelNameId: '',
+        labelName: '',
+        labelGroupId: 0
+    });
+
+
+    const labelInputFieldHeight = 50;
     const listStyle: React.CSSProperties = {
         width: size.width,
         height: size.height
@@ -44,12 +58,16 @@ const RectLabelsList: React.FC<IProps> = ({ size, imageData, updateImageDataById
         LabelActions.deleteRectLabelById(imageData.id, labelRectId);
     };
 
-    const updateRectLabel = (labelRectId: string, labelNameId: string) => {
+    const updateRectLabel = (labelRectId: string, labelNameId: string, labelName: string) => {
+
+        let labelGroupId: number = 0;
         const newImageData = {
             ...imageData,
             labelRects: imageData.labelRects
                 .map((labelRect: LabelRect) => {
                     if (labelRect.id === labelRectId) {
+
+                        labelGroupId = labelRect.labelGroupId;
                         return {
                             ...labelRect,
                             labelId: labelNameId,
@@ -60,9 +78,55 @@ const RectLabelsList: React.FC<IProps> = ({ size, imageData, updateImageDataById
                     }
                 })
         };
-        updateImageDataById(imageData.id, newImageData);
-        updateActiveLabelNameId(labelNameId);
+        if (labelName.indexOf(LabelPreDefine.INVOICE_ITEMS_KEYWORDS_PREFIX) > -1 && labelGroupId <= 0) {
+            setcurrentNewLabelData({
+                ...currentNewLabelData,
+                labelRectId: labelRectId,
+                labelNameId: labelNameId,
+                labelName: labelName
+            });
+            setlabelGroupIdDialogVisibleFlag(true);
+        }
+        else {
+            updateImageDataById(imageData.id, newImageData);
+            updateActiveLabelNameId(labelNameId);
+        }
     };
+    const labelGroupIdChange = e => {
+        const { value } = e.target;
+        setcurrentNewLabelData({
+            ...currentNewLabelData,
+            labelGroupId: value
+        });
+    };
+    const labelGroupIdDialogHandleOk = () => {
+        if (currentNewLabelData.labelGroupId <= 0) return;
+
+        const newImageData = {
+            ...imageData,
+            labelRects: imageData.labelRects
+                .map((labelRect: LabelRect) => {
+                    if (labelRect.id === currentNewLabelData.labelRectId) {
+                        return {
+                            ...labelRect,
+                            labelId: currentNewLabelData.labelNameId,
+                            labelGroupId: currentNewLabelData.labelGroupId,
+                            status: LabelStatus.ACCEPTED
+                        }
+                    } else {
+                        return labelRect
+                    }
+                })
+        };
+        updateImageDataById(imageData.id, newImageData);
+        updateActiveLabelNameId(currentNewLabelData.labelNameId);
+
+        setlabelGroupIdDialogVisibleFlag(false);
+    }
+    const labelGroupIdDialogHandleCancel = () => {
+        setlabelGroupIdDialogVisibleFlag(false);
+    }
+
     const updateRectLabelValue = (labelRectId: string, labelValue: string) => {
         const newImageData = {
             ...imageData,
@@ -82,10 +146,37 @@ const RectLabelsList: React.FC<IProps> = ({ size, imageData, updateImageDataById
         updateImageDataById(imageData.id, newImageData);
 
     };
+    const updateRectLabelGroupId = (labelRectId: string, labelGroupId: number) => {
+        const newImageData = {
+            ...imageData,
+            labelRects: imageData.labelRects
+                .map((labelRect: LabelRect) => {
+                    if (labelRect.id === labelRectId) {
+                        return {
+                            ...labelRect,
+                            labelGroupId: labelGroupId,
+                            status: LabelStatus.ACCEPTED
+                        }
+                    } else {
+                        return labelRect
+                    }
+                })
+        };
+        updateImageDataById(imageData.id, newImageData);
+
+    };
+
 
     const onClickHandler = () => {
         updateActiveLabelId(null);
     };
+    const getRectLabelGroupIdOptions = (invoiceItemsLabelRect): number[] => {
+        const list: number[] = [];
+        invoiceItemsLabelRect.forEach(t => {
+            list.push(t.labelGroupId);
+        });
+        return list
+    }
     //Label显示列表
     const getChildren = () => {
 
@@ -155,6 +246,7 @@ const RectLabelsList: React.FC<IProps> = ({ size, imageData, updateImageDataById
                                 options={labelNames}
                                 onSelectLabel={updateRectLabel}
                                 onUpdateLabelValue={updateRectLabelValue}
+
                             />
                         })}
                 </div>;
@@ -187,7 +279,7 @@ const RectLabelsList: React.FC<IProps> = ({ size, imageData, updateImageDataById
                         })}
                     {
                         invoiceItemsLabelRect.map(t => {
-                        return <div><p className="CategotyTextItems">{LabelPreDefine.INVOICE_ITEMS_KEYWORDS_PREFIX}-{t.labelGroupId}</p>
+                            return <div><p className="CategotyTextItems">{LabelPreDefine.INVOICE_ITEMS_KEYWORDS_PREFIX}-{t.labelGroupId}</p>
                                 {
                                     t.labelRects.map((itemRect: LabelRect) => {
                                         return <LabelInputField
@@ -282,6 +374,15 @@ const RectLabelsList: React.FC<IProps> = ({ size, imageData, updateImageDataById
                     </div>
                 </Scrollbars>
             }
+            <Modal
+                title="输入发票条目"
+                visible={labelGroupIdDialogVisibleFlag}
+                onOk={labelGroupIdDialogHandleOk}
+                onCancel={labelGroupIdDialogHandleCancel}
+            >
+                <Input type="number" onChange={labelGroupIdChange}
+                    defaultValue={currentNewLabelData.labelGroupId}></Input>
+            </Modal>
         </div>
     );
 };
@@ -289,7 +390,7 @@ const RectLabelsList: React.FC<IProps> = ({ size, imageData, updateImageDataById
 const mapDispatchToProps = {
     updateImageDataById,
     updateActiveLabelNameId,
-    updateActiveLabelId
+    updateActiveLabelId,
 };
 
 const mapStateToProps = (state: AppState) => ({

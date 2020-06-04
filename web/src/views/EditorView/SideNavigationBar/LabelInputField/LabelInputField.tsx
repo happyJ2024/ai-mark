@@ -16,6 +16,7 @@ import { LabelsSelector } from "../../../../store/selectors/LabelsSelector";
 import { PopupWindowType } from "../../../../data/enums/PopupWindowType";
 import { updateActivePopupType } from "../../../../store/general/actionCreators";
 import TextInput from '../../../Common/TextInput/TextInput';
+import { LabelPreDefine } from '../../../../settings/LabelPreDefine';
 
 interface IProps {
     size: ISize;
@@ -26,12 +27,14 @@ interface IProps {
     labelRectPoint: IRect, //坐标点
     value: LabelName;  // 标签的名字
     options: LabelName[];  // 可选的标签列表
+
     onDelete: (id: string) => any;
     onUpdateLabelValue: (labelRectId: string, labelValue: string) => any; // 更新文字内容
-    onSelectLabel: (labelRectId: string, labelNameId: string) => any;  // 更新标签
+    onSelectLabel: (labelRectId: string, labelNameId: string, labelName: string) => any;  // 更新标签
     updateHighlightedLabelId: (highlightedLabelId: string) => any;
     updateActiveLabelId: (highlightedLabelId: string) => any;
     updateActivePopupType: (activePopupType: PopupWindowType) => any;
+
 }
 
 interface IState {
@@ -44,7 +47,7 @@ class LabelInputField extends React.Component<IProps, IState> {
     private dropdownOptionCount: number = 15;
     private dropdownMargin: number = 4;
     private dropdownLabel: HTMLDivElement;
-    private dropdown: HTMLDivElement;
+    private dropdown: HTMLDivElement; 
 
     public constructor(props) {
         super(props);
@@ -111,6 +114,7 @@ class LabelInputField extends React.Component<IProps, IState> {
             window.removeEventListener(EventType.MOUSE_DOWN, this.closeDropdown)
         }
     };
+     
 
     private getDropdownStyle = (): React.CSSProperties => {
         const clientRect = this.dropdownLabel.getBoundingClientRect();
@@ -128,10 +132,10 @@ class LabelInputField extends React.Component<IProps, IState> {
     };
 
     private getDropdownOptions = () => {
-        const onClick = (id: string, event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+        const onClick = (id: string, name: string, event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
             this.setState({ isOpen: false });
             window.removeEventListener(EventType.MOUSE_DOWN, this.closeDropdown);
-            this.props.onSelectLabel(this.props.id, id);
+            this.props.onSelectLabel(this.props.id, id, name);
             this.props.updateHighlightedLabelId(null);
             this.props.updateActiveLabelId(this.props.id);
             event.stopPropagation();
@@ -142,12 +146,13 @@ class LabelInputField extends React.Component<IProps, IState> {
                 className="DropdownOption"
                 key={option.id}
                 style={{ height: this.dropdownOptionHeight }}
-                onClick={(event) => onClick(option.id, event)}
+                onClick={(event) => onClick(option.id, option.name, event)}
             >
                 {option.name}
             </div>
         })
     };
+
 
     private mouseEnterHandler = () => {
         this.props.updateHighlightedLabelId(this.props.id);
@@ -179,7 +184,7 @@ class LabelInputField extends React.Component<IProps, IState> {
                     className="LabelInputFieldWrapper"
                     style={{
                         width: size.width,
-                        height: size.height - 20,
+                        height: 35,
                     }}
                 >
                     <div className="Marker" />

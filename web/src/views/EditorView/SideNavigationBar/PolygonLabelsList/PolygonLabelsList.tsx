@@ -97,6 +97,7 @@ const PolygonLabelsList: React.FC<IProps> = ({ size, imageData, updateImageDataB
                 options={labelNames}
                 onSelectLabel={updatePolygonLabel}
                 onUpdateLabelValue={updatePolygonLabelValue}
+                 
             />
         });
     };

@@ -16,6 +16,7 @@ import { Progress } from 'antd';
 import { ProjectData } from '../../../store/general/types';
 import { FileUtil } from '../../../utils/FileUtil';
 import { PopupWindowType } from '../../../data/enums/PopupWindowType';
+import { ImageActions } from '../../../logic/actions/ImageActions';
 
 const { Dragger } = Upload;
 

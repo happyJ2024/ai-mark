@@ -121,7 +121,7 @@ class Editor extends React.Component<IProps, IState> {
 
     private loadImage = async (imageData: ImageData): Promise<any> => {
         if (imageData === undefined || imageData.fileData === null) return;
-        // debugger
+        //  debugger
         if (imageData.loadStatus) {
             EditorActions.setActiveImage(ImageRepository.getById(imageData.id));
             AIActions.detect(imageData.id, ImageRepository.getById(imageData.id));

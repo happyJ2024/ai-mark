@@ -84,7 +84,8 @@ export class FileUtil {
                 reject();
             }
             let url = null;
-            if (imageData.fileData) {
+            //debugger
+            if (imageData.loadStatus && imageData.fileData) {
                 url = URL.createObjectURL(imageData.fileData);
             } else if (imageData.imgUrl) {
                 url = imageData.imgUrl;
@@ -99,7 +100,7 @@ export class FileUtil {
                     var base64 = FileUtil.getBase64Image(image);
                     // console.log(base64);
 
-                    var fileName = imageData.imgUrl.substring(imageData.imgUrl.lastIndexOf("/")+1, imageData.imgUrl.lastIndexOf('.'));
+                    var fileName = imageData.imgUrl.substring(imageData.imgUrl.lastIndexOf("/") + 1, imageData.imgUrl.lastIndexOf('.'));
                     //转换base64到file
                     var file = FileUtil.btof(base64, fileName);
                     imageData.fileData = file;
