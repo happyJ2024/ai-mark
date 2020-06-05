@@ -24,6 +24,12 @@ export function GetConvertProgress(param) {
 export function CallOCR(param) {
     return HttpClient.post(`/api/ocr`, param)
 }
+
+///更新ocr的结果
+export function UpdateOCRResult(param) {
+    return HttpClient.post(`/api/updateOCRResult`, param)
+}
+
 ///发布项目的结果到目标服务
 export function Publish(param) {
     return HttpClient.post(`/api/publish`, param)
@@ -36,5 +42,6 @@ export default {
     StartConvert,
     GetConvertProgress,
     CallOCR,
-    Publish
+    Publish,
+    UpdateOCRResult
 } 

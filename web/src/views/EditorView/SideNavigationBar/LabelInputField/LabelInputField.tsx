@@ -47,7 +47,7 @@ class LabelInputField extends React.Component<IProps, IState> {
     private dropdownOptionCount: number = 15;
     private dropdownMargin: number = 4;
     private dropdownLabel: HTMLDivElement;
-    private dropdown: HTMLDivElement; 
+    private dropdown: HTMLDivElement;
 
     public constructor(props) {
         super(props);
@@ -114,7 +114,7 @@ class LabelInputField extends React.Component<IProps, IState> {
             window.removeEventListener(EventType.MOUSE_DOWN, this.closeDropdown)
         }
     };
-     
+
 
     private getDropdownStyle = (): React.CSSProperties => {
         const clientRect = this.dropdownLabel.getBoundingClientRect();
@@ -181,7 +181,7 @@ class LabelInputField extends React.Component<IProps, IState> {
                 onClick={this.onClickHandler}
             >
                 <div
-                    className="LabelInputFieldWrapper"
+                    className={this.props.labelValue ? "LabelInputFieldWrapper" : "LabelInputFieldWrapper EmptyValue"}
                     style={{
                         width: size.width,
                         height: 35,

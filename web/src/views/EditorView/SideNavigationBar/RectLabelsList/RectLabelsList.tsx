@@ -218,10 +218,10 @@ const RectLabelsList: React.FC<IProps> = ({ size, imageData, updateImageDataById
                 unknownLabelRect.push(element);
             }
         });
-        console.log("waybillLabelRect:", waybillLabelRect);
-        console.log("invoiceLabelRect:", invoiceLabelRect);
-        console.log("invoiceItemsLabelRect:", invoiceItemsLabelRect);
-        console.log("unknownLabelRect:", unknownLabelRect);
+        // console.log("waybillLabelRect:", waybillLabelRect);
+        // console.log("invoiceLabelRect:", invoiceLabelRect);
+        // console.log("invoiceItemsLabelRect:", invoiceItemsLabelRect);
+        // console.log("unknownLabelRect:", unknownLabelRect);
 
 
         var waybillList = () => {
@@ -375,15 +375,18 @@ const RectLabelsList: React.FC<IProps> = ({ size, imageData, updateImageDataById
                 </Scrollbars>
             }
             <Modal
-                title="输入发票条目"
+                title="请输入发票条目序号（例如： 1,2,3）"
                 visible={labelGroupIdDialogVisibleFlag}
                 onOk={labelGroupIdDialogHandleOk}
                 onCancel={labelGroupIdDialogHandleCancel}
+                okText='确认'
+                cancelText='取消'
+
             >
-                <Input type="number" onChange={labelGroupIdChange}
+                <Input type="number" onChange={labelGroupIdChange} style={{}}
                     defaultValue={currentNewLabelData.labelGroupId}></Input>
             </Modal>
-        </div>
+        </div >
     );
 };
 

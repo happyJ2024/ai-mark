@@ -11,7 +11,7 @@ import { updateActivePopupType, updateProjectData } from "../../../store/general
 // import { Settings } from "../../../settings/Settings";
 import { ProjectData } from "../../../store/general/types";
 import { ImageData, LabelName } from "../../../store/labels/types";
-import { CallOCR, Publish } from '../../../api/api';
+import { CallOCR, Publish, UpdateOCRResult } from '../../../api/api';
 import { message, Modal, Spin } from 'antd';
 import { LabelPreDefine } from '../../../settings/LabelPreDefine';
 import uuid from 'uuid';
@@ -35,9 +35,66 @@ const TopNavigationBar: React.FC<IProps> = ({ updateActivePopupType, updateProje
     const [ocrSuccess, setocrSuccess] = useState(false);
 
     const [ocrWorking, setOcrWorking] = useState(false);
-    const [publishing, setPublishing] = useState(false)
+    const [updateOcrResultDialogVisibleFlag, setUpdateOcrResultDialogVisibleFlag] = useState(false)
+    const [publishing, setPublishing] = useState(false);
+    const [ocrDiff, setOcrDiff] = useState([]);
 
+
+
+    function getLatestLabelList() {
+
+        let labelList = [];
+        for (let index = 0; index < imagesData.length; index++) {
+            const imageData = imagesData[index];
+            let imageIndex = index;
+            if (imageData.labelRects) {
+                imageData.labelRects.forEach(r => {
+
+                    labelList.push({
+                        imageIndex: imageIndex,
+                        rect: r.rect,
+                        labelGroupId: r.labelGroupId,
+                        labelValue: r.labelValue,
+                        labelName: findMatchLabelName(labelNames, r.labelId)
+                    })
+
+                })
+            }
+        }
+        return labelList;
+    }
+
+    function callUpdateOCRResult() {
+        showUpdateOcrResultDialog();
+        let param = {
+            id: projectData.projectId,
+            labelList: getLatestLabelList()
+        };
+        setOcrDiff([]);
+        UpdateOCRResult(param).then((res: any) => {
+            if (res.data && res.data.errorCode === 0) {
+                message.success("更新OCR结果成功");
+                var diff = res.data.data;
+                if (diff) {
+                    setOcrDiff(diff);
+                }
+                else {
+                    hideUpdateOcrResultDialog();
+                }
+            } else {
+                message.error("更新OCR结果失败");
+                hideUpdateOcrResultDialog();
+            }
+        })
+    }
+    function showUpdateOcrResultDialog() {
+        setUpdateOcrResultDialogVisibleFlag(true);
+    }
+    function hideUpdateOcrResultDialog() {
+        setUpdateOcrResultDialogVisibleFlag(false);
+    }
     function callPublish() {
+        hideUpdateOcrResultDialog();
         setPublishing(true);
         let param = {
             id: projectData.projectId
@@ -96,7 +153,7 @@ const TopNavigationBar: React.FC<IProps> = ({ updateActivePopupType, updateProje
                 }
                 newImgUrl += (new Date()).getTime();
                 currentImageData.loadStatus = false;
-                currentImageData.imgUrl = newImgUrl; 
+                currentImageData.imgUrl = newImgUrl;
                 updateImageDataById(currentImageData.id, currentImageData);
             }
         }
@@ -272,6 +329,20 @@ const TopNavigationBar: React.FC<IProps> = ({ updateActivePopupType, updateProje
         }
         return id;
     }
+    function findMatchLabelName(list: LabelName[], id: string): string {
+
+        var name = '';
+        if (list) {
+            list.forEach((element) => {
+
+                if (element.id === id) {
+                    name = element.name;
+                    return;
+                }
+            });
+        }
+        return name;
+    }
     function getLabelRect(rect: number[]) {
         var result = { x: 0, y: 0, width: 0, height: 0 }
         if (rect && rect.length == 4) {
@@ -312,7 +383,7 @@ const TopNavigationBar: React.FC<IProps> = ({ updateActivePopupType, updateProje
                         {ifHasFiles() && ocrSuccess && <TextButton
                             label={"推送结果"}
                             externalClassName={"OCRButton"}
-                            onClick={() => { callPublish(); }}
+                            onClick={() => { callUpdateOCRResult(); }}
 
                         />}
 
@@ -370,6 +441,39 @@ const TopNavigationBar: React.FC<IProps> = ({ updateActivePopupType, updateProje
                 </div>
 
             </Modal>
+            <Modal
+                title="更新OCR结果"
+                visible={updateOcrResultDialogVisibleFlag}
+                onOk={callPublish}
+                onCancel={hideUpdateOcrResultDialog}
+                okText="继续推送"
+                cancelText="取消"
+            >
+                <div className="OCRDiff">
+                    {ocrDiff.length > 0 ? (
+                        ocrDiff.map((d) => {
+                            return <div>
+                                <div className="OCRDiffTitle"> {d.title}</div>
+                                <div>
+                                    {d.labelDiffList.map(t => {
+                                        return <div>
+                                            <a className="OCRDiffFieldName">{t.fieldName}:</a>
+                                            <a className="OCRDiffFieldOldValue">{t.oldValue}</a>
+                                           ==>
+                                           <a className="OCRDiffFieldNewValue">{t.newValue}</a>
+
+                                        </div>
+                                    })
+                                    }
+                                </div>
+                            </div>
+                        })
+
+                    ) : 'OCR结果没有任何变动'}
+                </div>
+
+            </Modal>
+
             <Modal
                 title="推送结果"
                 visible={publishing}

@@ -28,10 +28,10 @@ export class LabelPreDefine {
         "Invoice_No",
         "Net_weight",
         "supplier_code",
- 
+
     ];
     public static readonly INVOICE_ITEMS_KEYWORDS: string[] = [
-         
+        "Amount",
         "Ctry_origin",
         "Currency",
         "Customer_Partnumber",
@@ -43,10 +43,10 @@ export class LabelPreDefine {
     ];
 
 
-    public static readonly WAYBILL_KEYWORDS_PREFIX:string="运单";
+    public static readonly WAYBILL_KEYWORDS_PREFIX: string = "运单";
 
-    public static readonly INVOICE_KEYWORDS_PREFIX:string="发票";
+    public static readonly INVOICE_KEYWORDS_PREFIX: string = "发票";
 
-    public static readonly INVOICE_ITEMS_KEYWORDS_PREFIX:string="发票条目";
- 
+    public static readonly INVOICE_ITEMS_KEYWORDS_PREFIX: string = "发票条目";
+
 }

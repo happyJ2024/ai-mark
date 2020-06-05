@@ -14,7 +14,9 @@
     color: white;
     font-size: 10px;
   }
-
+.EmptyValue{
+  background-color: darkred;
+}
   .LabelInputFieldWrapper {
     position: absolute;
     left: calc(-100% - 5px);

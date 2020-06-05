@@ -140,3 +140,22 @@
 .OCRModelContent{
   text-align: center;
 }
+
+.OCRDiff{
+  .OCRDiffTitle{
+     
+    font-weight: bold;
+  }
+  .OCRDiffFieldName{
+    width: 150px;
+    display: inline-block;
+  }
+  .OCRDiffFieldOldValue{
+  color: #333;
+    margin-right: 10px;
+  }
+  .OCRDiffFieldNewValue{
+    color: red;
+    margin-left: 10px;
+  }
+}
