@@ -3,6 +3,7 @@ package cn.airesearch.aimarkserver.service.impl;
 import cn.airesearch.aimarkserver.constant.OcrConst;
 import cn.airesearch.aimarkserver.constant.ResourceConst;
 import cn.airesearch.aimarkserver.service.OCRService;
+import cn.airesearch.aimarkserver.service.OcrresultService;
 import cn.airesearch.aimarkserver.support.base.BaseResponse;
 import cn.airesearch.aimarkserver.support.ocr.*;
 import cn.airesearch.aimarkserver.support.ocr.ai.invoice.InvoiceModel;
@@ -13,6 +14,7 @@ import cn.airesearch.aimarkserver.tool.SplitPDFPage;
 import cn.airesearch.aimarkserver.tool.ZipTool;
 import cn.asr.appframework.utility.file.FileUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
 
@@ -30,6 +32,8 @@ import java.util.List;
 @Service
 public class OCRServiceImpl implements OCRService {
 
+    @Autowired
+    OcrresultService ocrresultService;
 
     @Override
     public BaseResponse<OCRResponse> ocr(Integer projectId) {
@@ -109,19 +113,50 @@ public class OCRServiceImpl implements OCRService {
             return response;
         }
 
+        //save ocr result into db
+        saveOCRResultIntoDb(projectId, ocrResponse, idFileMap);
+
+        response.success("导出ocr结果成功");
+        response.setData(ocrResponse);
+        return response;
+    }
+
+    private void saveOCRResultIntoDb(Integer projectId, OCRResponse ocrResponse, HashMap<String, String> idFileMap) {
+
+        ocrresultService.saveOCRResultIntoDb(projectId, ocrResponse, idFileMap);
+    }
+
+
+    private void addSplitPDFPageList(String pdfFilePath, int splitPageNumber, List<SplitPDFPage> splitPDFPageList) {
+
+        for (SplitPDFPage d : splitPDFPageList
+        ) {
+            if (d.getPdfPath().equals(pdfFilePath)) {
+                d.getPages().add(splitPageNumber);
+                return;
+            }
+        }
+        SplitPDFPage newSplitPDFPage = new SplitPDFPage();
+        newSplitPDFPage.setPdfPath(pdfFilePath);
+        newSplitPDFPage.getPages().add(splitPageNumber);
+        splitPDFPageList.add(newSplitPDFPage);
+    }
+
+    public void export(String projectId, OCRResponse ocrResponse, HashMap<String, String> idFileMap) {
         //准备Export的数据
+        String projectDirPath = IoTool.buildFilePath(ResourceConst.ROOT_PATH, ResourceConst.PROJECT + projectId);
         String exportDir = IoTool.buildFilePath(ResourceConst.ROOT_PATH, ResourceConst.PROJECT + projectId, OcrConst.EXPORT_DIR_NAME);
+        FileUtils.deleteFolder(exportDir);
+
         String exportExcelFilePath = IoTool.buildFilePath(exportDir, "data.xlsx");
         String exportJsonFilePath = IoTool.buildFilePath(exportDir, "data.json");
 
         boolean exportResult = OCRExporter.export2Json(exportJsonFilePath, ocrResponse);
         exportResult &= OCRExporter.export2Excel(exportExcelFilePath, ocrResponse);
-        if (!exportResult) {
-            response.fail("导出ocr结果失败");
-            return response;
-        }
 
         //复制原始文件
+        File dir = new File(projectDirPath);
+        File[] files = dir.listFiles();
         for (File f : files
         ) {
             if (f.isDirectory()) continue;
@@ -187,25 +222,5 @@ public class OCRServiceImpl implements OCRService {
         String targetZipFile = IoTool.buildFilePath(ResourceConst.ROOT_PATH, ResourceConst.PROJECT + projectId, projectId + ".zip");
         new ZipTool(new File(targetZipFile)).zipFiles(new File(exportDir));
 
-        response.success("导出ocr结果成功");
-        response.setData(ocrResponse);
-        return response;
     }
-
-    private void addSplitPDFPageList(String pdfFilePath, int splitPageNumber, List<SplitPDFPage> splitPDFPageList) {
-
-        for (SplitPDFPage d : splitPDFPageList
-        ) {
-            if (d.getPdfPath().equals(pdfFilePath)) {
-                d.getPages().add(splitPageNumber);
-                return;
-            }
-        }
-        SplitPDFPage newSplitPDFPage = new SplitPDFPage();
-        newSplitPDFPage.setPdfPath(pdfFilePath);
-        newSplitPDFPage.getPages().add(splitPageNumber);
-        splitPDFPageList.add(newSplitPDFPage);
-    }
-
-
 }

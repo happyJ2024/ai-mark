@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit;
 
 public class OCRWrapper {
 
-    private static final boolean MOCK = true;
+    private static final boolean MOCK = false;
     private static Log logger = LoggerWrapper.getLogger(String.valueOf(OCRWrapper.class));
 
     public static OCRResponse callOCRService(OCRRequest ocrRequest) {

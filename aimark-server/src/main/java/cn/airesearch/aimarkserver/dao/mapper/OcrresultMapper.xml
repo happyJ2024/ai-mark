@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.airesearch.aimarkserver.dao.OcrresultMapper">
+  <resultMap id="BaseResultMap" type="cn.airesearch.aimarkserver.model.Ocrresult">
+    <!--@mbg.generated-->
+    <!--@Table ocrresult-->
+    <id column="item_id" jdbcType="INTEGER" property="itemId" />
+    <result column="origin_json" jdbcType="LONGVARCHAR" property="originJson" />
+    <result column="ocr_datetime" jdbcType="TIMESTAMP" property="ocrDatetime" />
+    <result column="update_json" jdbcType="LONGVARCHAR" property="updateJson" />
+    <result column="update_datetime" jdbcType="TIMESTAMP" property="updateDatetime" />
+    <result column="difference" jdbcType="LONGVARCHAR" property="difference" />
+    <result column="idFileMap" jdbcType="LONGVARCHAR" property="idfilemap" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    item_id, origin_json, ocr_datetime, update_json, update_datetime, difference, idFileMap
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    <!--@mbg.generated-->
+    select 
+    <include refid="Base_Column_List" />
+    from ocrresult
+    where item_id = #{itemId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    <!--@mbg.generated-->
+    delete from ocrresult
+    where item_id = #{itemId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="cn.airesearch.aimarkserver.model.Ocrresult">
+    <!--@mbg.generated-->
+    insert into ocrresult (item_id, origin_json, ocr_datetime, 
+      update_json, update_datetime, difference, 
+      idFileMap)
+    values (#{itemId,jdbcType=INTEGER}, #{originJson,jdbcType=LONGVARCHAR}, #{ocrDatetime,jdbcType=TIMESTAMP}, 
+      #{updateJson,jdbcType=LONGVARCHAR}, #{updateDatetime,jdbcType=TIMESTAMP}, #{difference,jdbcType=LONGVARCHAR}, 
+      #{idfilemap,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.airesearch.aimarkserver.model.Ocrresult">
+    <!--@mbg.generated-->
+    insert into ocrresult
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="itemId != null">
+        item_id,
+      </if>
+      <if test="originJson != null">
+        origin_json,
+      </if>
+      <if test="ocrDatetime != null">
+        ocr_datetime,
+      </if>
+      <if test="updateJson != null">
+        update_json,
+      </if>
+      <if test="updateDatetime != null">
+        update_datetime,
+      </if>
+      <if test="difference != null">
+        difference,
+      </if>
+      <if test="idfilemap != null">
+        idFileMap,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="itemId != null">
+        #{itemId,jdbcType=INTEGER},
+      </if>
+      <if test="originJson != null">
+        #{originJson,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="ocrDatetime != null">
+        #{ocrDatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateJson != null">
+        #{updateJson,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="updateDatetime != null">
+        #{updateDatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="difference != null">
+        #{difference,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="idfilemap != null">
+        #{idfilemap,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.airesearch.aimarkserver.model.Ocrresult">
+    <!--@mbg.generated-->
+    update ocrresult
+    <set>
+      <if test="originJson != null">
+        origin_json = #{originJson,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="ocrDatetime != null">
+        ocr_datetime = #{ocrDatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateJson != null">
+        update_json = #{updateJson,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="updateDatetime != null">
+        update_datetime = #{updateDatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="difference != null">
+        difference = #{difference,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="idfilemap != null">
+        idFileMap = #{idfilemap,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where item_id = #{itemId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.airesearch.aimarkserver.model.Ocrresult">
+    <!--@mbg.generated-->
+    update ocrresult
+    set origin_json = #{originJson,jdbcType=LONGVARCHAR},
+      ocr_datetime = #{ocrDatetime,jdbcType=TIMESTAMP},
+      update_json = #{updateJson,jdbcType=LONGVARCHAR},
+      update_datetime = #{updateDatetime,jdbcType=TIMESTAMP},
+      difference = #{difference,jdbcType=LONGVARCHAR},
+      idFileMap = #{idfilemap,jdbcType=LONGVARCHAR}
+    where item_id = #{itemId,jdbcType=INTEGER}
+  </update>
+</mapper>

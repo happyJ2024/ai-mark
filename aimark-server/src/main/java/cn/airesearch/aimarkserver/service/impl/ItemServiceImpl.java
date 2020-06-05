@@ -7,6 +7,7 @@ import cn.airesearch.aimarkserver.dao.ItemMapper;
 import cn.airesearch.aimarkserver.dao.SourceMapper;
 import cn.airesearch.aimarkserver.dao.TextImageMapper;
 import cn.airesearch.aimarkserver.model.Item;
+import cn.airesearch.aimarkserver.model.Ocrresult;
 import cn.airesearch.aimarkserver.model.Source;
 import cn.airesearch.aimarkserver.model.TextImage;
 import cn.airesearch.aimarkserver.modelenum.ItemStatus;
@@ -14,11 +15,17 @@ import cn.airesearch.aimarkserver.pojo.modelvo.ItemDetailVO;
 import cn.airesearch.aimarkserver.pojo.modelvo.ItemVO;
 import cn.airesearch.aimarkserver.pojo.modelvo.SourceImgVO;
 import cn.airesearch.aimarkserver.service.ItemService;
+import cn.airesearch.aimarkserver.service.OCRService;
+import cn.airesearch.aimarkserver.service.OcrresultService;
+import cn.airesearch.aimarkserver.support.ocr.OCRResponse;
 import cn.airesearch.aimarkserver.tool.FtpTool;
 import cn.airesearch.aimarkserver.tool.IoTool;
 import cn.airesearch.aimarkserver.tool.PojoTool;
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +33,7 @@ import javax.annotation.Resource;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -34,6 +42,11 @@ import java.util.List;
 @Slf4j
 @Service
 public class ItemServiceImpl implements ItemService {
+
+    @Autowired
+    private OCRService ocrService;
+    @Autowired
+    private OcrresultService ocrresultService;
 
     @Resource
     private ItemMapper itemMapper;
@@ -124,15 +137,20 @@ public class ItemServiceImpl implements ItemService {
         String projectDir = ResourceConst.PROJECT + projectId;
         String dirRootToProject = IoTool.buildFilePath(ResourceConst.ROOT_PATH, projectDir);
 
+        Ocrresult model = ocrresultService.selectByPrimaryKey(projectId);
+        String json = model.getUpdateJson();
+        if (StringUtils.isEmpty(json)|| json.equals("{}")) {
+            json = model.getOriginJson();
+        }
+        OCRResponse ocrResponse = JSON.parseObject(json, OCRResponse.class);
+        HashMap<String, String> idFileMap = JSON.parseObject(model.getIdfilemap(), HashMap.class);
+        ocrService.export(String.valueOf(projectId), ocrResponse, idFileMap);
+
         File zipFile = new File(dirRootToProject + File.separator + projectId + ".zip");
         File exportedFileDir = new File(dirRootToProject + File.separator + OcrConst.EXPORT_DIR_NAME);
 
-
         try {
-
-
             FtpTool.Client ftpClient = FtpTool.createConnect(AppConst.FTP_HOST_NAME);
-
             ftpClient.login(AppConst.FTP_USER_NAME, AppConst.FTP_USER_PASSWORD);
             if (ftpClient.operationIsOK() == false) return false;
 

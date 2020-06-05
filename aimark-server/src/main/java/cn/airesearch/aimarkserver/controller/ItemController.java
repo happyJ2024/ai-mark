@@ -1,10 +1,11 @@
 package cn.airesearch.aimarkserver.controller;
 
-import cn.airesearch.aimarkserver.modelenum.ItemStatus;
 import cn.airesearch.aimarkserver.pojo.modelvo.ItemDetailVO;
 import cn.airesearch.aimarkserver.pojo.modelvo.ItemVO;
 import cn.airesearch.aimarkserver.pojo.requestvo.IntIdVO;
+import cn.airesearch.aimarkserver.pojo.requestvo.UpdateOCRResultVO;
 import cn.airesearch.aimarkserver.service.ItemService;
+import cn.airesearch.aimarkserver.service.OcrresultService;
 import cn.airesearch.aimarkserver.support.base.BaseResponse;
 import cn.airesearch.aimarkserver.validator.GAdd;
 import io.swagger.v3.oas.annotations.Operation;
@@ -30,10 +31,12 @@ import java.util.List;
 public class ItemController {
 
     private final ItemService itemService;
+    private final OcrresultService OcrresultService;
 
     @Autowired
-    public ItemController(ItemService itemService) {
+    public ItemController(ItemService itemService, OcrresultService OcrresultService) {
         this.itemService = itemService;
+        this.OcrresultService = OcrresultService;
     }
 
     @Operation(
@@ -78,6 +81,18 @@ public class ItemController {
         return response;
     }
 
+
+    @Operation(
+            summary = "更新ocr的结果"
+    )
+    @PostMapping(value = "/api/updateOCRResult")
+    public BaseResponse updateOCRResult(@RequestBody @Validated UpdateOCRResultVO vo) {
+
+        BaseResponse response=OcrresultService.updateOCRResult(vo ) ;
+
+        return response;
+    }
+
     @Operation(
             summary = "发布项目的结果到目标服务"
     )
@@ -85,10 +100,9 @@ public class ItemController {
     public BaseResponse publishProject(@RequestBody @Validated IntIdVO vo) {
         BaseResponse response = new BaseResponse();
 
-        if(itemService.publish(vo.getId())){
+        if (itemService.publish(vo.getId())) {
             response.success("发布项目成功");
-        }
-        else{
+        } else {
             response.success("发布项目失败");
         }
         return response;
