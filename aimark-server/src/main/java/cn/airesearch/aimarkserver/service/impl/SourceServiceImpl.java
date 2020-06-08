@@ -1,19 +1,22 @@
 package cn.airesearch.aimarkserver.service.impl;
 
 import cn.airesearch.aimarkserver.constant.AppConst;
+import cn.airesearch.aimarkserver.constant.OcrConst;
 import cn.airesearch.aimarkserver.constant.ResourceConst;
 import cn.airesearch.aimarkserver.dao.SourceMapper;
 import cn.airesearch.aimarkserver.dao.TextImageMapper;
 import cn.airesearch.aimarkserver.exception.PdfOperationException;
 import cn.airesearch.aimarkserver.model.Source;
 import cn.airesearch.aimarkserver.model.TextImage;
+import cn.airesearch.aimarkserver.pojo.modelvo.DigitalWaybillInfo;
 import cn.airesearch.aimarkserver.service.SourceService;
 import cn.airesearch.aimarkserver.support.ItemConvert;
 import cn.airesearch.aimarkserver.support.ItemConvertManager;
-import cn.airesearch.aimarkserver.tool.IoTool;
-import cn.airesearch.aimarkserver.tool.PdfTool;
+import cn.airesearch.aimarkserver.tool.*;
+import cn.asr.appframework.utility.file.FileUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.pdfbox.pdmodel.PDDocument;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -114,6 +117,11 @@ public class SourceServiceImpl implements SourceService {
                     if (!Files.exists(imgDirPath)) {
                         Files.createDirectories(imgDirPath);
                     }
+
+                    // 尝试提取电子版的运单数据
+                    tryExtractWaybillData(new File(fullPdfPath), imageDir);
+
+
                     // 将pdf转为jpg图片
                     List<String> names = PdfTool.savePdfToImages(new File(fullPdfPath), imageDir);
                     // 删除并重新保存图片数据
@@ -148,5 +156,49 @@ public class SourceServiceImpl implements SourceService {
             ItemConvertManager.finish(itemId);
         }
 
+    }
+
+    private void tryExtractWaybillData(File pdfFile, String dataSavedDir) {
+
+        PDDocument doc = null;
+        try {
+            doc = PDDocument.load(pdfFile);
+
+            // 获取页码
+            int pages = doc.getNumberOfPages();
+            PDFTextStripperWithPosition pdf = new PDFTextStripperWithPosition(doc);
+
+            for (int i = 1; i <= pages; i++) {
+                List<PDFTextObject> list = pdf.getCoordinate(i);
+                if (list.size() >= 7) {
+                    String findFlag = list.get(0).text;
+                    findFlag += list.get(1).text;
+                    findFlag += list.get(2).text;
+                    findFlag += list.get(3).text;
+                    findFlag += list.get(4).text;
+                    findFlag += list.get(5).text;
+                    findFlag += list.get(6).text;
+                    if (findFlag.equals("DOC. NO")) {
+                        System.out.println("找到了电子版的运单信息 pageNum=" + i);
+                        // 找到了电子版的运单信息
+                        DigitalWaybillInfo info = new DigitalWaybillInfo();
+                        info.setPageNum(i);
+                        info.setWordList(list);
+                        String jsonFilePath = dataSavedDir + File.separator + OcrConst.DIGITAL_WAYBILL_JSON_DATA;
+                        FileUtils.write(jsonFilePath, JsonUtils.toJsonStringPrettyFormat(info));
+                        break;
+                    }
+                }
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                doc.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

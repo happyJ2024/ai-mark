@@ -57,9 +57,10 @@ class PdfToolTest {
             List<PDFTextObject> list = pdf.getCoordinate(1);
             for (PDFTextObject fs : list) {
                 System.out.println(fs.toString());
-                PDPage page = doc.getPage(fs.pageNumber-1);
+                PDPage page = doc.getPage(fs.pageNumber - 1);
                 contentStream = new PDPageContentStream(doc, page, PDPageContentStream.AppendMode.APPEND, true);
-                contentStream.drawImage(pdImage, fs.x, fs.y);
+                contentStream.drawImage(pdImage, fs.x1, fs.y1);
+                contentStream.drawImage(pdImage, fs.x2, fs.y2);
                 contentStream.close();
             }
             doc.save(signedPdfPath);

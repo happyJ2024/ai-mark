@@ -53,18 +53,24 @@ public class PDFTextStripperWithPosition extends PDFTextStripper {
     protected void writeString(String string, List<TextPosition> textPositions) throws IOException {
         for (int i = 0; i < textPositions.size(); i++) {
             // text得到pdf这一行中的汉字
-             String text = textPositions.get(i).getUnicode();
+            String text = textPositions.get(i).getUnicode();
 
-             if(text.equals("")||text.equals(" "))continue;
+            if (pagelist.size() == 0) {
+                if (text.equals("") || text.equals(" ")) {
+                    continue;
+                }
+            }
 
             PDFTextObject obj = new PDFTextObject();
             obj.text = text;
             // X坐标
-            obj.x = textPositions.get(i).getX();
+            obj.x1 = textPositions.get(i).getX();
+            obj.x2 = textPositions.get(i).getX() + textPositions.get(i).getWidth();
             // Y坐标
-         obj.y = textPositions.get(i).getPageHeight() - textPositions.get(i).getY()+textPositions.get(i).getHeight();
+            obj.y1 = textPositions.get(i).getPageHeight() - textPositions.get(i).getY() + textPositions.get(i).getHeight();
+            obj.y2 = textPositions.get(i).getPageHeight() - textPositions.get(i).getY();
 
-            System.out.println(obj.toString());
+//            System.out.println(obj.toString());
             pagelist.add(obj);
         }
     }

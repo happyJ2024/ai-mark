@@ -46,31 +46,34 @@ public class OCRServiceImpl implements OCRService {
         File dir = new File(projectDirPath);
         File[] files = dir.listFiles();
 
-        List<String> filesList = new ArrayList<>();
+        List<String> subDirList = new ArrayList<>();
         for (File f : files
         ) {
             if (f.isDirectory() == false) continue;
             if (f.getName().equals(OcrConst.EXPORT_DIR_NAME)) continue;
 
-            filesList.add(f.getAbsolutePath());
+            subDirList.add(f.getAbsolutePath());
         }
-        filesList.sort((s1, s2) -> s1.compareTo(s2));
+        subDirList.sort((s1, s2) -> s1.compareTo(s2));
 
         HashMap<String, String> idFileMap = new HashMap<>();
         Integer currentId = 1;
-        for (String file : filesList
+        for (String file : subDirList
         ) {
-            File subDirFile = new File(file);
-            File[] subImageFiles = subDirFile.listFiles();
+            File subDir = new File(file);
+            File[] subDirFiles = subDir.listFiles();
             List<String> subImageFilesList = new ArrayList<>();
-            for (File subImage : subImageFiles
+            for (File f : subDirFiles
             ) {
-                if (subImage.isDirectory()) continue;
-                if (subImage.getAbsolutePath().contains(OcrConst.BACKUP_EXTENDS)) {
+                if (f.isDirectory()) continue;
+                if (f.getAbsolutePath().contains(OcrConst.BACKUP_EXTENDS)) {
                     continue;
                 }
-
-                subImageFilesList.add(subImage.getAbsolutePath());
+                if (f.getName().equals(OcrConst.DIGITAL_WAYBILL_JSON_DATA)) {
+                    ocrRequest.setWaybillJsonPath(f.getAbsolutePath());
+                    continue;
+                }
+                subImageFilesList.add(f.getAbsolutePath());
             }
             subImageFilesList.sort((s1, s2) -> {
                 String s1Convert = s1.substring(s1.lastIndexOf(File.separator) + 1, s1.lastIndexOf("."));
