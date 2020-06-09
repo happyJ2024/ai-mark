@@ -1,5 +1,8 @@
 package cn.airesearch.aimarkserver.service.impl;
 
+import cn.airesearch.aimarkserver.constant.ExportConst;
+import cn.airesearch.aimarkserver.constant.OcrConst;
+import cn.airesearch.aimarkserver.constant.ResourceConst;
 import cn.airesearch.aimarkserver.dao.OcrresultMapper;
 import cn.airesearch.aimarkserver.model.Ocrresult;
 import cn.airesearch.aimarkserver.pojo.requestvo.DiffAction;
@@ -7,11 +10,13 @@ import cn.airesearch.aimarkserver.pojo.requestvo.Label;
 import cn.airesearch.aimarkserver.pojo.requestvo.UpdateOCRResultVO;
 import cn.airesearch.aimarkserver.service.OcrresultService;
 import cn.airesearch.aimarkserver.support.base.BaseResponse;
+import cn.airesearch.aimarkserver.support.ocr.OCRExporter;
 import cn.airesearch.aimarkserver.support.ocr.OCRResponse;
 import cn.airesearch.aimarkserver.support.ocr.ai.BaseRectWords;
 import cn.airesearch.aimarkserver.support.ocr.ai.invoice.InvoiceModel;
 import cn.airesearch.aimarkserver.support.ocr.ai.invoice.Item;
 import cn.airesearch.aimarkserver.support.ocr.ai.waybill.WayBillModel;
+import cn.airesearch.aimarkserver.tool.IoTool;
 import com.alibaba.fastjson.JSON;
 import org.springframework.stereotype.Service;
 
@@ -69,6 +74,11 @@ public class OcrresultServiceImpl implements OcrresultService {
 
             OCRResponse ocrResponse = JSON.parseObject(model.getOriginJson(), OCRResponse.class);
             List<LabelDiffInfo> labelDiffInfoList = UpdateLabels(ocrResponse, vo.getLabelList());
+            if (labelDiffInfoList != null && labelDiffInfoList.size() > 0) {
+                String exportDir = IoTool.buildFilePath(ResourceConst.ROOT_PATH, ResourceConst.PROJECT + projectId, ExportConst.EXPORT_DIR_NAME);
+                String exportJsonFilePath = IoTool.buildFilePath(exportDir, ExportConst.EXPORT_DIFF_JSON_FILE_NAME);
+                OCRExporter.export2Json(exportJsonFilePath, labelDiffInfoList);
+            }
 
             //update
             model.setUpdateJson(formatJson4DB(ocrResponse));
@@ -117,9 +127,6 @@ public class OcrresultServiceImpl implements OcrresultService {
         return json;
     }
 
-    public static String WAYBILL_KEYWORDS_PREFIX = "运单";
-    public static String INVOICE_KEYWORDS_PREFIX = "发票";
-    public static String INVOICE_ITEMS_KEYWORDS_PREFIX = "发票条目";
 
     private List<LabelDiffInfo> UpdateLabels(OCRResponse ocrResponse, List<Label> labelList) {
         List<LabelDiffInfo> labelDiffInfoList = new ArrayList<>();
@@ -127,24 +134,24 @@ public class OcrresultServiceImpl implements OcrresultService {
 
             for (WayBillModel waybill :
                     ocrResponse.waybill) {
-                LabelDiffInfo wayBillDiff = updateCommonFields(waybill, labelList, WAYBILL_KEYWORDS_PREFIX);
+                LabelDiffInfo wayBillDiff = updateCommonFields(waybill, labelList, OcrConst.WAYBILL_KEYWORDS_PREFIX);
                 if (wayBillDiff.getLabelDiffList().size() > 0) {
-                    wayBillDiff.setTitle(WAYBILL_KEYWORDS_PREFIX);
+                    wayBillDiff.setTitle(OcrConst.WAYBILL_KEYWORDS_PREFIX);
                     labelDiffInfoList.add(wayBillDiff);
                 }
             }
             for (InvoiceModel invoice :
                     ocrResponse.invoice) {
-                LabelDiffInfo invoiceDiff = updateCommonFields(invoice, labelList, INVOICE_KEYWORDS_PREFIX);
+                LabelDiffInfo invoiceDiff = updateCommonFields(invoice, labelList, OcrConst.INVOICE_KEYWORDS_PREFIX);
                 if (invoiceDiff.getLabelDiffList().size() > 0) {
-                    invoiceDiff.setTitle(INVOICE_KEYWORDS_PREFIX + invoice.InvoiceSeq);
+                    invoiceDiff.setTitle(OcrConst.INVOICE_KEYWORDS_PREFIX + invoice.InvoiceSeq);
                     labelDiffInfoList.add(invoiceDiff);
                 }
                 for (Item item :
                         invoice.Items) {
-                    LabelDiffInfo invoiceItemDiff = updateItemFields(item, labelList, INVOICE_ITEMS_KEYWORDS_PREFIX);
+                    LabelDiffInfo invoiceItemDiff = updateItemFields(item, labelList, OcrConst.INVOICE_ITEMS_KEYWORDS_PREFIX);
                     if (invoiceItemDiff.getLabelDiffList().size() > 0) {
-                        invoiceItemDiff.setTitle(INVOICE_KEYWORDS_PREFIX + invoice.InvoiceSeq + "-" + INVOICE_ITEMS_KEYWORDS_PREFIX + item.ItemSeq);
+                        invoiceItemDiff.setTitle(OcrConst.INVOICE_KEYWORDS_PREFIX + invoice.InvoiceSeq + "-" + OcrConst.INVOICE_ITEMS_KEYWORDS_PREFIX + item.ItemSeq);
                         labelDiffInfoList.add(invoiceItemDiff);
                     }
                 }

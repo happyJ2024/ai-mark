@@ -11,18 +11,21 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class PDFTextStripperWithPosition extends PDFTextStripper {
 
 
     private final PDDocument document;
+    private float scale = 1;
     // 坐标信息集合
     private List<PDFTextObject> pagelist = new ArrayList<>();
 
     // 有参构造方法
-    public PDFTextStripperWithPosition(PDDocument doc) throws IOException {
+    public PDFTextStripperWithPosition(PDDocument doc, float scale) throws IOException {
         super();
         super.setSortByPosition(true);
         this.document = doc;
+        this.scale =scale;
     }
 
     // 获取坐标信息
@@ -52,8 +55,9 @@ public class PDFTextStripperWithPosition extends PDFTextStripper {
     @Override
     protected void writeString(String string, List<TextPosition> textPositions) throws IOException {
         for (int i = 0; i < textPositions.size(); i++) {
+            TextPosition item = textPositions.get(i);
             // text得到pdf这一行中的汉字
-            String text = textPositions.get(i).getUnicode();
+            String text = item.getUnicode();
 
             if (pagelist.size() == 0) {
                 if (text.equals("") || text.equals(" ")) {
@@ -64,13 +68,21 @@ public class PDFTextStripperWithPosition extends PDFTextStripper {
             PDFTextObject obj = new PDFTextObject();
             obj.text = text;
             // X坐标
-            obj.x1 = textPositions.get(i).getX();
-            obj.x2 = textPositions.get(i).getX() + textPositions.get(i).getWidth();
+            obj.x1 = item.getX();
+            obj.x2 = item.getX() + item.getWidth();
             // Y坐标
-            obj.y1 = textPositions.get(i).getPageHeight() - textPositions.get(i).getY() + textPositions.get(i).getHeight();
-            obj.y2 = textPositions.get(i).getPageHeight() - textPositions.get(i).getY();
+            float y = item.getY();
+            float height = item.getHeight();
+//            obj.y1 = item.getPageHeight() - item.getY() + item.getHeight();
+//            obj.y2 = item.getPageHeight() - item.getY();
 
-//            System.out.println(obj.toString());
+            obj.y1 = y - height;
+            obj.y2 = y;
+
+            obj.x1 = obj.x1 * this.scale;
+            obj.x2 = obj.x2 * this.scale;
+            obj.y1 = obj.y1 * this.scale;
+            obj.y2 = obj.y2 * this.scale;
             pagelist.add(obj);
         }
     }

@@ -52,7 +52,7 @@ public final class PdfTool {
     /**
      * 经过测试,dpi为96,100,105,120,150,200中,105显示效果较为清晰,体积稳定,dpi越高图片体积越大,一般电脑显示分辨率为96
      */
-    private static final int DEFAULT_DPI = 200;
+    public static final int DEFAULT_DPI = 200;
 
     /**
      * 默认转换的图片格式为jpg

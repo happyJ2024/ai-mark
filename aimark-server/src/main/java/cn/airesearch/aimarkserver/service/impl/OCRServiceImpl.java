@@ -1,5 +1,6 @@
 package cn.airesearch.aimarkserver.service.impl;
 
+import cn.airesearch.aimarkserver.constant.ExportConst;
 import cn.airesearch.aimarkserver.constant.OcrConst;
 import cn.airesearch.aimarkserver.constant.ResourceConst;
 import cn.airesearch.aimarkserver.service.OCRService;
@@ -50,7 +51,7 @@ public class OCRServiceImpl implements OCRService {
         for (File f : files
         ) {
             if (f.isDirectory() == false) continue;
-            if (f.getName().equals(OcrConst.EXPORT_DIR_NAME)) continue;
+            if (f.getName().equals(ExportConst.EXPORT_DIR_NAME)) continue;
 
             subDirList.add(f.getAbsolutePath());
         }
@@ -69,7 +70,7 @@ public class OCRServiceImpl implements OCRService {
                 if (f.getAbsolutePath().contains(OcrConst.BACKUP_EXTENDS)) {
                     continue;
                 }
-                if (f.getName().equals(OcrConst.DIGITAL_WAYBILL_JSON_DATA)) {
+                if (f.getName().equals(ExportConst.DIGITAL_WAYBILL_JSON_DATA)) {
                     ocrRequest.setWaybillJsonPath(f.getAbsolutePath());
                     continue;
                 }
@@ -148,11 +149,11 @@ public class OCRServiceImpl implements OCRService {
     public void export(String projectId, OCRResponse ocrResponse, HashMap<String, String> idFileMap) {
         //准备Export的数据
         String projectDirPath = IoTool.buildFilePath(ResourceConst.ROOT_PATH, ResourceConst.PROJECT + projectId);
-        String exportDir = IoTool.buildFilePath(ResourceConst.ROOT_PATH, ResourceConst.PROJECT + projectId, OcrConst.EXPORT_DIR_NAME);
-        FileUtils.deleteFolder(exportDir);
+        String exportDir = IoTool.buildFilePath(ResourceConst.ROOT_PATH, ResourceConst.PROJECT + projectId, ExportConst.EXPORT_DIR_NAME);
+//        FileUtils.deleteFolder(exportDir);
 
-        String exportExcelFilePath = IoTool.buildFilePath(exportDir, "data.xlsx");
-        String exportJsonFilePath = IoTool.buildFilePath(exportDir, "data.json");
+        String exportExcelFilePath = IoTool.buildFilePath(exportDir, ExportConst.EXPORT_EXCEL_FILE_NAME);
+        String exportJsonFilePath = IoTool.buildFilePath(exportDir, ExportConst.EXPORT_JSON_FILE_NAME);
 
         boolean exportResult = OCRExporter.export2Json(exportJsonFilePath, ocrResponse);
         exportResult &= OCRExporter.export2Excel(exportExcelFilePath, ocrResponse);
@@ -163,7 +164,7 @@ public class OCRServiceImpl implements OCRService {
         for (File f : files
         ) {
             if (f.isDirectory()) continue;
-            String destFile = IoTool.buildFilePath(exportDir, "Origin", f.getName());
+            String destFile = IoTool.buildFilePath(exportDir, ExportConst.EXPORT_ORIGIN_DIR_NAME, f.getName());
             try {
                 FileUtils.checkPath(destFile);
                 FileCopyUtils.copy(f, new File(destFile));
@@ -188,7 +189,7 @@ public class OCRServiceImpl implements OCRService {
                 addSplitPDFPageList(pdfFilePath, splitPageNumber, splitPDFPageList);
             }
 
-            String destFile = IoTool.buildFilePath(exportDir, OcrConst.FILE_NAME_WAYBILL + shipPdfIndex + ".pdf");
+            String destFile = IoTool.buildFilePath(exportDir, ExportConst.FILE_NAME_WAYBILL + shipPdfIndex + ".pdf");
             try {
                 PdfTool.generatePDF(destFile, splitPDFPageList);
             } catch (IOException e) {
@@ -212,7 +213,7 @@ public class OCRServiceImpl implements OCRService {
 
                 addSplitPDFPageList(pdfFilePath, splitPageNumber, splitPDFPageList);
             }
-            String destFile = IoTool.buildFilePath(exportDir, OcrConst.FILE_NAME_INVOICE + invoicePdfIndex + ".pdf");
+            String destFile = IoTool.buildFilePath(exportDir, ExportConst.FILE_NAME_INVOICE + invoicePdfIndex + ".pdf");
             try {
                 PdfTool.generatePDF(destFile, splitPDFPageList);
             } catch (IOException e) {

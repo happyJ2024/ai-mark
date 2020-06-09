@@ -10,12 +10,14 @@ public class OcrConst {
 
     public static final String OCR_SERVICE_URL = ApplicationContextProvider.getBean(AppSetting.class).getOcrServerUrl();
 
-    public static final String EXPORT_DIR_NAME = "EXPORTED";
 
-    public  static  final  String BACKUP_EXTENDS="_backup";
+    public static final String BACKUP_EXTENDS = "_backup";
+    public static final String DOC_NO_KEYWORD = "DOC. NO";
 
-    public  static  final  String FILE_NAME_WAYBILL="waybill";
-    public  static  final  String FILE_NAME_INVOICE="invoice";
 
-    public  static  final  String DIGITAL_WAYBILL_JSON_DATA="waybill.json";
+    public static String WAYBILL_KEYWORDS_PREFIX = "运单";
+    public static String INVOICE_KEYWORDS_PREFIX = "发票";
+    public static String INVOICE_ITEMS_KEYWORDS_PREFIX = "发票条目";
+
+
 }

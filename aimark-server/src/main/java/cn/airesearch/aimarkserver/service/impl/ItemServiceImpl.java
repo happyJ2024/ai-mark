@@ -1,6 +1,7 @@
 package cn.airesearch.aimarkserver.service.impl;
 
 import cn.airesearch.aimarkserver.constant.AppConst;
+import cn.airesearch.aimarkserver.constant.ExportConst;
 import cn.airesearch.aimarkserver.constant.OcrConst;
 import cn.airesearch.aimarkserver.constant.ResourceConst;
 import cn.airesearch.aimarkserver.dao.ItemMapper;
@@ -147,7 +148,7 @@ public class ItemServiceImpl implements ItemService {
         ocrService.export(String.valueOf(projectId), ocrResponse, idFileMap);
 
         File zipFile = new File(dirRootToProject + File.separator + projectId + ".zip");
-        File exportedFileDir = new File(dirRootToProject + File.separator + OcrConst.EXPORT_DIR_NAME);
+        File exportedFileDir = new File(dirRootToProject + File.separator + ExportConst.EXPORT_DIR_NAME);
 
         try {
             FtpTool.Client ftpClient = FtpTool.createConnect(AppConst.FTP_HOST_NAME);

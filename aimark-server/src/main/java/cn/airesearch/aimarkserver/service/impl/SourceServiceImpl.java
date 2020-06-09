@@ -1,6 +1,7 @@
 package cn.airesearch.aimarkserver.service.impl;
 
 import cn.airesearch.aimarkserver.constant.AppConst;
+import cn.airesearch.aimarkserver.constant.ExportConst;
 import cn.airesearch.aimarkserver.constant.OcrConst;
 import cn.airesearch.aimarkserver.constant.ResourceConst;
 import cn.airesearch.aimarkserver.dao.SourceMapper;
@@ -166,7 +167,8 @@ public class SourceServiceImpl implements SourceService {
 
             // 获取页码
             int pages = doc.getNumberOfPages();
-            PDFTextStripperWithPosition pdf = new PDFTextStripperWithPosition(doc);
+            float scale = PdfTool.DEFAULT_DPI / 72.0F;
+            PDFTextStripperWithPosition pdf = new PDFTextStripperWithPosition(doc, scale);
 
             for (int i = 1; i <= pages; i++) {
                 List<PDFTextObject> list = pdf.getCoordinate(i);
@@ -178,13 +180,13 @@ public class SourceServiceImpl implements SourceService {
                     findFlag += list.get(4).text;
                     findFlag += list.get(5).text;
                     findFlag += list.get(6).text;
-                    if (findFlag.equals("DOC. NO")) {
+                    if (findFlag.equals(OcrConst.DOC_NO_KEYWORD)) {
                         System.out.println("找到了电子版的运单信息 pageNum=" + i);
                         // 找到了电子版的运单信息
                         DigitalWaybillInfo info = new DigitalWaybillInfo();
                         info.setPageNum(i);
                         info.setWordList(list);
-                        String jsonFilePath = dataSavedDir + File.separator + OcrConst.DIGITAL_WAYBILL_JSON_DATA;
+                        String jsonFilePath = dataSavedDir + File.separator + ExportConst.DIGITAL_WAYBILL_JSON_DATA;
                         FileUtils.write(jsonFilePath, JsonUtils.toJsonStringPrettyFormat(info));
                         break;
                     }

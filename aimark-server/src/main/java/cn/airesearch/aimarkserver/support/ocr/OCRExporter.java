@@ -26,7 +26,7 @@ public class OCRExporter {
         initInvoiceHeaderList();
     }
 
-    public static boolean export2Json(String exportFilePath, OCRResponse ocrResponse) {
+    public static boolean export2Json(String exportFilePath, Object obj) {
 
         FileUtils.checkPath(exportFilePath);
         //输出excel
@@ -36,7 +36,7 @@ public class OCRExporter {
 
 
             outputStream = new FileOutputStream(jsonFile); // 文件流
-            String json = JsonUtils.toJsonStringPrettyFormat(ocrResponse);
+            String json = JsonUtils.toJsonStringPrettyFormat(obj);
             outputStream.write(json.getBytes("utf-8"));
 
         } catch (Exception e) {

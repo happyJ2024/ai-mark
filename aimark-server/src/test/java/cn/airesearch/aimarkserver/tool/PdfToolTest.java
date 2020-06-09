@@ -52,7 +52,8 @@ class PdfToolTest {
 //            System.out.println(content);
 
             PDImageXObject pdImage = PDImageXObject.createFromFile("/home/byj/Downloads/sign.png", doc);
-            PDFTextStripperWithPosition pdf = new PDFTextStripperWithPosition(doc);
+            float scale = PdfTool.DEFAULT_DPI / 72.0F;
+            PDFTextStripperWithPosition pdf = new PDFTextStripperWithPosition(doc, scale);
             PDPageContentStream contentStream = null;
             List<PDFTextObject> list = pdf.getCoordinate(1);
             for (PDFTextObject fs : list) {
