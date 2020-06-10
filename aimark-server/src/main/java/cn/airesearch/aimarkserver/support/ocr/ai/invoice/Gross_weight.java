@@ -6,5 +6,6 @@ import lombok.Data;
 
 @Data
 public class Gross_weight extends BaseRectWords {
-
+    public float grossWeightValue;
+    public String unit;
 }

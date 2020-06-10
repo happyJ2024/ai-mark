@@ -15,6 +15,7 @@ import org.apache.commons.lang3.time.StopWatch;
 import java.io.File;
 import java.io.FileReader;
 import java.lang.reflect.Field;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -69,11 +70,11 @@ public class OCRWrapper {
                 resp = JsonUtils.jsonToObject(response, OCRResponse.class);
             }
         }
-        FixDataError(resp);
+        FixDataIssue(resp);
         return resp;
     }
 
-    private static void FixDataError(OCRResponse resp) {
+    private static void FixDataIssue(OCRResponse resp) {
 
         if (resp != null) {
             for (int i = 0; i < resp.waybill.size(); i++) {
@@ -92,6 +93,7 @@ public class OCRWrapper {
                 }
                 updateField(invoice, defaultPageNum);
 
+                String totalGrossWeight = invoice.Gross_weight.words;
                 for (int j = 0; j < invoice.Items.size(); j++) {
                     Item item = invoice.Items.get(j);
                     item.ItemSeq = j + 1;
@@ -102,8 +104,54 @@ public class OCRWrapper {
                     updateField(item, defaultPageNum4Item);
                 }
 
+                AssginGrossWeightForItems(totalGrossWeight, invoice.Items);
             }
         }
+    }
+
+    private static void AssginGrossWeightForItems(String totalGrossWeight, List<Item> items) {
+
+        float totalGrossWeightValue = ConvertWeigthValue(totalGrossWeight);
+        String unit = GetGrossWeightUnit(totalGrossWeight);
+        float totalNetWeight = 0;
+        for (int j = 0; j < items.size(); j++) {
+            Item item = items.get(j);
+            float itemNetWeight = ConvertWeigthValue(item.Net_weight.words);
+            item.Net_weight.netWeightValue = itemNetWeight;
+            totalNetWeight += itemNetWeight;
+        }
+
+        DecimalFormat df = new DecimalFormat("#.00");
+        for (int j = 0; j < items.size(); j++) {
+            Item item = items.get(j);
+            String itemNetWeightNewValue = df.format(item.Net_weight.netWeightValue / totalNetWeight * totalGrossWeightValue);
+            item.Gross_weight.words = itemNetWeightNewValue + unit;
+            item.Gross_weight.pageNum = item.Net_weight.pageNum;
+        }
+    }
+
+    private static String GetGrossWeightUnit(String totalGrossWeight) {
+        if (totalGrossWeight.endsWith("KG"))
+            return "KG";
+        return "";
+    }
+
+    private static float ConvertWeigthValue(String words) {
+        StringBuilder builder = new StringBuilder();
+        char[] chars = words.toCharArray();
+        for (char c :
+                chars) {
+            if (c >= '0' && c <= '9') {
+                builder.append(c);
+            }
+            if (c == '.') {
+                builder.append(c);
+            }
+        }
+        if (builder.length() > 0) {
+            return Float.parseFloat(builder.toString());
+        }
+        return 0f;
     }
 
     private static int getDefaultPageNum(Object model) {
