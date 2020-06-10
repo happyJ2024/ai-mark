@@ -18,6 +18,7 @@ import cn.airesearch.aimarkserver.support.ocr.ai.invoice.Item;
 import cn.airesearch.aimarkserver.support.ocr.ai.waybill.WayBillModel;
 import cn.airesearch.aimarkserver.tool.IoTool;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -106,7 +107,7 @@ public class OcrresultServiceImpl implements OcrresultService {
             model.setUpdateJson("");
             model.setUpdateDatetime(Date.from(Clock.systemDefaultZone().instant()));
             model.setDifference("");
-            model.setIdfilemap(JSON.toJSONString(idFileMap));
+            model.setIdfilemap(JSON.toJSONString(idFileMap, SerializerFeature.DisableCircularReferenceDetect));
 
             this.ocrresultMapper.insert(model);
         } else {
@@ -116,13 +117,13 @@ public class OcrresultServiceImpl implements OcrresultService {
             model.setUpdateJson("");
             model.setUpdateDatetime(Date.from(Clock.systemDefaultZone().instant()));
             model.setDifference("");
-            model.setIdfilemap(JSON.toJSONString(idFileMap));
+            model.setIdfilemap(JSON.toJSONString(idFileMap, SerializerFeature.DisableCircularReferenceDetect));
             this.ocrresultMapper.updateByPrimaryKey(model);
         }
     }
 
     private String formatJson4DB(Object obj) {
-        String json = JSON.toJSONString(obj);
+        String json = JSON.toJSONString(obj, SerializerFeature.DisableCircularReferenceDetect);
         json = json.replace("\\", "\\\\");
         return json;
     }

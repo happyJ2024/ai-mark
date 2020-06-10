@@ -15,7 +15,7 @@ public final class JsonUtils {
     }
 
     public static String toJsonStringPrettyFormat(Object object) {
-        return JSON.toJSONString(object, SerializerFeature.PrettyFormat, SerializerFeature.WriteMapNullValue, SerializerFeature.WriteDateUseDateFormat);
+        return JSON.toJSONString(object, SerializerFeature.PrettyFormat, SerializerFeature.WriteMapNullValue, SerializerFeature.WriteDateUseDateFormat, SerializerFeature.DisableCircularReferenceDetect);
     }
 
     public static <T> T jsonToObject(String json, Class<T> tClass) {
