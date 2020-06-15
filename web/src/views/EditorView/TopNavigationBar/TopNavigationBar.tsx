@@ -131,11 +131,12 @@ const TopNavigationBar: React.FC<IProps> = ({ updateActivePopupType, updateProje
 
                 refreshImageData();
 
-                let index = 1;
-                ViewUtil.fireClickEventOnImagePreview(index, "ImagePreview", 100);
-                setTimeout(() => {
-                    ViewUtil.fireClickEventOnImagePreview(0, "ImagePreview", 0);
-                }, 1000);
+
+                ViewUtil.fireClickEventOnImagePreview(1, "ImagePreview", false, null, () => {
+                    setTimeout(() => {
+                        ViewUtil.fireClickEventOnImagePreview(0, "ImagePreview", false);
+                    }, 1000);
+                });
 
 
             } else {
@@ -165,6 +166,8 @@ const TopNavigationBar: React.FC<IProps> = ({ updateActivePopupType, updateProje
                 updateImageDataById(currentImageData.id, currentImageData);
             }
         }
+        console.log("refreshImageData:", imagesData);
+
     }
     //根据OCR结果更新标签列表
     function updateLabelRectByOcrResult(ocrResult) {

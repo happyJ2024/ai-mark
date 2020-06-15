@@ -176,16 +176,16 @@ class LoadMoreImagesPopup extends React.Component<IProps, IState> {
                                     detail: detailArray
                                 });
 
-                                let imgageData = self.getImageData(detailArray);
-                                self.props.addImageData(imgageData);
+                                let imgagesData = self.getImagesData(detailArray);
+                                self.props.addImageData(imgagesData);
                                 self.props.updateActiveImageIndex(-1);
                                 self.props.updateActivePopupType(null);
                                 PopupActions.close();
 
 
                                 const index = 0;
-                                ViewUtil.fireClickEventOnImagePreview(index, "ImagePreview", 1000);
-                                ViewUtil.fireClickEventOnVerticalEditorButton("VerticalEditorButton4RightLabel", 1000);
+                                ViewUtil.fireClickEventOnImagePreview(index, "ImagePreview", true,imgagesData);
+                                ViewUtil.fireClickEventOnVerticalEditorButton("VerticalEditorButton4RightLabel");
                             })
 
                         }
@@ -220,7 +220,7 @@ class LoadMoreImagesPopup extends React.Component<IProps, IState> {
         });
     };
 
-    getImageData = (detailArray) => {
+    getImagesData = (detailArray) => {
 
         let imgData = [];
         for (let index = 0; index < detailArray.length; index++) {

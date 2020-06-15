@@ -255,15 +255,15 @@ class NewProjectPopup extends React.Component<IProps, IState>  {
                         detail: detailArray
                     });
 
-                    let imgageData = this.getImageData(detailArray);
-                    this.props.addImageData(imgageData);
+                    let imgagesData = this.getImagesData(detailArray);
+                    this.props.addImageData(imgagesData);
                     this.initDefaultLabels();
                     this.props.updateActiveImageIndex(-1);
                     this.props.updateActivePopupType(null);
 
                     const index = 0;
-                    ViewUtil.fireClickEventOnImagePreview(index, "ImagePreview", 1000);
-                    ViewUtil.fireClickEventOnVerticalEditorButton("VerticalEditorButton4RightLabel", 1000);
+                    ViewUtil.fireClickEventOnImagePreview(index, "ImagePreview", true, imgagesData);
+                    ViewUtil.fireClickEventOnVerticalEditorButton("VerticalEditorButton4RightLabel");
                 }
 
             })
@@ -273,7 +273,7 @@ class NewProjectPopup extends React.Component<IProps, IState>  {
 
 
 
-    getImageData = (detailArray) => {
+    getImagesData = (detailArray) => {
 
         let imgData = [];
         for (let index = 0; index < detailArray.length; index++) {
