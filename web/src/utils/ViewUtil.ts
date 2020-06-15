@@ -1,5 +1,5 @@
 export class ViewUtil {
-    public static fireClickEventOnImagePreview(index: number, selectClassName: string): void {
+    public static fireClickEventOnImagePreview(index: number, selectClassName: string, timeout: number): void {
         setTimeout(() => {
             var imagePreviewList = document.getElementsByClassName(selectClassName);
             console.log("fireClickEventOnImagePreview:", imagePreviewList);
@@ -9,9 +9,9 @@ export class ViewUtil {
                 console.log("fireClickEventOnImagePreview:", index, element);
                 element.click();
             }
-        }, 1000);
+        }, timeout);
     }
-    public static fireClickEventOnVerticalEditorButton(selectClassName: string): void {
+    public static fireClickEventOnVerticalEditorButton(selectClassName: string, timeout: number): void {
         setTimeout(() => {
             var sideNavigationButtonList = document.getElementsByClassName(selectClassName);
             console.log("fireClickEventOnVerticalEditorButton:", sideNavigationButtonList);
@@ -21,7 +21,7 @@ export class ViewUtil {
                 console.log("fireClickEventOnVerticalEditorButton:", element);
                 element.click();
             }
-        }, 1000);
+        }, timeout);
     }
 
 }

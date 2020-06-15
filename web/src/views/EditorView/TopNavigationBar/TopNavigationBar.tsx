@@ -132,9 +132,11 @@ const TopNavigationBar: React.FC<IProps> = ({ updateActivePopupType, updateProje
                 refreshImageData();
 
                 let index = 1;
-                ViewUtil.fireClickEventOnImagePreview(index, "ImagePreview");
-                index = 0;
-                ViewUtil.fireClickEventOnImagePreview(index, "ImagePreview");
+                ViewUtil.fireClickEventOnImagePreview(index, "ImagePreview", 100);
+                setTimeout(() => {
+                    ViewUtil.fireClickEventOnImagePreview(0, "ImagePreview", 0);
+                }, 1000);
+
 
             } else {
                 message.error("OCR提取失败");

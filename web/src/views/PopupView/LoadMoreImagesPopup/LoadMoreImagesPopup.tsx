@@ -184,8 +184,8 @@ class LoadMoreImagesPopup extends React.Component<IProps, IState> {
 
 
                                 const index = 0;
-                                ViewUtil.fireClickEventOnImagePreview(index, "ImagePreview");
-                                ViewUtil.fireClickEventOnVerticalEditorButton("VerticalEditorButton4RightLabel");
+                                ViewUtil.fireClickEventOnImagePreview(index, "ImagePreview", 1000);
+                                ViewUtil.fireClickEventOnVerticalEditorButton("VerticalEditorButton4RightLabel", 1000);
                             })
 
                         }
