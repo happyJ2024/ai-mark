@@ -85,6 +85,7 @@ const EditorContainer: React.FC<IProps> = ({ windowSize, activeImageIndex, image
                 imageAlt={"labels"}
                 onClick={rightSideBarButtonOnClick}
                 isActive={rightTabStatus}
+                extClassName="VerticalEditorButton4RightLabel"
             />
         </>
     };

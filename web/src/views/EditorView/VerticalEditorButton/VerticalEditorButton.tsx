@@ -11,11 +11,12 @@ interface IProps {
     isDisabled?:boolean;
     image?:string,
     imageAlt?:string,
+    extClassName?:string
 }
 
 export const VerticalEditorButton = (props:IProps) => {
 
-    const { key, label, onClick, style, isActive, isDisabled, image, imageAlt} = props;
+    const { key, label, onClick, style, isActive, isDisabled, image, imageAlt, extClassName} = props;
 
     const getClassName = () => {
         return classNames(
@@ -23,7 +24,8 @@ export const VerticalEditorButton = (props:IProps) => {
             {
                 "active": isActive,
                 "disabled": isDisabled
-            }
+            },
+            extClassName
         );
     };
 

@@ -17,12 +17,13 @@ import { ProjectData } from '../../../store/general/types';
 import { FileUtil } from '../../../utils/FileUtil';
 import { PopupWindowType } from '../../../data/enums/PopupWindowType';
 import { ImageActions } from '../../../logic/actions/ImageActions';
+import { ViewUtil } from '../../../utils/ViewUtil';
 
 const { Dragger } = Upload;
 
 interface IProps {
-   
-    updateActivePopupType: (activePopupType: PopupWindowType) => any; 
+
+    updateActivePopupType: (activePopupType: PopupWindowType) => any;
     updateActiveImageIndex: (activeImageIndex: number) => any;
     updateProjectData: (projectData: ProjectData) => any;
     addImageData: (imageData: ImageData[]) => any;
@@ -180,6 +181,11 @@ class LoadMoreImagesPopup extends React.Component<IProps, IState> {
                                 self.props.updateActiveImageIndex(-1);
                                 self.props.updateActivePopupType(null);
                                 PopupActions.close();
+
+
+                                const index = 0;
+                                ViewUtil.fireClickEventOnImagePreview(index, "ImagePreview");
+                                ViewUtil.fireClickEventOnVerticalEditorButton("VerticalEditorButton4RightLabel");
                             })
 
                         }
@@ -234,8 +240,8 @@ class LoadMoreImagesPopup extends React.Component<IProps, IState> {
 const mapDispatchToProps = {
     addImageData,
     updateProjectData,
-    updateActivePopupType, 
-    updateActiveImageIndex, 
+    updateActivePopupType,
+    updateActiveImageIndex,
 };
 
 const mapStateToProps = (state: AppState) => ({

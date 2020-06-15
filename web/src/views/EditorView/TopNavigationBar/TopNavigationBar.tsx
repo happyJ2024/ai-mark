@@ -20,6 +20,7 @@ import { findLast } from 'lodash';
 import { updateImageDataById, updateActiveImageIndex } from '../../../store/labels/actionCreators';
 import { ContextManager } from '../../../logic/context/ContextManager';
 import { ContextType } from '../../../data/enums/ContextType';
+import { ViewUtil } from '../../../utils/ViewUtil';
 
 interface IProps {
     updateActivePopupType: (activePopupType: PopupWindowType) => any;
@@ -129,6 +130,11 @@ const TopNavigationBar: React.FC<IProps> = ({ updateActivePopupType, updateProje
                 updateLabelRectByOcrResult(res.data.data);
 
                 refreshImageData();
+
+                let index = 1;
+                ViewUtil.fireClickEventOnImagePreview(index, "ImagePreview");
+                index = 0;
+                ViewUtil.fireClickEventOnImagePreview(index, "ImagePreview");
 
             } else {
                 message.error("OCR提取失败");

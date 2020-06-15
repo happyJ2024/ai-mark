@@ -20,6 +20,8 @@ import { CreateProject, GetProjectList, DeleteProject, GetProjectDetail } from '
 import { Tabs, Table, Tag, message } from 'antd';
 import { FileUtil } from '../../../utils/FileUtil';
 import { LabelPreDefine } from '../../../settings/LabelPreDefine';
+import { ImageActions } from '../../../logic/actions/ImageActions';
+import { ViewUtil } from '../../../utils/ViewUtil';
 
 const { TabPane } = Tabs;
 
@@ -39,8 +41,6 @@ interface IState {
     currentTabKey: string
 }
 class NewProjectPopup extends React.Component<IProps, IState>  {
-
-
 
     state = {
         newProjectData: this.props.projectData,
@@ -110,28 +110,28 @@ class NewProjectPopup extends React.Component<IProps, IState>  {
             return;
         }
         const newLabelNames: LabelName[] = [];
-        
-     LabelPreDefine.WAYBILL_KEYWORDS.forEach(element => {
+
+        LabelPreDefine.WAYBILL_KEYWORDS.forEach(element => {
             newLabelNames.push({
-                name: LabelPreDefine.WAYBILL_KEYWORDS_PREFIX+element,
+                name: LabelPreDefine.WAYBILL_KEYWORDS_PREFIX + element,
                 id: uuidv1(),
             });
         });
-       
-        
+
+
         LabelPreDefine.INVOICE_KEYWORDS.forEach(element => {
             newLabelNames.push({
-                name: LabelPreDefine.INVOICE_KEYWORDS_PREFIX+element,
+                name: LabelPreDefine.INVOICE_KEYWORDS_PREFIX + element,
                 id: uuidv1()
             });
         });
         LabelPreDefine.INVOICE_ITEMS_KEYWORDS.forEach(element => {
             newLabelNames.push({
-                name: LabelPreDefine.INVOICE_ITEMS_KEYWORDS_PREFIX+element,
+                name: LabelPreDefine.INVOICE_ITEMS_KEYWORDS_PREFIX + element,
                 id: uuidv1()
             });
         });
-       
+
 
         this.props.updateLabelNames(newLabelNames);
         console.log("initDefaultLabels", newLabelNames);
@@ -260,12 +260,18 @@ class NewProjectPopup extends React.Component<IProps, IState>  {
                     this.initDefaultLabels();
                     this.props.updateActiveImageIndex(-1);
                     this.props.updateActivePopupType(null);
+
+                    const index = 0;
+                    ViewUtil.fireClickEventOnImagePreview(index, "ImagePreview");
+                    ViewUtil.fireClickEventOnVerticalEditorButton("VerticalEditorButton4RightLabel");
                 }
 
             })
 
         }
     }
+
+
 
     getImageData = (detailArray) => {
 

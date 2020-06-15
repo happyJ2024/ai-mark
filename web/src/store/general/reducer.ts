@@ -9,7 +9,7 @@ const initialState: GeneralState = {
     customCursorStyle: CustomCursorStyle.DEFAULT,
     activeContext: null,
     preventCustomCursor: false,
-    imageDragMode: false,
+    imageDragMode: true,
     projectData: {
         projectId: '',
         type: null,
