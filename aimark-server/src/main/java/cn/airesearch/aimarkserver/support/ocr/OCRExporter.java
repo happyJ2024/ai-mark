@@ -6,6 +6,7 @@ import cn.airesearch.aimarkserver.support.ocr.ai.invoice.Item;
 import cn.airesearch.aimarkserver.support.ocr.ai.waybill.WayBillModel;
 import cn.airesearch.aimarkserver.tool.JsonUtils;
 import cn.asr.appframework.utility.file.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -128,7 +129,7 @@ public class OCRExporter {
 
         //header
         int currentRowIndex = 0;
-        createRowAndCell(sheet, currentRowIndex, cellSize,null);
+        createRowAndCell(sheet, currentRowIndex, cellSize, null);
         Row headerRow = sheet.getRow(currentRowIndex);
         CellStyle headerCellStyle = createHeadCellStyle(workbook);
         for (int cellIndex = 0; cellIndex < invoiceHeaderList.size(); cellIndex++) {
@@ -152,18 +153,64 @@ public class OCRExporter {
                     String propertyName = invoiceHeaderList.get(cellIndex);
                     Object valueObj = d;
                     if (propertyName.startsWith("Items_")) {
-                        propertyName = propertyName.replace("Items_", "");
+                        String newPropertyName = propertyName.replace("Items_", "");
                         valueObj = item;
-                    }
 
-                    String cellValue = getPropertyValue(propertyName, valueObj);
-                    dataRow.getCell(cellIndex).setCellValue(cellValue);
+                        if (propertyName.equals("Items_Net_weight") || propertyName.equals("Items_Gross_weight")) {
+                            String cellValue = getPropertyValue(newPropertyName, valueObj);
+                            cellValue = getWeightValue(cellValue);
+                            dataRow.getCell(cellIndex).setCellValue(cellValue);
+                        } else if (propertyName.equals("Items_Net_weight_unit") || propertyName.equals("Items_Gross_weight_unit")) {
+                            newPropertyName = propertyName.replace("Items_", "").replace("_unit", "");
+                            String cellValue = getPropertyValue(newPropertyName, valueObj);
+                            cellValue = getWeightUnit(cellValue);
+                            dataRow.getCell(cellIndex).setCellValue(cellValue);
+                        } else {
+
+                            String cellValue = getPropertyValue(newPropertyName, valueObj);
+                            dataRow.getCell(cellIndex).setCellValue(cellValue);
+                        }
+
+                    } else {
+
+                        if (propertyName.equals("Net_weight") || propertyName.equals("Gross_weight")) {
+                            String cellValue = getPropertyValue(propertyName, valueObj);
+                            cellValue = getWeightValue(cellValue);
+                            dataRow.getCell(cellIndex).setCellValue(cellValue);
+                        } else if (propertyName.equals("Net_weight_unit") || propertyName.equals("Gross_weight_unit")) {
+                            String newPropertyName = propertyName.replace("_unit", "");
+                            String cellValue = getPropertyValue(newPropertyName, valueObj);
+                            cellValue = getWeightUnit(cellValue);
+                            dataRow.getCell(cellIndex).setCellValue(cellValue);
+                        } else {
+                            String cellValue = getPropertyValue(propertyName, valueObj);
+                            dataRow.getCell(cellIndex).setCellValue(cellValue);
+                        }
+
+                    }
 
                 }
                 currentRowIndex++;
             }
         }
 
+    }
+
+    private static String getWeightValue(String cellValue) {
+        if (StringUtils.isEmpty(cellValue)) {
+            return "";
+        }
+        return cellValue.replace("KG", "").replace("kg", "");
+    }
+
+    private static String getWeightUnit(String cellValue) {
+        if (StringUtils.isEmpty(cellValue)) {
+            return "";
+        }
+        if (cellValue.toUpperCase().endsWith("KG")) {
+            return "KG";
+        }
+        return "";
     }
 
     private static void createRowAndCell(Sheet sheet, int currentRowIndex, int cellSize, CellStyle cellStyle) {
@@ -249,13 +296,16 @@ public class OCRExporter {
         invoiceHeaderList.add("Items_Amount");
         invoiceHeaderList.add("Items_Currency");
         invoiceHeaderList.add("Items_Net_weight");
+        invoiceHeaderList.add("Items_Net_weight_unit");
         invoiceHeaderList.add("Items_Ctry_origin");
         invoiceHeaderList.add("Items_Gross_weight");
+        invoiceHeaderList.add("Items_Gross_weight_unit");
         invoiceHeaderList.add("Items_your_order_number");
 
         invoiceHeaderList.add("Net_weight");
+        invoiceHeaderList.add("Net_weight_unit");
         invoiceHeaderList.add("Gross_weight");
-
+        invoiceHeaderList.add("Gross_weight_unit");
     }
 
 
