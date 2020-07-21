@@ -10,6 +10,8 @@ public enum SysErrorCode implements ErrorCode {
     /**
      *
      */
+    SUCCESS(0, "成功"),
+    FAILURE(1, "错误"),
     NO_SOURCES(10010, "无源文件数据");
 
     private Integer theCode;

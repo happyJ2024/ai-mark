@@ -104,6 +104,9 @@ const TopNavigationBar: React.FC<IProps> = ({ updateActivePopupType, updateProje
         Publish(param).then((res: any) => {
             if (res.data && res.data.errorCode === 0) {
                 message.success("推送结果成功");
+
+                window.location.reload();
+                
             } else {
                 message.error("推送结果失败");
             }

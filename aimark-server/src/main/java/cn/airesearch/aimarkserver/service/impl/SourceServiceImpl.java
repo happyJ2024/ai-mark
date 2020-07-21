@@ -180,7 +180,7 @@ public class SourceServiceImpl implements SourceService {
                     findFlag += list.get(4).text;
                     findFlag += list.get(5).text;
                     findFlag += list.get(6).text;
-                    if (findFlag.equals(OcrConst.DOC_NO_KEYWORD)) {
+                    if (findFlag.equalsIgnoreCase(OcrConst.DOC_NO_KEYWORD)) {
                         System.out.println("找到了电子版的运单信息 pageNum=" + i);
                         // 找到了电子版的运单信息
                         DigitalWaybillInfo info = new DigitalWaybillInfo();

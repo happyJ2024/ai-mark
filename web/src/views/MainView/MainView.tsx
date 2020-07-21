@@ -13,6 +13,10 @@ import { ProjectData } from '../../store/general/types';
 import { AppState } from '../../store';
 
 import bgImage from "./../../yuanbao-bg2.png"
+import TextInput from '../Common/TextInput/TextInput';
+import HttpClient from '../../utils/HttpClient';
+import api from '../../api/api';
+import { message } from 'antd';
 
 interface IProps {
     updateActivePopupType: (activePopupType: PopupWindowType) => any; updateProjectData: (projectData: ProjectData) => any;
@@ -21,7 +25,8 @@ interface IProps {
 const MainView: React.FC<IProps> = ({ updateActivePopupType, updateProjectData, projectData }) => {
     const [projectInProgress, setProjectInProgress] = useState(false);
     const [projectCanceled, setProjectCanceled] = useState(false);
-
+    const [loginUserName, setLoginUserName] = useState("");
+    const [loginPassword, setLoginPassword] = useState("");
     const startNewProject = () => {
         //setProjectInProgress(true);
 
@@ -103,6 +108,73 @@ const MainView: React.FC<IProps> = ({ updateActivePopupType, updateProjectData, 
         // });
     };
 
+    const isLogin = () => {
+        let accessToken = localStorage.getItem('accessToken');
+        let userName = localStorage.getItem('userName');
+        if (accessToken && userName) {
+            return true;
+        }
+        return false;
+    }
+
+    const doLoginOut = () => {
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('userName');
+        window.location.reload();
+    }
+
+    const onChange4LoginUserName = (event: React.ChangeEvent<HTMLInputElement>) => {
+        console.log("onChange4LoginUserName");
+        const value = event.target.value;
+        setLoginUserName(value);
+
+    };
+
+    const onChange4LoginPassword = (event: React.ChangeEvent<HTMLInputElement>) => {
+        console.log("onChange4LoginPassword");
+        const value = event.target.value;
+        setLoginPassword(value);
+    };
+
+    const getCurrentUser = () => {
+        let userName = localStorage.getItem('userName');
+        return {
+            DisplayName: userName
+        };
+    }
+    const doLogin = () => {
+        let loginReq = { userName: loginUserName, password: loginPassword }
+        console.log(loginReq);
+
+        if (!loginReq.userName || !loginReq.password) {
+            return;
+        }
+
+        console.log("send login request");
+
+        api.Login(loginReq).then(function (resp: any) {
+            console.log("login response:", resp);
+            let data = resp.data;;
+            console.log(data);
+
+            if (!data || data.errorCode != 0) {
+                message.error('登录失败，请检查用户名和密码');
+            }
+            else {
+                message.success('登录成功');
+                let accessToken = data.data.accessToken;
+                let userName = data.data.userName;
+                localStorage.setItem('accessToken', "Bearer " + accessToken);
+                localStorage.setItem('userName', userName);
+                window.location.reload();
+            }
+
+        }).catch(ex => {
+            console.log(ex);
+
+        })
+
+    }
     return (
         <div className={getClassName()} style={{ backgroundImage: 'url(' + bgImage + ')', backgroundRepeat: 'no-repeat', backgroundSize: 'cover' }}>
             <div className="Slider" id="lower">
@@ -139,19 +211,49 @@ const MainView: React.FC<IProps> = ({ updateActivePopupType, updateProjectData, 
             </div>
             <div className="RightColumn">
                 <div />
-                {/* <ImagesDropZone /> */}
-                <div className="SocialMediaWrapper">
+
+                {isLogin() && <div className="SocialMediaWrapper">
                     {/* {getSocialMediaButtons({width: 30, height: 30})} */}
-                    {!projectInProgress && <TextButton
-                        externalClassName={"StartMarkButton"}
-                        label={"开始OCR"}
-                        onClick={startNewProject}
-                    />}
+                    {!projectInProgress &&
+                        <div className="CurrentUserMessage">
+                            <div className="CurrentUserDisplayName">
+                                欢迎您,{getCurrentUser().DisplayName}
+                            </div>
+                            <br />
+                            <div
+                                className={"StartMarkButton"}
+
+                                onClick={startNewProject}>
+                                开始OCR
+                          </div>
+                            <br />
+                            <a onClick={doLoginOut}>退出登录</a>
+                        </div>}
                 </div>
-                {/* {!projectInProgress && <TextButton
-                    label={"Get Started"}
-                    onClick={startProject}
-                />} */}
+                }
+                {
+                    isLogin() == false && <div className="LoginDiv">
+                        <TextInput
+                            inputKey={"login-username"}
+                            label={"登录用户名"}
+                            isPassword={false}
+                            onChange={onChange4LoginUserName}
+                        ></TextInput>
+                        <br />
+                        <TextInput
+                            inputKey={"login-password"}
+                            label={"密码"}
+                            isPassword={true}
+                            onChange={onChange4LoginPassword}
+                        ></TextInput>
+                        <br></br>
+                        <TextButton
+                            externalClassName={"LoginButton"}
+                            label={"登录"}
+                            onClick={doLogin}
+                        />
+                    </div>
+                }
             </div>
         </div>
     );

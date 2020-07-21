@@ -34,6 +34,12 @@ export function UpdateOCRResult(param) {
 export function Publish(param) {
     return HttpClient.post(`/api/publish`, param)
 }
+
+
+///用户登录
+export function Login(param) {
+    return HttpClient.post(`/api/login`, param)
+}
 export default {
     CreateProject,
     GetProjectList,
@@ -43,5 +49,6 @@ export default {
     GetConvertProgress,
     CallOCR,
     Publish,
-    UpdateOCRResult
+    UpdateOCRResult,
+    Login
 } 
